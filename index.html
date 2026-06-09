@@ -1,0 +1,2519 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>LLM 프롬프트 엔지니어링 가이드</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#1a1d24;
+  --bg-deep:#13151a;
+  --white:#ffffff;
+  --t70:rgba(255,255,255,.72);
+  --t50:rgba(255,255,255,.50);
+  --t30:rgba(255,255,255,.30);
+  --t12:rgba(255,255,255,.12);
+  --t08:rgba(255,255,255,.08);
+  --t05:rgba(255,255,255,.05);
+  --t03:rgba(255,255,255,.03);
+  --accent:#0f62fe;
+  --accent2:#33b1ff;
+  --accent3:#be95ff;
+  --accent4:#42be65;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --sans:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --pad:clamp(1.4rem,5vw,5.5rem);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background:var(--bg);color:var(--white);font-family:var(--sans);
+  line-height:1.6;overflow:hidden;-webkit-font-smoothing:antialiased;
+  height:100vh;width:100vw;cursor:default;
+}
+::selection{background:var(--accent);color:#fff}
+
+/* bg */
+.bg-fx{position:fixed;inset:0;z-index:-2;overflow:hidden;background:var(--bg)}
+.bg-grid{position:absolute;inset:-2px;
+  background-image:linear-gradient(var(--t05) 1px,transparent 1px),linear-gradient(90deg,var(--t05) 1px,transparent 1px);
+  background-size:54px 54px;mask-image:radial-gradient(ellipse 80% 60% at 50% 0%,#000 30%,transparent 75%);
+  -webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 0%,#000 30%,transparent 75%);
+}
+.bg-mesh{position:absolute;width:140vmax;height:140vmax;left:50%;top:-30vmax;transform:translateX(-50%);
+  background:radial-gradient(circle at 30% 30%,rgba(15,98,254,.18),transparent 40%),
+             radial-gradient(circle at 70% 50%,rgba(190,149,255,.14),transparent 42%),
+             radial-gradient(circle at 50% 75%,rgba(51,177,255,.12),transparent 45%);
+  filter:blur(30px);animation:spin 36s linear infinite;opacity:.85}
+@keyframes spin{to{transform:translateX(-50%) rotate(360deg)}}
+.noise{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.035;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* cursor glow */
+.cursor-glow{position:fixed;width:480px;height:480px;border-radius:50%;pointer-events:none;z-index:1;
+  background:radial-gradient(circle,rgba(15,98,254,.10),transparent 60%);
+  transform:translate(-50%,-50%);transition:opacity .3s;mix-blend-mode:screen}
+
+/* progress */
+.progress{position:fixed;top:0;left:0;height:3px;z-index:50;width:0%;
+  background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3));
+  box-shadow:0 0 12px var(--accent);transition:width .5s cubic-bezier(.2,.7,.2,1)}
+
+/* deck / slide */
+.deck{position:relative;width:100vw;height:100vh;overflow:hidden}
+.slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;
+  padding:clamp(3.2rem,8vh,5rem) var(--pad) clamp(3.6rem,8vh,5rem);
+  opacity:0;visibility:hidden;pointer-events:none;
+  transform:translateX(40px) scale(.985);
+  transition:opacity .55s cubic-bezier(.2,.7,.2,1),transform .55s cubic-bezier(.2,.7,.2,1),visibility .55s;
+  overflow-y:auto;overflow-x:hidden;}
+.slide.active{opacity:1;visibility:visible;pointer-events:auto;transform:none;z-index:2}
+.slide.prev{transform:translateX(-40px) scale(.985)}
+.slide-inner{width:100%;max-width:1180px;margin:0 auto}
+.slide::-webkit-scrollbar{width:8px}
+.slide::-webkit-scrollbar-thumb{background:var(--t12);border-radius:4px}
+
+/* kicker */
+.kicker{font-family:var(--mono);font-size:.72rem;letter-spacing:.28em;color:var(--t50);text-transform:uppercase;margin-bottom:1.2rem;display:flex;align-items:center;gap:.7rem}
+.kicker::before{content:"";width:26px;height:1px;background:var(--accent2);box-shadow:0 0 8px var(--accent2)}
+h2.title{font-size:clamp(1.8rem,4vw,3rem);font-weight:800;line-height:1.12;letter-spacing:-.02em}
+.sub{color:var(--t70);font-size:clamp(1rem,1.6vw,1.15rem);margin-top:.85rem;max-width:64ch}
+
+/* watermark */
+.wm{position:absolute;right:var(--pad);top:clamp(2.5rem,9vh,5rem);font-family:var(--mono);font-weight:700;
+  font-size:clamp(6rem,16vw,14rem);line-height:.8;color:transparent;-webkit-text-stroke:1.5px rgba(255,255,255,.06);
+  pointer-events:none;z-index:0;user-select:none}
+
+/* hero */
+.hero{align-items:center;text-align:center}
+.hero .tag{font-family:var(--mono);font-size:.8rem;letter-spacing:.4em;color:var(--t50);margin-bottom:1.6rem}
+.hero h1{font-family:var(--mono);font-weight:700;font-size:clamp(3.2rem,12vw,9rem);line-height:.92;letter-spacing:.02em}
+.hero h1 .shine{background:linear-gradient(110deg,#fff 30%,var(--accent2) 45%,var(--accent3) 55%,#fff 70%);
+  background-size:220% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 6s linear infinite}
+@keyframes shine{to{background-position:-220% center}}
+.hero .lead{font-size:clamp(1.1rem,2.4vw,1.6rem);color:var(--t70);margin-top:1.6rem;font-weight:500}
+.hero .marq{margin-top:2.2rem;font-family:var(--mono);font-size:.78rem;letter-spacing:.3em;color:var(--t30)}
+.hero .meta-chips{display:flex;gap:.6rem;justify-content:center;margin-top:1.6rem;flex-wrap:wrap}
+.hero .meta-chips .chip{font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;border:1px solid var(--t12);border-radius:3px;padding:.3rem .7rem;color:var(--t50)}
+.hero .meta-chips .chip.on{border-color:rgba(51,177,255,.4);color:var(--accent2)}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .65s cubic-bezier(.2,.7,.2,1),transform .65s cubic-bezier(.2,.7,.2,1)}
+.slide.active .reveal{opacity:1;transform:none}
+.slide.active .reveal.d1{transition-delay:.10s}
+.slide.active .reveal.d2{transition-delay:.20s}
+.slide.active .reveal.d3{transition-delay:.30s}
+.slide.active .reveal.d4{transition-delay:.40s}
+
+/* grid */
+.grid{display:grid;gap:1rem;margin-top:1.6rem}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:900px){.g2,.g3,.g4{grid-template-columns:1fr}}
+
+/* card */
+.card{position:relative;background:var(--t03);border:1px solid var(--t12);border-radius:6px;padding:1.4rem;
+  transition:transform .25s cubic-bezier(.2,.7,.2,1),border-color .25s,background .25s;overflow:hidden;transform-style:preserve-3d}
+.card::before{content:"";position:absolute;inset:0;border-radius:6px;opacity:0;transition:opacity .3s;
+  background:radial-gradient(280px circle at var(--mx-c,50%) var(--my-c,50%),rgba(15,98,254,.16),transparent 60%);pointer-events:none}
+.card:hover{border-color:rgba(15,98,254,.5);background:var(--t05)}
+.card:hover::before{opacity:1}
+.card .cnum{font-family:var(--mono);font-size:.72rem;letter-spacing:.2em;color:var(--accent2);margin-bottom:.5rem}
+.card h3{font-size:1.1rem;font-weight:700;margin-bottom:.4rem}
+.card p{color:var(--t70);font-size:.9rem;line-height:1.65}
+.card.ac2::before{background:radial-gradient(280px circle at var(--mx-c,50%) var(--my-c,50%),rgba(51,177,255,.16),transparent 60%)}
+.card.ac2:hover{border-color:rgba(51,177,255,.5)}
+.card.ac3::before{background:radial-gradient(280px circle at var(--mx-c,50%) var(--my-c,50%),rgba(190,149,255,.16),transparent 60%)}
+.card.ac3:hover{border-color:rgba(190,149,255,.5)}
+.card.ac4::before{background:radial-gradient(280px circle at var(--mx-c,50%) var(--my-c,50%),rgba(66,190,101,.16),transparent 60%)}
+.card.ac4:hover{border-color:rgba(66,190,101,.5)}
+.card .top-bar{position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent)}
+.card.ac2 .top-bar{background:var(--accent2)}
+.card.ac3 .top-bar{background:var(--accent3)}
+.card.ac4 .top-bar{background:var(--accent4)}
+.card .clabel{font-family:var(--mono);font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:.4rem}
+.card.ac2 .clabel{color:var(--accent2)}
+.card.ac3 .clabel{color:var(--accent3)}
+.card.ac4 .clabel{color:var(--accent4)}
+
+/* dlist */
+.dlist{list-style:none;margin-top:1.4rem;display:flex;flex-direction:column;gap:.8rem}
+.dlist li{display:flex;gap:.8rem;color:var(--t70);font-size:clamp(.9rem,1.5vw,1.02rem)}
+.dlist li::before{content:"—";font-family:var(--mono);color:var(--accent2);flex:none}
+.dlist li b{color:#fff;font-weight:600}
+
+/* callout */
+.callout{margin-top:1.6rem;border:1px solid var(--t12);border-left:2px solid var(--accent2);background:var(--t03);
+  padding:1rem 1.3rem;border-radius:4px;color:var(--t70);font-size:.95rem;line-height:1.7}
+.callout b,.callout strong{color:#fff}
+
+/* table */
+.tbl{width:100%;border-collapse:collapse;margin-top:1.4rem;font-size:clamp(.78rem,1.1vw,.92rem)}
+.tbl th{background:var(--t08);color:var(--t50);font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;
+  text-transform:uppercase;padding:.7rem 1rem;text-align:left;border-bottom:2px solid var(--accent)}
+.tbl td{padding:.7rem 1rem;border-bottom:1px solid var(--t08);color:var(--t70);vertical-align:top;line-height:1.6}
+.tbl td b{color:#fff}
+.tbl tr:hover td{background:var(--t03)}
+.tbl td.good{color:var(--accent4)}
+.tbl td.warn{color:#ff8389}
+.badge{font-family:var(--mono);font-size:.64rem;letter-spacing:.06em;border:1px solid var(--t12);border-radius:3px;
+  padding:.2rem .5rem;color:var(--t50);margin-left:.4rem;vertical-align:middle}
+.badge.bl{border-color:rgba(15,98,254,.4);color:var(--accent2)}
+.badge.bc{border-color:rgba(51,177,255,.4);color:var(--accent2)}
+.badge.bp{border-color:rgba(190,149,255,.4);color:var(--accent3)}
+.badge.by{border-color:rgba(240,192,0,.4);color:#f0c000}
+.badge.bg{border-color:rgba(66,190,101,.4);color:var(--accent4)}
+
+/* cmp (compare) */
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.6rem}
+@media(max-width:900px){.cmp{grid-template-columns:1fr}}
+.cmp .col{border:1px solid var(--t12);border-radius:6px;padding:1.4rem;background:var(--t03);transition:.25s}
+.cmp .col.win{border-color:rgba(51,177,255,.4);box-shadow:0 0 0 1px rgba(51,177,255,.12),0 0 40px rgba(51,177,255,.07)}
+.cmp .col:hover{transform:translateY(-4px)}
+.cmp .col .h{font-family:var(--mono);letter-spacing:.14em;font-size:.82rem;font-weight:700;margin-bottom:.9rem;display:flex;justify-content:space-between}
+.cmp .col.win .h{color:var(--accent2)}
+.cmp ul{list-style:none;display:flex;flex-direction:column;gap:.6rem}
+.cmp li{color:var(--t70);font-size:.88rem;display:flex;gap:.6rem}
+.cmp li::before{content:"›";color:var(--t50);font-family:var(--mono)}
+.cmp li b{color:#fff}
+
+/* code */
+.code{position:relative;margin-top:1.1rem;background:var(--bg-deep);border:1px solid var(--t12);border-radius:6px;overflow:hidden}
+.code .bar{display:flex;align-items:center;justify-content:space-between;padding:.5rem .85rem;border-bottom:1px solid var(--t08);
+  font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;color:var(--t50)}
+.code pre{padding:.9rem;overflow-x:auto;font-family:var(--mono);font-size:.8rem;line-height:1.75;color:var(--t70)}
+.code pre .c{color:var(--accent2)}
+.code pre .k{color:#fff;font-weight:500}
+.copy{font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;color:var(--t50);background:var(--t05);
+  border:1px solid var(--t12);border-radius:3px;padding:.22rem .55rem;cursor:pointer;transition:.2s}
+.copy:hover{color:#fff;border-color:var(--accent);background:rgba(15,98,254,.12)}
+
+/* pipeline */
+.pipe{display:flex;align-items:stretch;gap:.6rem;margin-top:1.6rem;flex-wrap:wrap}
+.pipe .node{flex:1;min-width:140px;border:1px solid var(--t12);border-radius:6px;padding:1.2rem;
+  text-align:center;position:relative;transition:.3s;background:var(--t03)}
+.pipe .node:hover{border-color:rgba(15,98,254,.5);transform:translateY(-4px);box-shadow:0 10px 40px rgba(15,98,254,.12)}
+.pipe .node .nt{font-family:var(--mono);font-weight:700;letter-spacing:.08em;font-size:.96rem}
+.pipe .node .nd{color:var(--t70);font-size:.82rem;margin-top:.3rem}
+.pipe .arrow{display:flex;align-items:center;font-family:var(--mono);color:var(--accent2);font-size:1.3rem;
+  animation:pulseX 1.8s ease-in-out infinite}
+@keyframes pulseX{0%,100%{opacity:.4;transform:translateX(0)}50%{opacity:1;transform:translateX(4px)}}
+@media(max-width:900px){.pipe{flex-direction:column}.pipe .arrow{justify-content:center;transform:rotate(90deg)!important}}
+
+/* trio */
+.trio{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1.4rem}
+@media(max-width:900px){.trio{grid-template-columns:1fr}}
+.trio .b{border:1px solid var(--t12);border-radius:6px;padding:1.3rem;text-align:center;transition:.25s}
+.trio .b:hover{border-color:rgba(190,149,255,.5);transform:scale(1.03)}
+.trio .b .l{font-family:var(--mono);font-size:.7rem;letter-spacing:.2em;color:var(--t50)}
+.trio .b .v{font-size:1.4rem;font-weight:800;margin-top:.4rem}
+.trio .b .eq{color:var(--accent3);font-family:var(--mono);font-size:1.1rem;margin:.22rem 0}
+
+/* closing */
+.closing{text-align:center;align-items:center}
+.closing h2.big{font-family:var(--mono);font-weight:700;font-size:clamp(2.4rem,8vw,6rem);letter-spacing:.04em}
+.closing h2.big .shine{background:linear-gradient(110deg,#fff,var(--accent2),var(--accent3),#fff);
+  background-size:220% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 5s linear infinite}
+.cta{display:flex;gap:1rem;justify-content:center;margin-top:2rem;flex-wrap:wrap}
+.btn{font-family:var(--mono);font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;padding:.8rem 1.7rem;border-radius:3px;
+  cursor:pointer;transition:.25s;border:1px solid transparent;display:inline-flex;align-items:center;gap:.5rem}
+.btn-p{background:#fff;color:var(--bg)}
+.btn-p:hover{box-shadow:0 0 30px rgba(255,255,255,.3);transform:translateY(-3px)}
+.btn-g{border-color:var(--t30);color:#fff}
+.btn-g:hover{border-color:var(--accent2);box-shadow:0 0 24px rgba(51,177,255,.2);transform:translateY(-3px)}
+
+/* dos/donts */
+.dd-wrap{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.4rem}
+@media(max-width:900px){.dd-wrap{grid-template-columns:1fr}}
+.dd-col{display:flex;flex-direction:column;gap:.6rem}
+.dd-head{font-family:var(--mono);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;padding:.55rem .9rem;border-radius:4px 4px 0 0}
+.dd-head.do{color:var(--accent4);border:1px solid rgba(66,190,101,.3);background:rgba(66,190,101,.06)}
+.dd-head.dont{color:#ff8389;border:1px solid rgba(255,131,137,.3);background:rgba(255,131,137,.06)}
+.dd-item{display:flex;gap:.75rem;align-items:flex-start;padding:.75rem .9rem;border:1px solid var(--t08);background:var(--t03);border-radius:4px;
+  font-size:.88rem;color:var(--t70);line-height:1.65}
+.dd-item .di{flex-shrink:0;font-size:.9rem;margin-top:.05rem}
+.dd-item b{color:var(--white)}
+
+/* prompt flow */
+.pf{display:flex;flex-direction:column;gap:.6rem;margin-top:1.4rem}
+.pf-row{display:flex;align-items:stretch;gap:.8rem}
+.pf-num{font-family:var(--mono);font-size:.8rem;color:var(--accent);width:28px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;border-right:1px solid var(--t08)}
+.pf-block{flex:1;border:1px solid var(--t08);background:var(--t03);padding:.85rem 1.1rem;
+  display:flex;gap:.9rem;align-items:flex-start;border-radius:4px;transition:.2s}
+.pf-block:hover{border-color:var(--t12);background:var(--t05)}
+.pf-tag{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;padding:.2rem .55rem;border-radius:2px;flex-shrink:0;white-space:nowrap;align-self:flex-start;margin-top:2px}
+.pf-tag.ta{color:var(--accent2);background:rgba(15,98,254,.15)}
+.pf-tag.tb{color:var(--accent2);background:rgba(51,177,255,.12)}
+.pf-tag.tc{color:var(--accent3);background:rgba(190,149,255,.12)}
+.pf-tag.td{color:var(--accent4);background:rgba(66,190,101,.12)}
+.pf-tag.te{color:#f0c000;background:rgba(240,192,0,.1)}
+.pf-tag.tf{color:#ff8389;background:rgba(255,131,137,.1)}
+.pf-title{font-size:.9rem;font-weight:700;color:#fff;margin-bottom:.22rem;line-height:1.3}
+.pf-desc{font-size:.82rem;color:var(--t70);line-height:1.65}
+.pf-desc code{font-family:var(--mono);color:var(--accent2);background:var(--t08);border-radius:3px;padding:0 .3em;font-size:.9em}
+
+/* verify cards */
+.vc-wrap{display:grid;grid-template-columns:repeat(3,1fr);gap:.9rem;margin-top:1.4rem}
+@media(max-width:900px){.vc-wrap{grid-template-columns:1fr}}
+.vc{border:1px solid var(--t12);border-radius:6px;padding:1.1rem 1.2rem;background:var(--t03);display:flex;flex-direction:column;gap:.6rem;transition:.2s}
+.vc:hover{border-color:rgba(15,98,254,.4);background:var(--t05)}
+.vc .vs{font-family:var(--mono);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+.vc .vt{font-size:1rem;font-weight:700;color:#fff;line-height:1.25}
+.vc ul{list-style:none;display:flex;flex-direction:column;gap:.45rem}
+.vc li{display:flex;gap:.55rem;font-size:.82rem;color:var(--t70);line-height:1.5}
+.vc li::before{content:"▸";color:var(--accent4);flex-shrink:0;font-family:var(--mono);font-size:.7rem;margin-top:.1rem}
+
+/* strategy card */
+.sc{border:1px solid var(--t12);border-radius:6px;background:var(--t03);padding:1.2rem;transition:.25s}
+.sc:hover{border-color:rgba(15,98,254,.4);background:var(--t05)}
+.sc-header{display:flex;align-items:center;gap:.7rem;margin-bottom:.85rem}
+.sc-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.sc-name{font-size:clamp(.95rem,1.4vw,1.1rem);font-weight:700;color:#fff}
+.sc-tag{font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;color:var(--t50);margin-left:auto;white-space:nowrap}
+.sc ul{list-style:none;display:flex;flex-direction:column;gap:.5rem}
+.sc li{display:flex;gap:.65rem;color:var(--t70);font-size:.84rem;line-height:1.55}
+.sc li::before{content:"→";font-family:var(--mono);color:var(--t30);flex-shrink:0}
+.sc li b{color:var(--t70);font-weight:500}
+
+/* wf (workflow) */
+.wf{display:flex;flex-direction:column;gap:.7rem;margin-top:1.4rem}
+.wf-item{display:flex;align-items:stretch;border:1px solid var(--t08);background:var(--t03);border-radius:4px;overflow:hidden;transition:.2s}
+.wf-item:hover{border-color:var(--t12);background:var(--t05)}
+.wf-num{font-family:var(--mono);font-size:1.6rem;font-weight:700;color:rgba(15,98,254,.22);
+  width:60px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-right:1px solid var(--t08)}
+.wf-body{flex:1;padding:.9rem 1.1rem}
+.wf-title{font-size:.96rem;font-weight:700;color:#fff;margin-bottom:.25rem}
+.wf-desc{font-size:.84rem;color:var(--t70);line-height:1.65}
+.wf-desc code{font-family:var(--mono);color:var(--accent2);background:var(--t08);border-radius:3px;padding:0 .3em;font-size:.88em}
+.wf-tag{padding:.9rem;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+/* checklist */
+.cl-wrap{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.4rem}
+@media(max-width:900px){.cl-wrap{grid-template-columns:1fr}}
+.cl-group{display:flex;flex-direction:column;gap:.5rem}
+.cl-head{font-family:var(--mono);font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;
+  padding:.5rem .8rem;border-bottom:1px solid var(--t08);color:var(--accent2);margin-bottom:.2rem}
+.cl-item{display:flex;gap:.7rem;align-items:flex-start;padding:.6rem .8rem;border:1px solid var(--t08);
+  background:var(--t03);border-radius:4px;font-size:.84rem;line-height:1.6;transition:.2s}
+.cl-item:hover{border-color:var(--t12);background:var(--t05)}
+.cl-cb{font-size:1rem;flex-shrink:0;color:var(--t30);margin-top:.05rem}
+.cl-main{font-weight:600;color:#fff}
+.cl-sub{font-size:.78rem;color:var(--t50);margin-top:.12rem}
+
+/* hl */
+.hl{color:var(--accent2)}
+
+/* nav arrows */
+.navbtn{position:fixed;top:50%;transform:translateY(-50%);z-index:45;width:48px;height:48px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--t50);
+  background:rgba(20,22,28,.5);border:1px solid var(--t12);backdrop-filter:blur(8px);
+  transition:.22s;font-size:1.3rem;user-select:none}
+.navbtn:hover{color:#fff;border-color:var(--accent2);box-shadow:0 0 20px rgba(51,177,255,.2);background:rgba(20,22,28,.8)}
+.navbtn.l{left:clamp(.6rem,2vw,1.5rem)}
+.navbtn.r{right:clamp(.6rem,2vw,1.5rem)}
+.navbtn.hide{opacity:0;pointer-events:none}
+
+/* bottom bar */
+.botbar{position:fixed;left:0;right:0;bottom:0;z-index:44;display:flex;align-items:center;justify-content:space-between;
+  padding:.65rem clamp(1rem,4vw,2.5rem);font-family:var(--mono);font-size:.7rem;letter-spacing:.12em;color:var(--t50);
+  background:linear-gradient(to top,rgba(20,22,28,.88),transparent);pointer-events:none}
+.botbar .brand{color:var(--t50)}
+.botbar .brand b{color:var(--accent2)}
+.botbar .right{display:flex;align-items:center;gap:1.2rem;pointer-events:auto}
+.counter{color:var(--t70)}
+.counter b{color:#fff;font-size:.82rem}
+.iconbtn{cursor:pointer;color:var(--t50);transition:.2s;letter-spacing:.1em;background:none;border:none;
+  font-family:var(--mono);font-size:.68rem;padding:0}
+.iconbtn:hover{color:var(--accent2)}
+
+/* dots */
+.dots{position:fixed;left:50%;bottom:.55rem;transform:translateX(-50%);z-index:44;
+  display:flex;gap:.45rem;pointer-events:auto}
+.dots .dot{width:7px;height:7px;border-radius:50%;background:var(--t12);cursor:pointer;transition:.25s}
+.dots .dot:hover{background:var(--t50);transform:scale(1.3)}
+.dots .dot.on{background:var(--accent2);box-shadow:0 0 8px var(--accent2);width:20px;border-radius:4px}
+@media(max-width:760px){.dots{display:none}}
+
+/* overview */
+.overview{position:fixed;inset:0;z-index:80;background:rgba(13,15,20,.96);backdrop-filter:blur(8px);
+  padding:clamp(2.5rem,6vh,4rem) clamp(1.2rem,5vw,4rem);overflow-y:auto;
+  opacity:0;visibility:hidden;transition:.3s;display:flex;flex-direction:column}
+.overview.show{opacity:1;visibility:visible}
+.overview .ovhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.6rem}
+.overview .ovhead h3{font-family:var(--mono);letter-spacing:.2em;font-size:.82rem;color:var(--t50);font-weight:700}
+.ovgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.9rem}
+.ovcard{border:1px solid var(--t12);border-radius:8px;background:var(--t03);padding:1rem 1.1rem 1.15rem;cursor:pointer;
+  transition:.22s;position:relative;overflow:hidden;min-height:108px;display:flex;flex-direction:column;gap:.35rem}
+.ovcard:hover{border-color:var(--accent2);background:var(--t05);transform:translateY(-3px)}
+.ovcard.cur{border-color:var(--accent2);box-shadow:0 0 0 1px var(--accent2),0 0 30px rgba(51,177,255,.1)}
+.ovcard .ovn{font-family:var(--mono);font-size:.66rem;letter-spacing:.18em;color:var(--accent2)}
+.ovcard .ovt{font-weight:700;font-size:.95rem;line-height:1.3}
+.ovcard .ovd{color:var(--t50);font-size:.78rem;margin-top:auto}
+
+/* hint */
+.helphint{position:fixed;left:50%;top:1rem;transform:translateX(-50%);z-index:46;font-family:var(--mono);font-size:.65rem;
+  letter-spacing:.14em;color:var(--t30);background:rgba(20,22,28,.7);border:1px solid var(--t08);border-radius:20px;
+  padding:.35rem 1rem;transition:opacity .5s;pointer-events:none}
+.helphint.fade{opacity:0}
+.helphint kbd{color:var(--t70);background:var(--t08);border-radius:3px;padding:0 .35rem;margin:0 .1rem}
+
+/* toast */
+.toast{position:fixed;bottom:3rem;left:50%;transform:translateX(-50%) translateY(20px);opacity:0;
+  background:var(--bg-deep);border:1px solid var(--accent);color:#fff;font-family:var(--mono);font-size:.76rem;
+  padding:.55rem 1.2rem;border-radius:4px;z-index:90;transition:.3s;box-shadow:0 0 24px rgba(15,98,254,.3)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* editor */
+.editbar{position:fixed;top:0;left:0;right:0;z-index:85;display:none;align-items:center;gap:.4rem;flex-wrap:wrap;
+  padding:.48rem .9rem;background:rgba(13,15,20,.97);border-bottom:1px solid var(--t12);backdrop-filter:blur(10px)}
+body.editing .editbar{display:flex}
+.editbar .ebrand{font-family:var(--mono);font-size:.68rem;letter-spacing:.18em;color:var(--accent2);margin-right:.4rem}
+.editbar button{font-family:var(--sans);font-size:.76rem;color:var(--t70);background:var(--t05);border:1px solid var(--t12);
+  border-radius:4px;padding:.32rem .65rem;cursor:pointer;transition:.15s;white-space:nowrap}
+.editbar button:hover{color:#fff;border-color:var(--accent2);background:var(--t08)}
+.editbar .edone{margin-left:auto;color:#fff;border-color:var(--accent2);background:rgba(51,177,255,.14)}
+.editbar .esep{width:1px;height:17px;background:var(--t12);margin:0 .1rem}
+.editbar .estatus{font-family:var(--mono);font-size:.64rem;color:var(--accent2);min-width:88px}
+body.editing [contenteditable="true"]{border-radius:3px}
+body.editing [contenteditable="true"]:hover{outline:1px dashed rgba(51,177,255,.5);outline-offset:3px;cursor:text}
+body.editing [contenteditable="true"]:focus{outline:2px solid var(--accent2);outline-offset:3px;background:rgba(51,177,255,.05)}
+body.editing .slide{padding-top:4.5rem}
+body.editing .helphint{display:none}
+body.editing .cursor-glow{display:none}
+
+@media(max-width:760px){
+  .navbtn{width:40px;height:40px;font-size:1.1rem}
+  .botbar .brand{display:none}
+}
+
+/* ═══════════════════════════════════
+   POPUP · 공통 오버레이
+═══════════════════════════════════ */
+.popup-overlay{
+  position:fixed;inset:0;z-index:200;
+  background:rgba(10,12,18,.82);backdrop-filter:blur(14px);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;visibility:hidden;
+  transition:opacity .35s cubic-bezier(.2,.7,.2,1),visibility .35s;
+  padding:2rem 1rem;
+}
+.popup-overlay.open{opacity:1;visibility:visible}
+
+/* ─── LLM Best Case 팝업 ─── */
+.llm-popup{
+  position:relative;
+  width:min(900px,96vw);
+  max-height:88vh;
+  background:var(--bg-deep);
+  border:1px solid var(--t12);
+  border-radius:10px;
+  overflow:hidden;
+  transform:translateY(28px) scale(.96);
+  transition:transform .38s cubic-bezier(.2,.7,.2,1);
+  display:flex;flex-direction:column;
+}
+.popup-overlay.open .llm-popup{transform:none}
+
+.llm-popup-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.1rem 1.5rem;
+  border-bottom:1px solid var(--t08);
+  background:var(--t03);
+  flex-shrink:0;
+}
+.llm-popup-head .ph-left{display:flex;align-items:center;gap:.85rem}
+.llm-popup-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.llm-popup-head .ph-name{font-size:1.05rem;font-weight:800;color:#fff;letter-spacing:-.01em}
+.llm-popup-head .ph-tag{font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;color:var(--t50);
+  border:1px solid var(--t12);border-radius:3px;padding:.2rem .55rem}
+.popup-close{background:none;border:1px solid var(--t12);color:var(--t50);width:32px;height:32px;
+  border-radius:50%;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;
+  transition:.2s;flex-shrink:0}
+.popup-close:hover{border-color:var(--accent2);color:#fff}
+
+.llm-popup-body{
+  overflow-y:auto;padding:1.5rem;
+  display:flex;flex-direction:column;gap:1.2rem;
+}
+.llm-popup-body::-webkit-scrollbar{width:6px}
+.llm-popup-body::-webkit-scrollbar-thumb{background:var(--t12);border-radius:3px}
+
+/* 팝업 내 Best Case 섹션 */
+.bc-section{
+  border:1px solid var(--t08);border-radius:8px;overflow:hidden;
+}
+.bc-section-head{
+  padding:.65rem 1rem;
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;
+  text-transform:uppercase;font-weight:700;
+  border-bottom:1px solid var(--t08);
+  display:flex;align-items:center;gap:.6rem;
+}
+.bc-section-head::before{
+  content:'';width:6px;height:6px;border-radius:50%;flex-shrink:0;background:currentColor;
+}
+.bc-prompt{
+  background:var(--bg-deep);
+  font-family:var(--mono);font-size:.9rem;line-height:1.85;
+  color:var(--t70);
+  padding:1.1rem 1.2rem;
+  white-space:pre-wrap;word-break:break-word;
+}
+.bc-prompt .k{color:#fff;font-weight:600}
+.bc-prompt .c{color:var(--accent2)}
+.bc-prompt .cm{color:var(--t30);font-style:italic}
+
+.bc-tips{
+  padding:.85rem 1.1rem;
+  border-top:1px solid var(--t08);
+  background:var(--t03);
+  display:flex;flex-direction:column;gap:.45rem;
+}
+.bc-tip{font-size:.84rem;color:var(--t70);display:flex;gap:.6rem;align-items:flex-start}
+.bc-tip::before{content:"→";font-family:var(--mono);color:var(--t30);flex-shrink:0;margin-top:.05rem}
+.bc-tip b{color:#fff}
+
+/* 탭 버튼 (팝업 상단) */
+.llm-tabs{
+  display:flex;gap:.4rem;padding:.75rem 1.5rem .4rem;
+  border-bottom:1px solid var(--t08);flex-shrink:0;
+  overflow-x:auto;
+}
+.llm-tabs::-webkit-scrollbar{height:0}
+.llm-tab{
+  font-family:var(--mono);font-size:.7rem;letter-spacing:.12em;
+  padding:.38rem .85rem;border-radius:4px;cursor:pointer;
+  border:1px solid var(--t12);color:var(--t50);background:none;
+  transition:.18s;white-space:nowrap;
+}
+.llm-tab:hover{border-color:var(--accent2);color:var(--accent2)}
+.llm-tab.on{border-color:currentColor;color:#fff;font-weight:700}
+
+/* sc 카드에 클릭 커서 */
+.sc{cursor:pointer;transition:transform .22s cubic-bezier(.2,.7,.2,1),border-color .22s,box-shadow .22s}
+.sc:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.22);
+  box-shadow:0 12px 40px rgba(0,0,0,.35)}
+.sc .sc-click-hint{
+  font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;color:var(--t30);
+  text-align:right;margin-top:.85rem;transition:.2s;
+}
+.sc:hover .sc-click-hint{color:var(--accent2)}
+
+/* ─── 프롬프트 확대 팝업 ─── */
+.prompt-popup{
+  position:relative;
+  width:min(780px,96vw);
+  max-height:88vh;
+  background:var(--bg-deep);
+  border:1px solid var(--t12);
+  border-radius:10px;
+  overflow:hidden;
+  transform:translateY(28px) scale(.96);
+  transition:transform .38s cubic-bezier(.2,.7,.2,1);
+  display:flex;flex-direction:column;
+}
+.popup-overlay.open .prompt-popup{transform:none}
+
+.prompt-popup-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.9rem 1.3rem;
+  border-bottom:1px solid var(--t08);
+  background:var(--t03);
+  flex-shrink:0;
+}
+.pph-left{display:flex;flex-direction:column;gap:.25rem}
+.pph-label{font-family:var(--mono);font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--t50)}
+.pph-title{font-size:1rem;font-weight:700;color:#fff}
+.pph-right{display:flex;align-items:center;gap:.6rem}
+
+.prompt-popup-body{
+  overflow-y:auto;
+  padding:1.4rem 1.5rem;
+  flex:1;
+}
+.prompt-popup-body::-webkit-scrollbar{width:6px}
+.prompt-popup-body::-webkit-scrollbar-thumb{background:var(--t12);border-radius:3px}
+
+.pp-pre{
+  font-family:var(--mono);font-size:1.05rem;line-height:2;
+  color:var(--t70);white-space:pre-wrap;word-break:break-word;
+}
+.pp-pre .k{color:#fff;font-weight:600}
+.pp-pre .c{color:var(--accent2)}
+.pp-pre .cm{color:var(--t30);font-style:italic}
+
+/* 코드 블록에 확대 힌트 */
+.code{cursor:pointer;transition:border-color .2s}
+.code:hover{border-color:rgba(51,177,255,.45)}
+.code .bar .zoom-hint{
+  font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;color:var(--t30);
+  display:flex;align-items:center;gap:.3rem;transition:.2s;
+}
+.code:hover .bar .zoom-hint{color:var(--accent2)}
+
+/* 팝업 바닥 액션바 */
+.popup-foot{
+  padding:.85rem 1.3rem;border-top:1px solid var(--t08);
+  background:var(--t03);display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;gap:.8rem;
+}
+.popup-foot .pf-note{font-family:var(--mono);font-size:.68rem;color:var(--t30);letter-spacing:.06em}
+.pop-btn{font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;
+  padding:.45rem 1rem;border-radius:4px;cursor:pointer;transition:.2s;border:1px solid;
+  display:inline-flex;align-items:center;gap:.4rem}
+.pop-btn-copy{border-color:var(--t12);color:var(--t70);background:var(--t05)}
+.pop-btn-copy:hover{border-color:var(--accent2);color:#fff;background:rgba(51,177,255,.12)}
+.pop-btn-close{border-color:var(--t12);color:var(--t50);background:none}
+.pop-btn-close:hover{border-color:#ff8389;color:#ff8389}
+</style>
+</head>
+<body>
+<div class="bg-fx"><div class="bg-mesh"></div><div class="bg-grid"></div></div>
+<div class="noise"></div>
+<div class="cursor-glow" id="glow"></div>
+<div class="progress" id="prog"></div>
+<div class="toast" id="toast">복사됐습니다</div>
+<div class="helphint" id="hint">
+  <kbd>←</kbd><kbd>→</kbd> 넘기기 · <kbd>F</kbd> 전체화면 · <kbd>O</kbd> 개요 · <kbd>E</kbd> 편집 · <kbd>Esc</kbd> 닫기
+</div>
+
+<!-- ══════════════════════════════════
+     LLM BEST CASE 팝업
+══════════════════════════════════ -->
+<div class="popup-overlay" id="llmPopup" role="dialog" aria-modal="true">
+  <div class="llm-popup" id="llmPopupInner">
+    <div class="llm-popup-head" id="llmPopupHead">
+      <div class="ph-left">
+        <div class="llm-popup-dot" id="llmPopupDot"></div>
+        <span class="ph-name" id="llmPopupName">GPT-4o / ChatGPT 5.5</span>
+        <span class="ph-tag" id="llmPopupTag">포맷 고정형</span>
+      </div>
+      <button class="popup-close" id="llmPopupClose" aria-label="닫기">✕</button>
+    </div>
+    <div class="llm-tabs" id="llmTabs"></div>
+    <div class="llm-popup-body" id="llmPopupBody"></div>
+    <div class="popup-foot">
+      <span class="pf-note">클릭하여 탭 전환 · Esc 로 닫기</span>
+      <div style="display:flex;gap:.5rem">
+        <button class="pop-btn pop-btn-copy" id="llmCopyBtn">⎘ 복사</button>
+        <button class="pop-btn pop-btn-close" id="llmCloseBtn2">닫기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     프롬프트 확대 팝업
+══════════════════════════════════ -->
+<div class="popup-overlay" id="promptPopup" role="dialog" aria-modal="true">
+  <div class="prompt-popup">
+    <div class="prompt-popup-head">
+      <div class="pph-left">
+        <div class="pph-label" id="ppLabel">PROMPT</div>
+        <div class="pph-title" id="ppTitle">프롬프트 상세 보기</div>
+      </div>
+      <div class="pph-right">
+        <button class="pop-btn pop-btn-copy" id="ppCopyBtn">⎘ 복사</button>
+        <button class="popup-close" id="promptPopupClose" aria-label="닫기">✕</button>
+      </div>
+    </div>
+    <div class="prompt-popup-body">
+      <pre class="pp-pre" id="ppContent"></pre>
+    </div>
+    <div class="popup-foot">
+      <span class="pf-note" id="ppTips"></span>
+      <button class="pop-btn pop-btn-close" id="ppCloseBtn">닫기</button>
+    </div>
+  </div>
+</div>
+
+<!-- edit toolbar -->
+<div class="editbar" id="editbar">
+  <span class="ebrand">EDIT MODE</span>
+  <div class="esep"></div>
+  <button data-act="add">＋ 새 슬라이드</button>
+  <button data-act="dup">⧉ 현재 복제</button>
+  <button data-act="del">🗑 삭제</button>
+  <div class="esep"></div>
+  <button data-act="left">◀ 앞으로</button>
+  <button data-act="right">뒤로 ▶</button>
+  <div class="esep"></div>
+  <button data-act="export">⬇ HTML 내보내기</button>
+  <button data-act="reset">↺ 초기화</button>
+  <span class="estatus" id="estatus"></span>
+  <button class="edone" data-act="done">✓ 편집 끝</button>
+</div>
+
+<div class="deck" id="deck">
+
+<!-- ══ 01 COVER ══ -->
+<section class="slide hero" data-title="LLM 프롬프트 엔지니어링 가이드" data-desc="TROE AX Series — 실무 가이드">
+  <div class="slide-inner">
+    <div class="tag reveal">TROE AX SERIES · 2026</div>
+    <h1 class="reveal d1"><span class="shine">LLM 프롬프트</span><br><span class="shine" style="font-size:.65em;opacity:.85">엔지니어링</span></h1>
+    <div class="lead reveal d2">모델별 특성에 맞춰 프롬프트 / 워크플로 / 검증 루프를 최적화하기 위한 실무 가이드</div>
+    <div class="marq reveal d3">ChatGPT 5.5 · Claude Opus 4.8 · Gemini 3.5 Flash</div>
+    <div class="meta-chips reveal d3">
+      <span class="chip on">개발</span>
+      <span class="chip on">학습</span>
+      <span class="chip">참고자료</span>
+      <span class="chip">바이브 코딩</span>
+      <span class="chip">Codex</span>
+      <span class="chip">Claude Cowork</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 02 WHY ══ -->
+<section class="slide" data-title="이 가이드의 목적" data-desc="왜 지금 프롬프트 엔지니어링인가">
+  <div class="wm">02</div>
+  <div class="slide-inner">
+    <div class="kicker reveal">INTRO / 목적</div>
+    <h2 class="title reveal">이 가이드의 <span class="hl">목적</span></h2>
+    <p class="sub reveal d1">모델별 특성에 맞춰 <b>프롬프트 / 워크플로 / 검증 루프</b>를 최적화하기 위한 실무 레퍼런스</p>
+    <div class="grid g2 reveal d1" style="align-items:start">
+      <div>
+        <ul class="dlist" style="margin-top:0">
+          <li>LLM은 도구입니다 — <b>같은 질문도 모델별, 입력 방식에 따라 결과가 극명히 다릅니다</b></li>
+          <li>단순 팁 모음이 아니라 <b>실제 비즈니스에서 반복 적용 가능한 패턴</b>을 정리합니다</li>
+          <li>ChatGPT 5.5 / Claude Opus 4.8 / Gemini 3.5 Flash <b>2026 기준</b></li>
+        </ul>
+        <div class="callout">이 문서는 <b>프롬프트 엔지니어링</b>이 아니라 <b>"컨텍스트 엔지니어링"</b>의 관점으로 — 모델이 판단하는 데 필요한 모든 정보를 어떻게 설계할 것인가에 집중합니다.</div>
+      </div>
+      <div class="grid" style="margin-top:0;gap:.7rem">
+        <div class="card ac2"><div class="top-bar"></div><div class="clabel">가이드 범위</div><h3>① 모델별 특성 비교</h3><p>GPT·Claude·Gemini의 구조적 차이와 최적 활용 영역</p></div>
+        <div class="card"><div class="top-bar"></div><div class="clabel">구조 설계</div><h3>② 프롬프트 구조 설계</h3><p>역할·맥락·제약·출력 형식 — 4덩어리 컨텍스트</p></div>
+        <div class="card ac3"><div class="top-bar"></div><div class="clabel">워크플로</div><h3>③ CoT·RAG·에이전트 패턴</h3><p>실무 자동화를 위한 반복 가능한 워크플로</p></div>
+        <div class="card ac4"><div class="top-bar"></div><div class="clabel">검증</div><h3>④ 검증 루프 & 체크리스트</h3><p>출력 품질 평가 기준 및 반복 개선 프레임</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 03 MODEL COMPARE ══ -->
+<section class="slide" data-title="모델별 특성 비교" data-desc="GPT·Claude·Gemini·o1 — 선택 기준">
+  <div class="wm">03</div>
+  <div class="slide-inner">
+    <div class="kicker reveal">MODELS / 비교</div>
+    <h2 class="title reveal">주요 LLM <span class="hl">모델별 특성</span> 비교</h2>
+    <p class="sub reveal d1">하나의 모델이 모든 상황에 최적이지 않습니다 — 작업 유형에 따라 모델을 선택하는 <b>라우팅 전략</b>이 핵심</p>
+    <div class="reveal d1" style="overflow-x:auto;margin-top:1.2rem">
+      <table class="tbl">
+        <thead><tr><th>모델</th><th>강점 영역</th><th>프롬프트 스타일</th><th>주의사항</th><th>최적 활용</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>GPT-4o</b><span class="badge bl">OpenAI</span></td>
+            <td class="good">코드 생성, 구조화 출력</td>
+            <td>직접적·구체적 지시<br>System Prompt 중요</td>
+            <td class="warn">과도한 확신 경향<br>Hallucination 주의</td>
+            <td>개발 보조, JSON 구조화</td>
+          </tr>
+          <tr>
+            <td><b>Claude 3.7</b><span class="badge bc">Anthropic</span></td>
+            <td class="good">긴 문서 이해, 논리적 추론</td>
+            <td>자연스러운 대화체<br>맥락 풍부하게 제공</td>
+            <td class="warn">지나친 거절 경향<br>명확한 허용 명시 필요</td>
+            <td>문서 분석, 전략 기획</td>
+          </tr>
+          <tr>
+            <td><b>Gemini 2.0</b><span class="badge by">Google</span></td>
+            <td class="good">멀티모달, 검색 연계, 한국어</td>
+            <td>질문형 프롬프트 효과적<br>Google 생태계 연동</td>
+            <td class="warn">복잡한 추론 시 단계 분리</td>
+            <td>이미지+텍스트, 실시간 정보</td>
+          </tr>
+          <tr>
+            <td><b>o1 / o3</b><span class="badge bp">Reasoning</span></td>
+            <td class="good">복잡한 수학·논리·코딩</td>
+            <td>최소한의 지시<br>CoT 유도 불필요</td>
+            <td class="warn">속도 느림, 비용 높음</td>
+            <td>알고리즘, 아키텍처 설계</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout reveal d2">
+      <b>핵심 원칙:</b> 작업 유형에 맞는 모델 선택 → <b>GPT = 포맷 고정·단계형</b>, <b>Claude = 정합성·긴 맥락</b>, <b>Gemini = 확장·멀티모달</b>, <b>o1/o3 = 복잡 추론</b>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 04 PROMPT STRUCTURE ══ -->
+<section class="slide" data-title="프롬프트 구조 설계" data-desc="역할·컨텍스트·태스크·포맷·제약 5단계">
+  <div class="wm">04</div>
+  <div class="slide-inner">
+    <div class="kicker reveal">STRUCTURE / 설계</div>
+    <h2 class="title reveal">효과적인 <span class="hl">프롬프트 구조</span> 설계</h2>
+    <p class="sub reveal d1">좋은 프롬프트는 <b>4개의 덩어리</b>로 구성됩니다 — 길어질수록 이 구조가 출력 안정성에 결정적입니다</p>
+    <div class="grid g2 reveal d1" style="align-items:start">
+      <div class="pf">
+        <div class="pf-row">
+          <div class="pf-num">01</div>
+          <div class="pf-block">
+            <div class="pf-tag ta">ROLE</div>
+            <div><div class="pf-title">역할 설정 (System Prompt)</div><div class="pf-desc"><code>"너는 B2B SaaS 10년 경력 CMO야, 데이터 기반 의사결정을 중시해"</code>처럼 구체적으로. "마케터"는 X.</div></div>
+          </div>
+        </div>
+        <div class="pf-row">
+          <div class="pf-num">02</div>
+          <div class="pf-block">
+            <div class="pf-tag tb">CONTEXT</div>
+            <div><div class="pf-title">맥락 & 배경 정보</div><div class="pf-desc">현재 상황, 대상 독자, 기존 작업물, 제약 조건. LLM은 당신의 상황을 모릅니다. <b>Claude는 풍부한 맥락일수록</b> 좋은 결과.</div></div>
+          </div>
+        </div>
+        <div class="pf-row">
+          <div class="pf-num">03</div>
+          <div class="pf-block">
+            <div class="pf-tag tc">TASK</div>
+            <div><div class="pf-title">작업 지시 (명확 + 단수)</div><div class="pf-desc">복합 작업은 <b>단계별 분리</b>. <code>"분석하고, 요약하고, 추천해줘"</code> → 3개의 별도 프롬프트로 나누면 품질 ↑.</div></div>
+          </div>
+        </div>
+        <div class="pf-row">
+          <div class="pf-num">04</div>
+          <div class="pf-block">
+            <div class="pf-tag td">FORMAT</div>
+            <div><div class="pf-title">출력 형식 명시</div><div class="pf-desc"><code>JSON 형식으로</code>, <code>마크다운 표로</code>, <code>3문장 이내로</code> — 원하는 형식을 정확히 지정.</div></div>
+          </div>
+        </div>
+        <div class="pf-row">
+          <div class="pf-num">05</div>
+          <div class="pf-block">
+            <div class="pf-tag te">CONSTRAINTS</div>
+            <div><div class="pf-title">제약 & 금지사항</div><div class="pf-desc"><code>"추측하지 마세요"</code>, <code>"서론 없이 바로 결과만"</code>. 네거티브 프롬프트는 출력 품질 안정화에 효과적.</div></div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:.8rem">
+        <div class="card ac2"><div class="top-bar"></div><div class="clabel">Pro Tip · Few-shot</div><h3>예시 추가로 품질 ↑↑</h3><p>원하는 출력 형식의 <b>예시 1~3개</b>를 프롬프트에 포함. 설명 100줄보다 예시 1개가 효과적.</p></div>
+        <div class="card ac3"><div class="top-bar"></div><div class="clabel">Pro Tip · 존댓말</div><h3>해요체로 작성하세요</h3><p>완결된 문장은 모델이 <b>범위와 의도</b>를 정확히 파악. 개조식 나열보다 해요체 요청문이 일관된 결과.</p></div>
+        <div class="card" style="border-color:rgba(255,131,137,.2)"><div class="top-bar" style="background:#ff8389"></div><div class="clabel" style="color:#ff8389">Anti-Pattern</div><h3>모호한 지시 금지</h3><p><code style="color:#ff8389">"좋은 글 써줘"</code> → ❌<br><b>좋다의 기준·길이·톤·독자</b>를 모두 명시해야.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 05 VERIFY LOOP ══ -->
+<section class="slide" data-title="프롬프트 최적화 검증 루프" data-desc="작성→실행→평가→개선→패턴화">
+  <div class="wm">05</div>
+  <div class="slide-inner">
+    <div class="kicker reveal">LOOP / 검증</div>
+    <h2 class="title reveal">프롬프트 최적화 <span class="hl">검증 루프</span></h2>
+    <p class="sub reveal d1">첫 번째 결과를 최종 결과로 사용하지 않습니다 — <b>작성 → 실행 → 평가 → 개선 → 패턴화</b></p>
+    <div class="pipe reveal d1">
+      <div class="node"><div class="nt">📝 작성</div><div class="nd">역할·컨텍스트·<br>태스크·포맷·제약</div></div>
+      <div class="arrow">→</div>
+      <div class="node"><div class="nt">⚡ 실행</div><div class="nd">선택된 모델로<br>출력 생성</div></div>
+      <div class="arrow">→</div>
+      <div class="node"><div class="nt">🔍 평가</div><div class="nd">정확성·완성도·<br>형식 적합성</div></div>
+      <div class="arrow">→</div>
+      <div class="node"><div class="nt">🔧 개선</div><div class="nd">실패 원인 분석<br>맥락·제약 보강</div></div>
+      <div class="arrow">→</div>
+      <div class="node" style="border-color:rgba(66,190,101,.4)"><div class="nt">✅ 패턴화</div><div class="nd">템플릿 저장<br>팀 공유</div></div>
+    </div>
+    <div class="grid g3 reveal d2" style="margin-top:1rem">
+      <div class="callout" style="margin-top:0;border-left-color:var(--accent)">
+        <b>평가 기준 1 — 정확성</b><br>
+        <span style="font-size:.84rem">사실 오류, 환각(Hallucination), 논리 비약 여부 확인</span>
+      </div>
+      <div class="callout" style="margin-top:0;border-left-color:var(--accent2)">
+        <b>평가 기준 2 — 형식</b><br>
+        <span style="font-size:.84rem">지정한 출력 형식·길이·언어 준수 여부 확인</span>
+      </div>
+      <div class="callout" style="margin-top:0;border-left-color:var(--accent4)">
+        <b>평가 기준 3 — 목적 달성</b><br>
+        <span style="font-size:.84rem">실제 사용 목적에 부합하는지 실용성 검토</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 06 MODEL STRATEGY ══ -->
+<section class="slide" data-title="모델별 최적 프롬프트 전략" data-desc="4개 모델별 실전 전략">
+  <div class="wm">06</div>
+  <div class="slide-inner">
+    <div class="kicker reveal">STRATEGY / 모델별</div>
+    <h2 class="title reveal">모델별 <span class="hl">최적 프롬프트</span> 전략</h2>
+    <div class="grid g2 reveal d1">
+      <div class="sc" data-llm="gpt">
+        <div class="sc-header"><div class="sc-dot" style="background:var(--accent)"></div><span class="sc-name">GPT-4o / ChatGPT 5.5</span><span class="sc-tag">포맷 고정형</span></div>
+        <ul>
+          <li>System Prompt에 <b>페르소나 + 행동 원칙</b> 모두 정의해 주세요</li>
+          <li>JSON 출력 시 <b>function calling</b> 또는 response_format을 활용해 주세요</li>
+          <li><b>"계획만 먼저 보여주세요. OK하면 작성해 주세요"</b> 분리 패턴</li>
+          <li><b>루브릭 기준 자기평가</b> 요청 — "1점이라도 낮으면 수정안도 제시해 주세요"</li>
+          <li>반복 작업은 <b>Batch API</b>로 비용 50% 절감</li>
+        </ul>
+        <div class="sc-click-hint">클릭하면 Best Case 프롬프트를 볼 수 있어요 →</div>
+      </div>
+      <div class="sc" data-llm="claude">
+        <div class="sc-header"><div class="sc-dot" style="background:var(--accent2)"></div><span class="sc-name">Claude Opus 4.8 / Sonnet 4.6</span><span class="sc-tag">정합성 강화형</span></div>
+        <ul>
+          <li><b>맥락을 최대한 풍부하게</b> 제공해 주세요 — 배경, 목적, 독자 모두 포함</li>
+          <li>200K 토큰 컨텍스트 — <b>긴 문서 분석</b>에 적극 활용해 주세요</li>
+          <li><b>"아래 제약이 충돌할 경우 충돌 지점을 먼저 명시하고 우선순위를 제안해 주세요"</b></li>
+          <li><b>"결론은 1문장으로 단정해 주세요"</b> + 불확실성은 주석으로 분리</li>
+          <li>Extended Thinking 모드로 <b>복잡한 추론</b>을 활용해 주세요</li>
+        </ul>
+        <div class="sc-click-hint">클릭하면 Best Case 프롬프트를 볼 수 있어요 →</div>
+      </div>
+      <div class="sc" data-llm="gemini">
+        <div class="sc-header"><div class="sc-dot" style="background:#f0c000"></div><span class="sc-name">Gemini 3.5 Flash</span><span class="sc-tag">확장→압축형</span></div>
+        <ul>
+          <li>이미지+텍스트 <b>멀티모달 입력</b>을 적극 활용해 주세요</li>
+          <li><b>넓게 생성 → 압축/카테고리화</b> 흐름이 잘 맞아요</li>
+          <li><b>"최종 결론 3줄 + 실행 5개"</b>를 강제로 요청해 주세요</li>
+          <li>"출력 템플릿을 그대로 채워 주세요" — <b>빈칸 채우기</b> 방식으로 형식 제어</li>
+          <li>Docs·Sheets·Gmail과 <b>네이티브 통합</b>을 활용해 주세요</li>
+        </ul>
+        <div class="sc-click-hint">클릭하면 Best Case 프롬프트를 볼 수 있어요 →</div>
+      </div>
+      <div class="sc" data-llm="o1">
+        <div class="sc-header"><div class="sc-dot" style="background:var(--accent3)"></div><span class="sc-name">o1 / o3 (Reasoning)</span><span class="sc-tag">최소 지시형</span></div>
+        <ul>
+          <li><b>지시는 최소화해 주세요</b> — 모델이 알아서 추론해요</li>
+          <li>"단계별로 생각해 주세요" 같은 <b>CoT 유도는 불필요</b>해요</li>
+          <li>복잡한 수학·알고리즘·<b>아키텍처 설계</b>에 집중해서 활용해 주세요</li>
+          <li>비용이 높으므로 <b>라우팅 전략</b>으로 선별해서 사용해 주세요</li>
+          <li>결과 검증을 위한 <b>후속 LLM 평가 체인</b>을 권장해요</li>
+        </ul>
+        <div class="sc-click-hint">클릭하면 Best Case 프롬프트를 볼 수 있어요 →</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 07 WORKFLOW ══ -->
+<section class="slide" data-title="LLM 워크플로 자동화 패턴" data-desc="CoT·RAG·Multi-Agent·Ensemble">
+  <div class="wm">07</div>
+  <div class="slide-inner">
+    <div class="kicker reveal">WORKFLOW / 자동화</div>
+    <h2 class="title reveal">LLM <span class="hl">워크플로 자동화</span> 패턴</h2>
+    <div class="wf reveal d1">
+      <div class="wf-item">
+        <div class="wf-num">01</div>
+        <div class="wf-body">
+          <div class="wf-title">체인 프롬프팅 (Chain-of-Thought)</div>
+          <div class="wf-desc">복잡한 작업을 <code>분석 → 계획 → 실행 → 검토</code> 단계로 분리. 각 단계의 출력이 다음 단계의 입력. 중간 결과를 저장하면 디버깅이 용이합니다.</div>
+        </div>
+        <div class="wf-tag"><span class="badge bl">CoT</span></div>
+      </div>
+      <div class="wf-item">
+        <div class="wf-num">02</div>
+        <div class="wf-body">
+          <div class="wf-title">RAG (Retrieval-Augmented Generation)</div>
+          <div class="wf-desc">LLM에 없는 최신·내부 정보를 <code>벡터 DB 검색 → 컨텍스트 주입 → 생성</code>으로 보완. Hallucination을 줄이고 도메인 특화 응답 품질을 높입니다.</div>
+        </div>
+        <div class="wf-tag"><span class="badge bc">RAG</span></div>
+      </div>
+      <div class="wf-item">
+        <div class="wf-num">03</div>
+        <div class="wf-body">
+          <div class="wf-title">멀티 에이전트 오케스트레이션</div>
+          <div class="wf-desc">역할별 전문 에이전트 구성: <code>조사 → 분석 → 작성 → 검토 에이전트</code>. n8n, LangGraph, Harness Engineering 등으로 구현.</div>
+        </div>
+        <div class="wf-tag"><span class="badge bp">Agent</span></div>
+      </div>
+      <div class="wf-item">
+        <div class="wf-num">04</div>
+        <div class="wf-body">
+          <div class="wf-title">Self-Consistency & 앙상블</div>
+          <div class="wf-desc">동일 프롬프트를 <code>여러 번 실행 → 다수결 또는 평가 LLM이 최적 답 선택</code>. 정확성이 중요한 작업에 적용.</div>
+        </div>
+        <div class="wf-tag"><span class="badge bg">Ensemble</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 08 DO & DONT ══ -->
+<section class="slide" data-title="실무 Do & Don't" data-desc="프롬프팅 금칙과 권장사항">
+  <div class="wm">08</div>
+  <div class="slide-inner">
+    <div class="kicker reveal">PRACTICE / 실무</div>
+    <h2 class="title reveal">실무 프롬프팅 <span class="hl">Do &amp; Don't</span></h2>
+    <div class="dd-wrap reveal d1">
+      <div class="dd-col">
+        <div class="dd-head do">✅ DO — 이렇게 하세요</div>
+        <div class="dd-item"><span class="di">✅</span><div><div><b>구체적인 역할과 전문성 수준을 명시</b>하세요.</div><div>"마케터"보다 "10년 경력 B2B SaaS 마케터, NPS 개선 전문가"처럼.</div></div></div>
+        <div class="dd-item"><span class="di">✅</span><div><div><b>출력 형식을 정확히 지정</b>하세요.</div><div>JSON, 마크다운 표, 불릿 5개, 300자 이내 등 구체적 형식 명시.</div></div></div>
+        <div class="dd-item"><span class="di">✅</span><div><div><b>Few-shot 예시를 포함</b>하세요.</div><div>원하는/원하지 않는 출력 예시를 함께 제공하면 품질이 크게 향상.</div></div></div>
+        <div class="dd-item"><span class="di">✅</span><div><div><b>모호한 용어를 정의</b>하세요.</div><div>"좋은", "전문적인"처럼 기준 없는 수식어는 구체적 기준으로 대체.</div></div></div>
+      </div>
+      <div class="dd-col">
+        <div class="dd-head dont">❌ DON'T — 이건 피하세요</div>
+        <div class="dd-item"><span class="di">❌</span><div><div><b>한 번에 너무 많은 작업을 요청</b>하지 마세요.</div><div>"분석하고, 요약하고, 번역하고, 이미지도 만들어줘" → 단계별 분리.</div></div></div>
+        <div class="dd-item"><span class="di">❌</span><div><div><b>막연한 품질 요구</b>를 하지 마세요.</div><div>"최선을 다해줘" — 모델은 기준이 없으면 자체 판단으로 처리.</div></div></div>
+        <div class="dd-item"><span class="di">❌</span><div><div><b>모든 모델에 같은 프롬프트를 사용</b>하지 마세요.</div><div>Claude와 GPT-4o는 선호하는 입력 스타일이 다릅니다. 모델별 최적화 필요.</div></div></div>
+        <div class="dd-item"><span class="di">❌</span><div><div><b>첫 번째 결과를 그대로 사용</b>하지 마세요.</div><div>항상 검증 루프를 거쳐 최소 2~3회 반복 개선 후 최종 활용.</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 09 SUMMARY ══ -->
+<section class="slide" data-title="핵심 원칙 요약" data-desc="6가지 실무 원칙">
+  <div class="wm">09</div>
+  <div class="slide-inner">
+    <div class="kicker reveal">PRINCIPLES / 요약</div>
+    <h2 class="title reveal">핵심 원칙 <span class="hl">요약</span></h2>
+    <div class="vc-wrap reveal d1">
+      <div class="vc"><div class="vs">원칙 01</div><div class="vt">모델 이해가 먼저</div><ul><li>작업 유형에 맞는 모델 선택이 프롬프트 품질보다 중요할 수 있음</li><li>비용·지연시간을 고려한 라우팅 전략 설계 필수</li></ul></div>
+      <div class="vc" style="border-color:rgba(51,177,255,.3)"><div class="vs" style="color:var(--accent2)">원칙 02</div><div class="vt">구조화된 프롬프트</div><ul><li>역할→맥락→태스크→형식→제약의 5단계 구조 준수</li><li>Few-shot 예시 포함으로 출력 품질 안정화</li></ul></div>
+      <div class="vc" style="border-color:rgba(190,149,255,.3)"><div class="vs" style="color:var(--accent3)">원칙 03</div><div class="vt">검증 루프 체계화</div><ul><li>첫 출력을 최종 결과로 사용하지 않는 원칙</li><li>통과된 프롬프트는 템플릿화하여 팀 자산 축적</li></ul></div>
+      <div class="vc" style="border-color:rgba(66,190,101,.3)"><div class="vs" style="color:var(--accent4)">원칙 04</div><div class="vt">워크플로 자동화</div><ul><li>반복 작업은 체인 프롬프팅으로 자동화</li><li>멀티 에이전트로 복잡한 업무 파이프라인 구축</li></ul></div>
+      <div class="vc" style="border-color:rgba(240,192,0,.2)"><div class="vs" style="color:#f0c000">원칙 05</div><div class="vt">지속적 개선</div><ul><li>프롬프트를 버전 관리하고 성능 지표 추적</li><li>모델 업데이트 시 기존 프롬프트 재검증 필수</li></ul></div>
+      <div class="vc" style="border-color:rgba(255,131,137,.2)"><div class="vs" style="color:#ff8389">원칙 06</div><div class="vt">책임감 있는 활용</div><ul><li>중요 의사결정에 LLM 단독 사용 금지</li><li>AI 생성 콘텐츠임을 투명하게 공시</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 10 PRACTICE: 일상생활 ══ -->
+<section class="slide" data-title="실습 01 — 일상생활 프롬프트" data-desc="여행·건강·구매결정 공용 예시">
+  <div class="wm">실습</div>
+  <div class="slide-inner">
+    <div class="kicker reveal" style="color:rgba(66,190,101,.7)">PRACTICE 01 / 일상생활</div>
+    <h2 class="title reveal">일상생활 <span class="hl">프롬프트 실습</span></h2>
+    <p class="sub reveal d1">ChatGPT 5.5 · Claude · Gemini 공용 — 역할·데이터·제약·출력 4덩어리 구조를 일상에 적용</p>
+    <div class="grid g3 reveal d1">
+      <div class="card ac4"><div class="top-bar"></div>
+        <div class="clabel">예시 ① — 여행 계획</div>
+        <h3>전주 2박 3일 혼자 여행</h3>
+        <div class="code" style="margin-top:.8rem"
+          data-prompt-label="일상생활 실습 ①"
+          data-prompt-title="전주 2박 3일 혼자 여행 계획"
+          data-prompt-tips="Claude: 개인 취향(조용한 카페 선호 등) 상세히 추가해 주세요 · Gemini: Google Maps 연동으로 최신 영업정보 확인 가능해요">
+          <div class="bar"><span>PROMPT</span><span class="zoom-hint">🔍 클릭해서 확대</span><button class="copy">COPY</button></div>
+          <pre><span class="k">ROLE</span> 당신은 국내 여행 전문 플래너예요.
+
+저는 혼자 2박 3일로 전주를 여행하려고 해요.
+이동은 대중교통만 사용하고, 하루 예산은 8만 원이에요.
+
+다음 조건을 지켜 주세요:
+<span class="c">- 유명 관광지보다 현지인이 즐기는 곳을 우선해 주세요.</span>
+<span class="c">- 식사는 끼니당 1만 5천 원 이하로 추천해 주세요.</span>
+
+결과는 다음 형식으로 작성해 주세요:
+<span class="k">1. 일자별 동선 요약</span>
+<span class="k">2. 추천 식당 및 카페 (이유 포함)</span>
+<span class="k">3. 예산 요약표</span>
+
+불확실한 영업 정보는 <span class="c">"확인 필요"</span>로 표시해 주세요.</pre>
+        </div>
+        <div style="margin-top:.7rem;font-size:.78rem;color:var(--t50)">
+          <span style="color:var(--accent2)">Claude</span>: 개인취향 상세 추가 &nbsp;|&nbsp; <span style="color:#f0c000">Gemini</span>: Maps 연동
+        </div>
+      </div>
+      <div class="card ac2"><div class="top-bar"></div>
+        <div class="clabel">예시 ② — 건강·학습 탐색</div>
+        <h3>검진 결과 해설 요청</h3>
+        <div class="code" style="margin-top:.8rem"
+          data-prompt-label="일상생활 실습 ②"
+          data-prompt-title="검진 결과 비전공자 해설"
+          data-prompt-tips="GPT: 수치별 '추정' 라벨링을 강제로 요청해 주세요 · 의학 전문가 상담을 대체하지 않아요">
+          <div class="bar"><span>PROMPT</span><span class="zoom-hint">🔍 클릭해서 확대</span><button class="copy">COPY</button></div>
+          <pre><span class="k">ROLE</span> 당신은 비전공자를 위한 건강 정보 해설사예요.
+
+저는 최근 건강검진 결과를 받았는데,
+수치가 무엇을 의미하는지 이해하기 어려워요.
+
+아래 수치를 참고해 주세요:
+<span class="c">- LDL 콜레스테롤: 145 mg/dL</span>
+<span class="c">- 공복 혈당: 105 mg/dL</span>
+
+다음 조건을 지켜 주세요:
+<span class="c">- 의학 용어는 최소화하고 쉬운 말로 설명해 주세요.</span>
+<span class="c">- 불안감을 조성하는 표현은 피해 주세요.</span>
+
+결과는 다음 형식으로 작성해 주세요:
+<span class="k">1. 현재 상태 요약</span>
+<span class="k">2. 주의가 필요한 항목</span>
+<span class="k">3. 생활 개선 방법 3가지</span></pre>
+        </div>
+        <div style="margin-top:.7rem;font-size:.78rem;color:var(--t50)">
+          <span style="color:var(--accent)">GPT</span>: "추정" 라벨링 강제 추가
+        </div>
+      </div>
+      <div class="card ac3"><div class="top-bar"></div>
+        <div class="clabel">예시 ③ — 의사결정 지원</div>
+        <h3>구매·선택 결정 구조화</h3>
+        <div class="code" style="margin-top:.8rem"
+          data-prompt-label="일상생활 실습 ③"
+          data-prompt-title="스마트폰 구매 의사결정"
+          data-prompt-tips="Claude Opus: trade-off 표 비교 요청이 효과적이에요 · 불확실한 수치는 '추정'으로 표시 요청해 주세요">
+          <div class="bar"><span>PROMPT</span><span class="zoom-hint">🔍 클릭해서 확대</span><button class="copy">COPY</button></div>
+          <pre><span class="k">ROLE</span> 당신은 소비 패턴을 분석하는 재무 코치예요.
+
+저는 스마트폰 구매를 고민하고 있어요.
+월 소득은 320만 원이고, 갤럭시 S25와 아이폰 16 중에서 선택하려고 해요.
+
+다음 조건을 지켜 주세요:
+<span class="c">- 브랜드 편향 없이 객관적으로 비교해 주세요.</span>
+<span class="c">- 불확실한 수치는 "추정"으로 표시해 주세요.</span>
+
+결과는 다음 형식으로 작성해 주세요:
+<span class="k">1. 두 제품 비교표 (가격·성능·생태계·유지비)</span>
+<span class="k">2. 제 상황을 기준으로 한 최종 추천 1가지 (근거 포함)</span></pre>
+        </div>
+        <div style="margin-top:.7rem;font-size:.78rem;color:var(--t50)">
+          <span style="color:var(--accent2)">Claude Opus</span>: trade-off 표 비교 요청
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 11 PRACTICE: 바이브 코딩 ══ -->
+<section class="slide" data-title="실습 02 — 바이브 코딩 프롬프트" data-desc="기능 생성·디버깅·리팩토링 3패턴">
+  <div class="wm">실습</div>
+  <div class="slide-inner">
+    <div class="kicker reveal" style="color:rgba(190,149,255,.7)">PRACTICE 02 / 바이브 코딩</div>
+    <h2 class="title reveal">바이브 코딩 <span class="hl">프롬프트 실습</span></h2>
+    <p class="sub reveal d1"><b>Vibe Coding</b> — 코드 한 줄씩이 아니라 <b>"의도와 맥락"</b>을 LLM에게 전달하여 기능 단위로 생성·수정</p>
+    <div class="grid g3 reveal d1">
+      <div class="card"><div class="top-bar"></div>
+        <div class="clabel">패턴 A — 기능 생성</div>
+        <h3>계획 선제시 → 승인 → 코드</h3>
+        <div class="code" style="margin-top:.8rem"
+          data-prompt-label="바이브 코딩 패턴 A"
+          data-prompt-title="신규 기능 구현 — 계획 선제시"
+          data-prompt-tips="GPT: function_calling으로 출력 구조를 고정해 주세요 · Claude: XML 태그로 코드블록을 명확히 구분해 주세요">
+          <div class="bar"><span>PROMPT</span><span class="zoom-hint">🔍 클릭해서 확대</span><button class="copy">COPY</button></div>
+          <pre><span class="k">ROLE</span> 당신은 Python 전문 시니어 개발자예요.
+
+저는 FastAPI 기반 서비스에 JWT 인증 미들웨어를 추가하려고 해요.
+
+현재 환경:
+<span class="c">- Python 3.11, FastAPI, SQLite</span>
+<span class="c">- 외부 라이브러리는 최소화하고 싶어요.</span>
+
+다음 순서로 진행해 주세요:
+<span class="k">1. 먼저 접근 방식 요약(계획)만 보여 주세요.</span>
+제가 "OK"라고 하면 코드를 작성해 주세요.
+
+코드 작성 시 포함해 주세요:
+<span class="k">- 완성된 미들웨어 코드</span>
+<span class="k">- 주요 로직 설명</span>
+<span class="k">- 주의사항 및 개선 여지</span></pre>
+        </div>
+        <div style="margin-top:.7rem;font-size:.78rem;color:var(--t50)">
+          <span style="color:var(--accent)">GPT</span>: function_calling 구조 고정<br>
+          <span style="color:var(--accent2)">Claude</span>: XML 태그 코드블록 명확히
+        </div>
+      </div>
+      <div class="card ac2"><div class="top-bar"></div>
+        <div class="clabel">패턴 B — 버그 디버깅</div>
+        <h3>에러 재현 → 원인 추적 → 수정</h3>
+        <div class="code" style="margin-top:.8rem"
+          data-prompt-label="바이브 코딩 패턴 B"
+          data-prompt-title="버그 디버깅 — 원인 추적"
+          data-prompt-tips="GPT: '확실/추정/모름' 라벨링을 강제로 요청해 주세요 · Gemini: 스크린샷과 코드를 함께 첨부하면 멀티모달로 분석해 줘요">
+          <div class="bar"><span>PROMPT</span><span class="zoom-hint">🔍 클릭해서 확대</span><button class="copy">COPY</button></div>
+          <pre><span class="k">ROLE</span> 당신은 React/TypeScript 전문 디버거예요.
+
+아래 에러가 발생하고 있어요. 원인을 찾아 주세요.
+
+에러 메시지:
+<span class="c">[에러 메시지를 여기에 붙여 넣어 주세요]</span>
+
+관련 코드:
+<span class="c">[관련 코드 스니펫을 여기에 붙여 넣어 주세요]</span>
+
+현재 환경: React 18, TypeScript 5.4
+
+결과는 다음 형식으로 작성해 주세요:
+<span class="k">1. 원인 분석 (확실/추정/모름으로 라벨링해 주세요)</span>
+<span class="k">2. 수정된 코드</span>
+<span class="k">3. 재발 방지를 위한 패턴 제안</span></pre>
+        </div>
+        <div style="margin-top:.7rem;font-size:.78rem;color:var(--t50)">
+          <span style="color:var(--accent)">GPT</span>: "확실/추정/모름" 라벨링<br>
+          <span style="color:#f0c000">Gemini</span>: 스크린샷+코드 멀티모달
+        </div>
+      </div>
+      <div class="card ac3"><div class="top-bar"></div>
+        <div class="clabel">패턴 C — 리팩토링·아키텍처</div>
+        <h3>현황 → 목표 → trade-off 비교</h3>
+        <div class="code" style="margin-top:.8rem"
+          data-prompt-label="바이브 코딩 패턴 C"
+          data-prompt-title="리팩토링 — trade-off 비교"
+          data-prompt-tips="Claude Opus: 제약 충돌 해결과 정합성 검토에 강해요 · Gemini: 넓게 대안을 생성한 후 압축하는 방식으로 활용해 주세요">
+          <div class="bar"><span>PROMPT</span><span class="zoom-hint">🔍 클릭해서 확대</span><button class="copy">COPY</button></div>
+          <pre><span class="k">ROLE</span> 당신은 Node.js 아키텍트예요.
+
+저는 아래 코드/구조를 리팩토링하려고 해요.
+
+현재 상태 (AS-IS):
+<span class="c">[현재 코드 또는 구조 설명을 입력해 주세요]</span>
+
+목표 (TO-BE):
+<span class="c">- 성능 3배 이상 향상</span>
+<span class="c">- 유지보수성 개선</span>
+<span class="c">- 기존 API 스펙은 변경하지 않아야 해요.</span>
+
+결과는 다음 형식으로 작성해 주세요:
+<span class="k">1. 리팩토링 대안 3가지</span>
+<span class="k">2. 각 대안의 장단점 비교표 (trade-off)</span>
+<span class="k">3. 최종 권고 방법 1가지 (근거 포함)</span></pre>
+        </div>
+        <div style="margin-top:.7rem;font-size:.78rem;color:var(--t50)">
+          <span style="color:var(--accent2)">Claude Opus</span>: 충돌 제약 해결·정합성<br>
+          <span style="color:#f0c000">Gemini</span>: 넓은 대안 → 압축
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 12 PRACTICE: Claude Cowork ══ -->
+<section class="slide" data-title="실습 03 — Claude Cowork" data-desc="파일·앱 자동화 에이전트 실습">
+  <div class="wm">실습</div>
+  <div class="slide-inner">
+    <div class="kicker reveal" style="color:rgba(51,177,255,.7)">PRACTICE 03 / CLAUDE COWORK</div>
+    <h2 class="title reveal">Claude Cowork <span class="hl">프롬프트 실습</span></h2>
+    <p class="sub reveal d1"><b>Claude Cowork</b> — 데스크톱 파일·앱·브라우저를 Claude가 직접 조작. <b>"무엇을 하고 싶은지"</b>를 자연어로 지시</p>
+    <div class="grid g2 reveal d1" style="align-items:start">
+      <div style="display:flex;flex-direction:column;gap:.8rem">
+        <div class="card ac2"><div class="top-bar"></div>
+          <div class="clabel">예시 ① — 문서 자동 정리</div>
+          <h3>폴더 분류 + 요약 리포트</h3>
+          <div class="code" style="margin-top:.75rem"
+            data-prompt-label="Claude Cowork 예시 ①"
+            data-prompt-title="Downloads 폴더 자동 정리"
+            data-prompt-tips="CHECKPOINT가 가장 중요한 패턴이에요 — 비가역적 작업 전에 반드시 확인 단계를 요청해 주세요">
+            <div class="bar"><span>COWORK PROMPT</span><span class="zoom-hint">🔍 클릭해서 확대</span><button class="copy">COPY</button></div>
+            <pre><span class="k">GOAL</span> ~/Downloads 폴더를 정리해 주세요.
+
+정리 규칙:
+<span class="c">- 파일을 날짜별 하위 폴더로 이동해 주세요.</span>
+<span class="c">- 중복 파일 목록을 출력해 주세요.</span>
+<span class="c">- 실제 삭제는 하지 말고 이동만 해 주세요.</span>
+
+<span class="k">CHECKPOINT</span> 이동을 시작하기 전에
+이동 예정 파일 목록을 먼저 보여 주세요.
+
+완료 후 다음 요약을 제공해 주세요:
+<span class="k">- 총 파일 수</span>
+<span class="k">- 카테고리별 파일 분포</span></pre>
+          </div>
+        </div>
+        <div class="card"><div class="top-bar"></div>
+          <div class="clabel">예시 ② — 데이터 추출</div>
+          <h3>PDF·이미지에서 정보 구조화</h3>
+          <div class="code" style="margin-top:.75rem"
+            data-prompt-label="Claude Cowork 예시 ②"
+            data-prompt-title="계약서 PDF 데이터 추출"
+            data-prompt-tips="첨부 파일과 함께 사용하면 PDF, 이미지 모두 분석할 수 있어요">
+            <div class="bar"><span>COWORK PROMPT</span><span class="zoom-hint">🔍 클릭해서 확대</span><button class="copy">COPY</button></div>
+            <pre><span class="k">GOAL</span> 첨부된 계약서 PDF에서
+주요 조건을 추출해 주세요.
+
+추출할 항목:
+<span class="c">- 계약 기간</span>
+<span class="c">- 계약 금액</span>
+<span class="c">- 위약금 조항</span>
+<span class="c">- 자동 갱신 조항</span>
+
+결과는 다음 형식으로 작성해 주세요:
+<span class="k">- 표 형식으로 정리해 주세요.</span>
+<span class="k">- 주의가 필요한 조항은 강조해 주세요.</span></pre>
+          </div>
+        </div>
+        <div class="card ac4"><div class="top-bar"></div>
+          <div class="clabel">예시 ③ — 반복 업무 자동화</div>
+          <h3>이메일 초안 + 캘린더 등록</h3>
+          <div class="code" style="margin-top:.75rem"
+            data-prompt-label="Claude Cowork 예시 ③"
+            data-prompt-title="주간 보고 이메일 + 캘린더 자동화"
+            data-prompt-tips="NEXT로 다음 액션을 체인으로 연결하면 워크플로 자동화의 핵심이 돼요">
+            <div class="bar"><span>COWORK PROMPT</span><span class="zoom-hint">🔍 클릭해서 확대</span><button class="copy">COPY</button></div>
+            <pre><span class="k">GOAL</span> 주간 보고 이메일 초안을 작성하고
+발송을 준비해 주세요.
+
+이번 주 완료 업무:
+<span class="c">[완료된 업무 목록을 여기에 입력해 주세요]</span>
+
+작성 조건:
+<span class="c">- 공식적인 톤으로 작성해 주세요.</span>
+<span class="c">- 200자 이내로 핵심만 담아 주세요.</span>
+
+<span class="k">CHECKPOINT</span> 발송 전에 초안을 확인할 수 있도록
+확인 단계를 포함해 주세요.
+
+<span class="k">NEXT</span> 제가 승인하면
+다음 주 보고 날짜를 캘린더에 등록해 주세요.</pre>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:.9rem">
+        <div class="card" style="border-color:rgba(51,177,255,.25);background:rgba(51,177,255,.04)">
+          <div class="top-bar" style="background:var(--accent2)"></div>
+          <div class="clabel" style="color:var(--accent2)">Cowork 황금 원칙</div>
+          <ul class="dlist" style="margin-top:.6rem">
+            <li><b>CHECKPOINT 필수</b> — 비가역적 작업 전 항상 확인 요청</li>
+            <li><b>작업 범위 명시</b> — "이 폴더만", "이 파일만"</li>
+            <li><b>OUTPUT 형식 지정</b> — 완료 후 결과 보고 형식 사전 정의</li>
+            <li><b>단계 분리</b> — 여러 앱 연동 시 각 단계 순서 명시</li>
+            <li><b>NEXT 체인</b> — 다음 액션을 연결하면 워크플로 자동화</li>
+          </ul>
+        </div>
+        <div class="callout" style="border-left-color:var(--accent2)">
+          <b>핵심 차이:</b> 일반 프롬프트는 "텍스트를 생성", Cowork는 <b>실제 파일·앱을 조작</b>합니다. 그래서 CHECKPOINT가 가장 중요한 패턴입니다.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 13 PRACTICE: Codex ══ -->
+<section class="slide" data-title="실습 04 — OpenAI Codex" data-desc="GitHub 연동 클라우드 코딩 에이전트">
+  <div class="wm">실습</div>
+  <div class="slide-inner">
+    <div class="kicker reveal" style="color:rgba(15,98,254,.8)">PRACTICE 04 / OPENAI CODEX</div>
+    <h2 class="title reveal">OpenAI Codex <span class="hl">프롬프트 실습</span></h2>
+    <p class="sub reveal d1">ChatGPT 내 클라우드 샌드박스 — <b>GitHub 레포지토리 전체를 컨텍스트</b>로 활용, 브랜치 생성·PR 제출까지 자동화</p>
+    <div class="grid g3 reveal d1">
+      <div class="card"><div class="top-bar"></div>
+        <div class="clabel">예시 ① — 신규 기능 구현</div>
+        <h3>이슈 → 구현 → PR 생성</h3>
+        <div class="code" style="margin-top:.75rem"
+          data-prompt-label="OpenAI Codex 예시 ①"
+          data-prompt-title="신규 기능 구현 — 이메일 알림"
+          data-prompt-tips="기존 코드 패턴을 참조하도록 명시하면 코드 일관성이 크게 높아져요">
+          <div class="bar"><span>CODEX PROMPT</span><span class="zoom-hint">🔍 클릭해서 확대</span><button class="copy">COPY</button></div>
+          <pre><span class="k">REPO</span>  github.com/my-org/my-app
+
+GitHub Issue #142를 해결해 주세요.
+사용자 알림 이메일 기능을 추가해야 해요.
+
+발송 시점:
+<span class="c">- 가입 완료 시</span>
+<span class="c">- 주문 완료 시</span>
+<span class="c">- 비밀번호 변경 시</span>
+
+기술 스택: Node.js, SendGrid API
+
+주의사항:
+<span class="c">- 기존 auth 모듈 스타일을 그대로 따라 주세요.</span>
+<span class="c">- 기존 코드 패턴과 일관성을 유지해 주세요.</span>
+
+결과물:
+<span class="k">- 구현 코드</span>
+<span class="k">- 유닛 테스트</span>
+<span class="k">- PR 설명 (한국어로 작성해 주세요)</span></pre>
+        </div>
+        <div style="margin-top:.65rem;font-size:.78rem;color:var(--t50)">💡 기존 코드 패턴 참조 명시 → 일관성 ↑</div>
+      </div>
+      <div class="card ac2"><div class="top-bar"></div>
+        <div class="clabel">예시 ② — 테스트 자동화</div>
+        <h3>커버리지 0% → 80%+</h3>
+        <div class="code" style="margin-top:.75rem"
+          data-prompt-label="OpenAI Codex 예시 ②"
+          data-prompt-title="테스트 자동화 — 커버리지 확보"
+          data-prompt-tips="엣지케이스를 구체적으로 명시할수록 테스트 품질이 높아져요">
+          <div class="bar"><span>CODEX PROMPT</span><span class="zoom-hint">🔍 클릭해서 확대</span><button class="copy">COPY</button></div>
+          <pre><span class="k">TARGET</span> /src/utils/payment.js
+현재 테스트 커버리지: 0%
+
+테스트를 작성해 주세요.
+
+조건:
+<span class="c">- 테스트 프레임워크: Jest</span>
+<span class="c">- 기존 테스트 파일 패턴과 동일하게 작성해 주세요.</span>
+
+중점적으로 확인할 엣지케이스:
+<span class="c">- 음수 금액 입력 시</span>
+<span class="c">- 통화 단위 불일치 시</span>
+
+목표: 라인 커버리지 <span class="k">80% 이상</span> 달성해 주세요.</pre>
+        </div>
+        <div style="margin-top:.65rem;font-size:.78rem;color:var(--t50)">💡 엣지케이스 명시 → 테스트 품질 ↑</div>
+      </div>
+      <div class="card ac3"><div class="top-bar"></div>
+        <div class="clabel">예시 ③ — 레거시 마이그레이션</div>
+        <h3>점진적 코드 현대화</h3>
+        <div class="code" style="margin-top:.75rem"
+          data-prompt-label="OpenAI Codex 예시 ③"
+          data-prompt-title="레거시 → TypeScript 점진적 마이그레이션"
+          data-prompt-tips="SCOPE를 파일 단위로 제한하면 점진적으로 검증할 수 있어요 — 전체를 한번에 변환하지 마세요">
+          <div class="bar"><span>CODEX PROMPT</span><span class="zoom-hint">🔍 클릭해서 확대</span><button class="copy">COPY</button></div>
+          <pre><span class="k">AS-IS</span> Callback 기반 Node.js 코드 (2018년 작성)
+
+아래 조건으로 현대화해 주세요.
+
+변환 방식:
+<span class="c">- async/await 패턴으로 변환해 주세요.</span>
+<span class="c">- TypeScript로 마이그레이션해 주세요.</span>
+
+작업 범위:
+<span class="c">- /src/api 디렉토리로 한정해 주세요.</span>
+<span class="c">- 한 번에 한 파일씩 처리해 주세요.</span>
+
+주의사항:
+<span class="c">- 기능 동작은 변경하지 않아야 해요.</span>
+<span class="c">- 기존 테스트가 모두 통과해야 해요.</span>
+
+각 파일마다 변경사항 요약과 diff를 제공해 주세요.</pre>
+        </div>
+        <div style="margin-top:.65rem;font-size:.78rem;color:var(--t50)">💡 SCOPE 제한 → 점진적 검증, 전체 한번에 X</div>
+      </div>
+    </div>
+    <div class="callout reveal d2" style="border-left-color:var(--accent)">
+      <b>Codex vs 일반 프롬프트:</b> Codex는 <b>레포 전체 컨텍스트·자동 브랜치·PR·테스트 실행</b>까지. 프롬프트 포인트는 <b>기존 패턴 참조 명시 + 스코프 제한 + 테스트 통과 조건 포함</b>.
+    </div>
+  </div>
+</section>
+
+<!-- ══ 14 PRACTICE: 모델 비교 ══ -->
+<section class="slide" data-title="실습 05 — 같은 목적 모델별 비교" data-desc="마케팅 보고서 3종 비교">
+  <div class="wm">실습</div>
+  <div class="slide-inner">
+    <div class="kicker reveal" style="color:rgba(240,192,0,.7)">PRACTICE 05 / 모델별 비교</div>
+    <h2 class="title reveal">같은 목적, <span class="hl">모델별 최적화</span> 비교</h2>
+    <div class="reveal d1" style="background:var(--t05);border:1px solid var(--t12);border-radius:6px;padding:.85rem 1.1rem;margin-bottom:1rem;display:flex;gap:1rem;align-items:center">
+      <span style="font-size:1.6rem">🎯</span>
+      <div><div style="font-size:.82rem;font-weight:700;color:#fff;margin-bottom:.2rem">공통 목적</div><div style="font-size:.84rem;color:var(--t70)">6월 마케팅 캠페인 성과를 분석하고, 7월 전략 개선안을 제안하는 보고서 작성</div></div>
+    </div>
+    <div class="grid g3 reveal d1">
+      <div style="background:var(--t03);border:1px solid rgba(15,98,254,.3);border-radius:6px;overflow:hidden">
+        <div style="background:rgba(15,98,254,.15);padding:.6rem 1rem;border-bottom:1px solid rgba(15,98,254,.3);font-family:var(--mono);font-size:.72rem;color:var(--accent);font-weight:700;letter-spacing:.12em">ChatGPT 5.5 — 포맷 고정형</div>
+        <div class="code" style="margin:0;border:0;border-radius:0"
+          data-prompt-label="모델별 비교 · ChatGPT 5.5"
+          data-prompt-title="마케팅 성과 분석 보고서 — GPT 포맷 고정형"
+          data-prompt-tips="포인트: 계획 선제시 + 루브릭 자기평가 요청 — GPT는 단계형 실행 플랜 생성에 강해요">
+          <div class="bar"><span>ChatGPT 5.5</span><span class="zoom-hint">🔍 클릭해서 확대</span></div>
+          <pre style="font-size:.76rem">당신은 디지털 마케팅 애널리스트예요.
+
+[<span class="c">데이터</span>] 아래 수치를 기준으로 분석해 주세요:
+{데이터 붙여넣기}
+
+[<span class="c">제약</span>] 추측은 "추정"으로 표시하고,
+경쟁사 비교는 제외해 주세요.
+
+먼저 <span class="k">분석 계획(목차)만</span> 제시해 주세요.
+제가 OK하면 전체를 작성해 주세요.
+
+[<span class="c">출력</span>] 핵심지표(표) / 채널별 성과
+/ 문제 원인 Top3 / 7월 액션5개
+/ <span class="k">루브릭 자기평가</span></pre>
+        </div>
+        <div style="padding:.5rem .9rem;font-size:.76rem;color:var(--t50);border-top:1px solid var(--t08)">포인트: 계획 선제시 + 루브릭</div>
+      </div>
+      <div style="background:var(--t03);border:1px solid rgba(51,177,255,.3);border-radius:6px;overflow:hidden">
+        <div style="background:rgba(51,177,255,.12);padding:.6rem 1rem;border-bottom:1px solid rgba(51,177,255,.3);font-family:var(--mono);font-size:.72rem;color:var(--accent2);font-weight:700;letter-spacing:.12em">Claude Opus 4.8 — 정합성 강화형</div>
+        <div class="code" style="margin:0;border:0;border-radius:0"
+          data-prompt-label="모델별 비교 · Claude Opus 4.8"
+          data-prompt-title="마케팅 성과 분석 보고서 — Claude 정합성 강화형"
+          data-prompt-tips="포인트: 제약 우선순위 명시 + 충돌 해결 요청 — Claude Opus는 복잡한 의사결정과 정합성 검토에 강해요">
+          <div class="bar"><span>Claude Opus 4.8</span><span class="zoom-hint">🔍 클릭해서 확대</span></div>
+          <pre style="font-size:.76rem">당신은 B2B 마케팅 전략 컨설턴트예요.
+
+[<span class="c">배경</span>] 6월 퍼포먼스 마케팅 중심 운영,
+ROI가 기대보다 낮았어요.
+
+[<span class="c">제약 우선순위</span>]
+1순위: 실행 가능한 액션 중심
+2순위: 비용 효율성 고려
+3순위: 팀 리소스 현실 반영
+
+제약 충돌 시 <span class="k">충돌 지점 먼저 명시</span>하고
+우선순위를 제안해 주세요.
+
+결론은 <span class="k">1문장 단정</span> + 불확실성 주석 분리</pre>
+        </div>
+        <div style="padding:.5rem .9rem;font-size:.76rem;color:var(--t50);border-top:1px solid var(--t08)">포인트: 우선순위 + 충돌 해결</div>
+      </div>
+      <div style="background:var(--t03);border:1px solid rgba(240,192,0,.3);border-radius:6px;overflow:hidden">
+        <div style="background:rgba(240,192,0,.1);padding:.6rem 1rem;border-bottom:1px solid rgba(240,192,0,.3);font-family:var(--mono);font-size:.72rem;color:#f0c000;font-weight:700;letter-spacing:.12em">Gemini 3.5 Flash — 확장→압축형</div>
+        <div class="code" style="margin:0;border:0;border-radius:0"
+          data-prompt-label="모델별 비교 · Gemini 3.5 Flash"
+          data-prompt-title="마케팅 성과 분석 보고서 — Gemini 확장→압축형"
+          data-prompt-tips="포인트: 넓게 확장 → 압축 → 구조화 3단계 — Gemini는 대량 아이디어 생성과 요약에 강해요">
+          <div class="bar"><span>Gemini 3.5 Flash</span><span class="zoom-hint">🔍 클릭해서 확대</span></div>
+          <pre style="font-size:.76rem">당신은 마케팅 데이터 분석가예요.
+
+[<span class="c">1단계 - 확장</span>]
+6월 캠페인 성과에 영향을 미쳤을 수 있는
+요소를 가능한 한 다양하게 나열해 주세요.
+(10개 이상)
+
+[<span class="c">2단계 - 압축</span>]
+그 중 실제 영향이 컸을 상위 3가지를
+선정하고 근거를 제시해 주세요.
+
+[<span class="c">3단계 - 실행</span>]
+• 최종 결론 3줄
+• 7월 실행 액션 5개
+• 각 액션의 예상 임팩트 (상/중/하)</pre>
+        </div>
+        <div style="padding:.5rem .9rem;font-size:.76rem;color:var(--t50);border-top:1px solid var(--t08)">포인트: 넓게 → 압축 → 구조화</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 15 CHECKLIST ══ -->
+<section class="slide" data-title="실습 06 — 프롬프트 체크리스트" data-desc="출력 전 반드시 확인 — 모든 모델 공용">
+  <div class="wm">실습</div>
+  <div class="slide-inner">
+    <div class="kicker reveal" style="color:rgba(66,190,101,.7)">PRACTICE 06 / 체크리스트</div>
+    <h2 class="title reveal">프롬프트 작성 <span class="hl">최종 체크리스트</span></h2>
+    <p class="sub reveal d1">출력 전 반드시 확인 — 모든 모델 공용</p>
+    <div class="cl-wrap reveal d1">
+      <div class="cl-group">
+        <div class="cl-head">구조 완성도 체크</div>
+        <div class="cl-item"><span class="cl-cb">☐</span><div><div class="cl-main">역할이 명시되어 있나요?</div><div class="cl-sub">모델이 누구로서 답해야 하는지 1문장으로 선언</div></div></div>
+        <div class="cl-item"><span class="cl-cb">☐</span><div><div class="cl-main">목표가 1문장으로 고정되어 있나요?</div><div class="cl-sub">최종 산출물의 목적·독자 명확히</div></div></div>
+        <div class="cl-item"><span class="cl-cb">☐</span><div><div class="cl-main">출력 형식이 구체적으로 지정되어 있나요?</div><div class="cl-sub">섹션 구조·분량·포맷(표/리스트/문단) 명시</div></div></div>
+        <div class="cl-item"><span class="cl-cb">☐</span><div><div class="cl-main">제약과 금지사항이 명시되어 있나요?</div><div class="cl-sub">하지 말아야 할 것 최소 1개 이상</div></div></div>
+        <div class="cl-item"><span class="cl-cb">☐</span><div><div class="cl-main">불확실성 처리 방식을 지정했나요?</div><div class="cl-sub">"확실/추정/모름" 또는 "확인 필요" 표기 요청</div></div></div>
+      </div>
+      <div class="cl-group">
+        <div class="cl-head" style="color:var(--accent)">품질·모델 최적화 체크</div>
+        <div class="cl-item"><span class="cl-cb" style="color:var(--accent)">☐</span><div><div class="cl-main">단계가 분리되어 있나요?</div><div class="cl-sub">계획 → 초안 → 검증 흐름 또는 계획 먼저 요청</div></div></div>
+        <div class="cl-item"><span class="cl-cb" style="color:var(--accent)">☐</span><div><div class="cl-main">루브릭 또는 평가 기준이 있나요?</div><div class="cl-sub">좋은 답의 조건을 체크리스트로 제공</div></div></div>
+        <div class="cl-item"><span class="cl-cb" style="color:var(--accent)">☐</span><div><div class="cl-main">핵심 요구사항 재진술 요청 했나요?</div><div class="cl-sub">긴 컨텍스트 → "요구사항 N개 먼저 요약"</div></div></div>
+        <div class="cl-item"><span class="cl-cb" style="color:var(--accent)">☐</span><div><div class="cl-main">프롬프트가 존댓말(해요체)인가요?</div><div class="cl-sub">명령조·개조식 → 완결된 요청문으로</div></div></div>
+        <div class="cl-item"><span class="cl-cb" style="color:var(--accent)">☐</span><div><div class="cl-main">모델 특성에 맞게 조정했나요?</div><div class="cl-sub">GPT=포맷고정, Claude=정합성, Gemini=확장→압축</div></div></div>
+      </div>
+    </div>
+    <div class="callout reveal d2" style="border-left-color:var(--accent);margin-top:.9rem">
+      <b>최종 점검:</b> "이 프롬프트를 처음 보는 사람이 아무 질문 없이 내가 원하는 결과를 만들어낼 수 있는가?" — <b style="color:var(--accent2)">YES라면 발송, NO라면 빠진 맥락을 보완하세요.</b>
+    </div>
+  </div>
+</section>
+
+<!-- ══ NEW · 존댓말(해요체) 이유 ══ -->
+<section class="slide" data-title="왜 해요체로 써야 하나요?" data-desc="훈련 데이터 정렬 · 맥락 명확성 · 협력 관계">
+  <div class="wm">해요</div>
+  <div class="slide-inner">
+    <div class="kicker reveal">LANGUAGE / 해요체</div>
+    <h2 class="title reveal">프롬프트를 <span class="hl">해요체</span>로 써야 하는 이유</h2>
+    <p class="sub reveal d1">명령조·개조식 나열보다 <b>완결된 요청문</b>이 일관되고 예측 가능한 출력을 만들어 냅니다</p>
+
+    <div class="grid g2 reveal d1" style="margin-top:1.2rem;align-items:start">
+      <div style="display:flex;flex-direction:column;gap:.8rem">
+
+        <div class="card"><div class="top-bar"></div>
+          <div class="clabel">이유 ① — 훈련 데이터 정렬</div>
+          <h3>고품질 텍스트 패턴 활성화</h3>
+          <p>LLM은 인터넷의 자연어 텍스트로 훈련됩니다. 대부분의 고품질 한국어 텍스트(블로그·문서·설명글)는 <b>해요체로 작성</b>되어 있어요. 해요체 입력은 모델이 <b>고품질 응답 패턴을 활성화</b>하는 데 더 잘 정렬됩니다.</p>
+        </div>
+
+        <div class="card ac2"><div class="top-bar"></div>
+          <div class="clabel">이유 ② — 맥락의 명확성</div>
+          <h3>문장 구조가 완결되어 의도 전달 ↑</h3>
+          <p>해요체는 문장 구조가 완결되어 있어 모델이 요청의 <b>범위와 의도를 더 정확하게 파악</b>해요. 반면 개조식 단어 나열 <span style="font-family:var(--mono);color:var(--t50);font-size:.88em">"요약, 3줄, 간결"</span>은 해석의 여지가 많아 출력이 흔들립니다.</p>
+        </div>
+
+        <div class="card ac3"><div class="top-bar"></div>
+          <div class="clabel">이유 ③ — 협력적 상호작용 유도</div>
+          <h3>지시 → 협력 관계로 전환</h3>
+          <p>해요체는 모델과의 상호작용을 <b>지시가 아닌 협력 관계</b>로 설정해요. 이는 모델이 단순 실행이 아니라 <b>의도를 이해하고 판단</b>하는 방식으로 응답하도록 유도합니다.</p>
+        </div>
+
+        <div class="card ac4"><div class="top-bar"></div>
+          <div class="clabel">이유 ④ — 작성자의 사고 정리</div>
+          <h3>프롬프트 쓰면서 의도가 명확해짐</h3>
+          <p>해요체로 완성된 문장을 쓰다 보면 작성자 스스로 <b>"내가 무엇을 원하는가"를 더 명확히 정리</b>하게 돼요. 이 자체가 컨텍스트 품질 향상으로 이어집니다.</p>
+        </div>
+
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:.9rem">
+
+        <!-- 반말 vs 해요체 토큰 비교 -->
+        <div style="border:1px solid var(--t12);border-radius:8px;overflow:hidden;background:var(--t03)">
+          <div style="background:rgba(15,98,254,.15);padding:.65rem 1.1rem;border-bottom:1px solid var(--t12);
+            font-family:var(--mono);font-size:.72rem;color:var(--accent2);font-weight:700;letter-spacing:.12em">
+            반말 vs 해요체 — 출력 결과 비교
+          </div>
+
+          <!-- 반말 예시 -->
+          <div style="padding:.85rem 1.1rem;border-bottom:1px solid var(--t08)">
+            <div style="font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;color:#ff8389;margin-bottom:.5rem">❌ 반말 (명령조)</div>
+            <div style="font-family:var(--mono);font-size:.82rem;background:var(--bg-deep);padding:.7rem .9rem;border-radius:4px;color:var(--t70);line-height:1.8;border-left:2px solid #ff8389">
+              마케팅 전략 분석해.<br>
+              <span style="color:var(--t30)">경쟁사 비교, 3가지, 표로.</span>
+            </div>
+            <div style="display:flex;gap:1.2rem;margin-top:.6rem;flex-wrap:wrap">
+              <div style="font-size:.78rem;color:var(--t50)">입력 토큰 <span style="color:#ff8389;font-weight:700;font-family:var(--mono)">~12</span></div>
+              <div style="font-size:.78rem;color:var(--t50)">출력 품질 <span style="color:#ff8389;font-weight:700">모호·불안정</span></div>
+              <div style="font-size:.78rem;color:var(--t50)">재질문 확률 <span style="color:#ff8389;font-weight:700">높음</span></div>
+            </div>
+          </div>
+
+          <!-- 해요체 예시 -->
+          <div style="padding:.85rem 1.1rem">
+            <div style="font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;color:var(--accent4);margin-bottom:.5rem">✅ 해요체 (요청문)</div>
+            <div style="font-family:var(--mono);font-size:.82rem;background:var(--bg-deep);padding:.7rem .9rem;border-radius:4px;color:var(--t70);line-height:1.8;border-left:2px solid var(--accent4)">
+              당신은 B2B 마케팅 전문가예요.<br>
+              <span style="color:var(--accent2)">저희 제품의 마케팅 전략을 분석해 주세요.</span><br>
+              경쟁사 3곳과 비교하고, 표 형식으로<br>
+              강점·약점·기회를 정리해 주세요.
+            </div>
+            <div style="display:flex;gap:1.2rem;margin-top:.6rem;flex-wrap:wrap">
+              <div style="font-size:.78rem;color:var(--t50)">입력 토큰 <span style="color:var(--accent4);font-weight:700;font-family:var(--mono)">~38</span></div>
+              <div style="font-size:.78rem;color:var(--t50)">출력 품질 <span style="color:var(--accent4);font-weight:700">명확·안정</span></div>
+              <div style="font-size:.78rem;color:var(--t50)">재질문 확률 <span style="color:var(--accent4);font-weight:700">낮음</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 토큰 인사이트 -->
+        <div style="border:1px solid rgba(51,177,255,.25);border-radius:8px;padding:1rem 1.1rem;background:rgba(51,177,255,.04)">
+          <div style="font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;color:var(--accent2);margin-bottom:.65rem;text-transform:uppercase">토큰 투자 인사이트</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.7rem;text-align:center">
+            <div style="border:1px solid var(--t12);border-radius:6px;padding:.75rem .5rem;background:var(--t03)">
+              <div style="font-family:var(--mono);font-size:1.3rem;font-weight:700;color:#ff8389">+26</div>
+              <div style="font-size:.72rem;color:var(--t50);margin-top:.2rem">추가 입력 토큰</div>
+            </div>
+            <div style="border:1px solid rgba(66,190,101,.3);border-radius:6px;padding:.75rem .5rem;background:rgba(66,190,101,.05)">
+              <div style="font-family:var(--mono);font-size:1.3rem;font-weight:700;color:var(--accent4)">÷ 3</div>
+              <div style="font-size:.72rem;color:var(--t50);margin-top:.2rem">재질문 횟수 감소</div>
+            </div>
+            <div style="border:1px solid rgba(51,177,255,.3);border-radius:6px;padding:.75rem .5rem;background:rgba(51,177,255,.05)">
+              <div style="font-family:var(--mono);font-size:1.3rem;font-weight:700;color:var(--accent2)">↓ 60%</div>
+              <div style="font-size:.72rem;color:var(--t50);margin-top:.2rem">총 토큰 절감</div>
+            </div>
+          </div>
+          <div class="callout" style="margin-top:.75rem;padding:.75rem 1rem;font-size:.84rem">
+            <b>결론:</b> 입력 토큰 +26개로 재질문 2~3회를 없애면, <b style="color:var(--accent2)">총 사용 토큰이 오히려 절감</b>돼요. 해요체는 비용 효율적인 선택입니다.
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ NEW · 멀티턴 vs 싱글턴 ══ -->
+<section class="slide" data-title="멀티턴 vs 싱글턴" data-desc="대화 구조의 차이와 각각의 최적 활용">
+  <div class="wm">턴</div>
+  <div class="slide-inner">
+    <div class="kicker reveal">TURN / 대화 구조</div>
+    <h2 class="title reveal"><span class="hl">멀티턴</span> vs <span class="hl">싱글턴</span> — 언제 무엇을 쓸까요?</h2>
+    <p class="sub reveal d1">대화 구조 선택이 <b>출력 품질과 비용</b>을 결정합니다</p>
+
+    <div class="cmp reveal d1" style="margin-top:1rem">
+      <div class="col">
+        <div class="h"><span>싱글턴 (Single-turn)</span><span>1회 완결</span></div>
+        <div style="font-family:var(--mono);font-size:.72rem;color:var(--t50);margin-bottom:.8rem">하나의 프롬프트 → 하나의 완전한 응답</div>
+        <ul>
+          <li>모든 맥락을 <b>한 번에 담아</b> 전송해요</li>
+          <li>독립적·반복 가능한 작업에 적합해요</li>
+          <li>API 비용 예측이 쉬워요</li>
+          <li>응답이 길고 구조화되어 있어요</li>
+          <li>이전 대화 없이 매번 처음부터 시작해요</li>
+        </ul>
+        <div style="margin-top:1rem;padding:.75rem;background:var(--t03);border:1px dashed var(--t12);border-radius:4px;font-size:.82rem;color:var(--t50)">
+          <b style="color:var(--white)">최적 상황</b><br>
+          문서 작성, 코드 생성, 번역, 요약,<br>단발성 분석, 자동화 파이프라인
+        </div>
+      </div>
+
+      <div class="col win">
+        <div class="h"><span>멀티턴 (Multi-turn)</span><span>대화 연속</span></div>
+        <div style="font-family:var(--mono);font-size:.72rem;color:var(--accent2);margin-bottom:.8rem">여러 번의 대화를 통해 점진적으로 발전</div>
+        <ul>
+          <li>이전 응답을 <b>컨텍스트로 누적</b>해요</li>
+          <li>복잡한 요구사항을 <b>단계적으로 정제</b>해요</li>
+          <li>모델이 사용자 스타일을 학습해요</li>
+          <li>피드백 루프로 <b>품질을 반복 개선</b>해요</li>
+          <li>긴 프로젝트·창작 작업에 강해요</li>
+        </ul>
+        <div style="margin-top:1rem;padding:.75rem;background:rgba(51,177,255,.06);border:1px solid rgba(51,177,255,.2);border-radius:4px;font-size:.82rem;color:var(--t50)">
+          <b style="color:var(--accent2)">최적 상황</b><br>
+          전략 기획, 창작 개선, 디버깅,<br>복잡한 의사결정, 교육·학습 세션
+        </div>
+      </div>
+    </div>
+
+    <!-- 핵심 차이 테이블 -->
+    <div class="reveal d2" style="overflow-x:auto;margin-top:.9rem">
+      <table class="tbl" style="font-size:.8rem">
+        <thead><tr><th>항목</th><th>싱글턴</th><th>멀티턴</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>컨텍스트 관리</b></td>
+            <td>프롬프트에 모두 포함</td>
+            <td class="good">대화 히스토리 자동 누적</td>
+          </tr>
+          <tr>
+            <td><b>토큰 비용</b></td>
+            <td class="good">예측 가능·단발 비용</td>
+            <td class="warn">턴마다 누적 → 비용 증가</td>
+          </tr>
+          <tr>
+            <td><b>오류 수정</b></td>
+            <td class="warn">프롬프트 재작성 필요</td>
+            <td class="good">후속 메시지로 즉시 수정</td>
+          </tr>
+          <tr>
+            <td><b>자동화 적합성</b></td>
+            <td class="good">파이프라인·배치 처리 최적</td>
+            <td>사람이 개입하는 워크플로에 적합</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ══ NEW · 효과적인 프롬프트 작성 전략 ══ -->
+<section class="slide" data-title="싱글턴·멀티턴 최적 전략" data-desc="각 방식별 핵심 패턴과 실전 팁">
+  <div class="wm">전략</div>
+  <div class="slide-inner">
+    <div class="kicker reveal">STRATEGY / 실전</div>
+    <h2 class="title reveal">싱글턴 · 멀티턴 <span class="hl">최적 전략</span></h2>
+    <p class="sub reveal d1">목적에 맞는 방식을 선택하고, 각 방식의 패턴을 적용하면 품질이 극적으로 향상돼요</p>
+
+    <div class="grid g2 reveal d1" style="margin-top:1rem;align-items:start">
+
+      <!-- 싱글턴 전략 -->
+      <div style="display:flex;flex-direction:column;gap:.8rem">
+        <div style="font-family:var(--mono);font-size:.72rem;letter-spacing:.18em;color:var(--t50);text-transform:uppercase;padding-bottom:.5rem;border-bottom:1px solid var(--t08)">싱글턴 — 한 번에 완성하는 전략</div>
+
+        <div class="card"><div class="top-bar"></div>
+          <div class="clabel">패턴 ① — 완전한 컨텍스트 선언</div>
+          <p style="font-size:.85rem;color:var(--t70);line-height:1.7">역할·배경·목적·독자·제약·형식을 <b>한 번의 프롬프트에 모두</b> 담아 주세요. 빈칸이 있으면 모델이 추측하고, 추측은 품질 저하로 이어져요.</p>
+          <div class="code" style="margin-top:.75rem"
+            data-prompt-label="싱글턴 패턴 ① 예시"
+            data-prompt-title="완전한 컨텍스트 선언 — 싱글턴"
+            data-prompt-tips="역할·배경·제약·출력 형식을 한 번에 모두 담는 것이 싱글턴의 핵심이에요">
+            <div class="bar"><span>SINGLE-TURN</span><span class="zoom-hint">🔍 클릭해서 확대</span><button class="copy">COPY</button></div>
+            <pre><span class="k">ROLE</span> 당신은 B2B SaaS 기업의 CMO예요.
+<span class="k">배경</span> 우리 제품의 6월 MAU는 12,000명,
+     전월 대비 8% 감소했어요.
+<span class="k">목적</span> 경영진 보고용 원인 분석 및 개선안
+<span class="c">제약</span> 500자 이내, 추측은 "추정" 표기,
+     경쟁사 이름 언급 금지
+<span class="k">형식</span> ① 원인 분석 ② 개선안 3가지
+     ③ 우선순위표 (표 형식)</pre>
+          </div>
+        </div>
+
+        <div class="card ac2"><div class="top-bar"></div>
+          <div class="clabel">패턴 ② — 계획 선제시 + 승인 후 실행</div>
+          <p style="font-size:.85rem;color:var(--t70);line-height:1.7">싱글턴이지만 <b>2단계로 분리</b>해요. 먼저 계획만 요청 → 승인 후 본문 작성. 재작업을 줄이는 가장 효과적인 싱글턴 패턴이에요.</p>
+          <div class="code" style="margin-top:.75rem"
+            data-prompt-label="싱글턴 패턴 ② 예시"
+            data-prompt-title="계획 선제시 + 승인 후 실행"
+            data-prompt-tips="GPT에 특히 효과적이에요. '계획만 먼저'는 싱글턴 내에서 검증 루프를 만드는 핵심 패턴이에요">
+            <div class="bar"><span>SINGLE-TURN · 2단계</span><span class="zoom-hint">🔍 클릭해서 확대</span><button class="copy">COPY</button></div>
+            <pre>당신은 [역할]이에요.
+[배경과 목적을 설명해 주세요]
+
+<span class="k">먼저 아래 항목만 제시해 주세요:</span>
+- 작업 이해 요약 (1문장)
+- 진행 계획 (목차/단계)
+- 예상 결과물 형식
+
+<span class="c">제가 "OK"라고 하면 본문을 작성해 주세요.</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- 멀티턴 전략 -->
+      <div style="display:flex;flex-direction:column;gap:.8rem">
+        <div style="font-family:var(--mono);font-size:.72rem;letter-spacing:.18em;color:var(--accent2);text-transform:uppercase;padding-bottom:.5rem;border-bottom:1px solid rgba(51,177,255,.2)">멀티턴 — 단계적으로 발전시키는 전략</div>
+
+        <div class="card ac2"><div class="top-bar"></div>
+          <div class="clabel">패턴 ③ — 역할 고정 후 대화 시작</div>
+          <p style="font-size:.85rem;color:var(--t70);line-height:1.7">멀티턴의 첫 메시지에서 <b>역할·규칙·출력 형식을 고정</b>해 주세요. 이후 대화에서는 데이터와 요청만 추가하면 돼요. 첫 턴이 전체 품질을 결정해요.</p>
+          <div class="code" style="margin-top:.75rem"
+            data-prompt-label="멀티턴 패턴 ③ 예시"
+            data-prompt-title="역할 고정 후 대화 시작 — 멀티턴 1턴"
+            data-prompt-tips="첫 턴에서 역할·규칙·형식을 고정하면 이후 대화가 일관성을 유지해요. 가장 중요한 멀티턴 패턴이에요">
+            <div class="bar"><span>MULTI-TURN · 1턴</span><span class="zoom-hint">🔍 클릭해서 확대</span><button class="copy">COPY</button></div>
+            <pre><span class="k">오늘 세션의 규칙을 먼저 설정할게요.</span>
+
+당신은 [역할]이에요.
+이 대화에서 다음 규칙을 항상 지켜 주세요:
+<span class="c">- 모든 답변은 해요체로 작성해 주세요.</span>
+<span class="c">- 불확실한 내용은 "추정"으로 표기해 주세요.</span>
+<span class="c">- 출력은 항상 [형식]으로 작성해 주세요.</span>
+
+규칙을 이해했으면 "시작할게요"라고 답해 주세요.</pre>
+          </div>
+        </div>
+
+        <div class="card ac3"><div class="top-bar"></div>
+          <div class="clabel">패턴 ④ — 점진적 정제 (Iterative Refinement)</div>
+          <p style="font-size:.85rem;color:var(--t70);line-height:1.7">초안 → 피드백 → 개선을 반복해요. 각 턴에서 <b>"이전 답변을 기반으로"</b>를 명시하면 컨텍스트 손실을 방지할 수 있어요.</p>
+          <div class="code" style="margin-top:.75rem"
+            data-prompt-label="멀티턴 패턴 ④ 예시"
+            data-prompt-title="점진적 정제 — 멀티턴 2턴+"
+            data-prompt-tips="피드백 턴에서 '이전 답변을 기반으로'를 명시하면 컨텍스트 손실을 방지할 수 있어요">
+            <div class="bar"><span>MULTI-TURN · 2턴+</span><span class="zoom-hint">🔍 클릭해서 확대</span><button class="copy">COPY</button></div>
+            <pre><span class="k">이전 답변을 기반으로</span> 아래를 수정해 주세요.
+
+수정 사항:
+<span class="c">- [구체적인 수정 요청]</span>
+<span class="c">- 톤을 더 [방향]으로 바꿔 주세요.</span>
+
+유지할 사항:
+<span class="c">- [변경하지 않을 부분]은 그대로 두어 주세요.</span></pre>
+          </div>
+        </div>
+
+        <!-- 선택 가이드 -->
+        <div style="border:1px solid rgba(190,149,255,.25);border-radius:8px;padding:.9rem 1.1rem;background:rgba(190,149,255,.04)">
+          <div style="font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;color:var(--accent3);margin-bottom:.6rem;text-transform:uppercase">언제 무엇을 선택할까요?</div>
+          <div style="display:flex;flex-direction:column;gap:.45rem">
+            <div style="font-size:.83rem;color:var(--t70);display:flex;gap:.6rem;align-items:flex-start">
+              <span style="color:var(--accent4);font-family:var(--mono);flex-shrink:0">→</span>
+              <span><b style="color:#fff">자동화·반복 작업</b>이라면 <b style="color:var(--accent4)">싱글턴</b> — 파이프라인에 넣기 쉬워요</span>
+            </div>
+            <div style="font-size:.83rem;color:var(--t70);display:flex;gap:.6rem;align-items:flex-start">
+              <span style="color:var(--accent4);font-family:var(--mono);flex-shrink:0">→</span>
+              <span><b style="color:#fff">복잡하고 모호한 요구사항</b>이라면 <b style="color:var(--accent2)">멀티턴</b> — 단계적 정제가 더 안전해요</span>
+            </div>
+            <div style="font-size:.83rem;color:var(--t70);display:flex;gap:.6rem;align-items:flex-start">
+              <span style="color:var(--accent4);font-family:var(--mono);flex-shrink:0">→</span>
+              <span><b style="color:#fff">긴 창작·전략 기획</b>이라면 <b style="color:var(--accent2)">멀티턴</b> — 대화를 통한 아이디어 발전이 강해요</span>
+            </div>
+            <div style="font-size:.83rem;color:var(--t70);display:flex;gap:.6rem;align-items:flex-start">
+              <span style="color:var(--accent4);font-family:var(--mono);flex-shrink:0">→</span>
+              <span><b style="color:#fff">토큰 비용이 중요</b>하다면 <b style="color:var(--accent4)">싱글턴 + 계획 선제시</b> 패턴이 가장 경제적이에요</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 16 CLOSING ══ -->
+<section class="slide closing" data-title="START." data-desc="오늘 본 것 중 딱 하나만 시작하세요">
+  <div class="slide-inner">
+    <div class="kicker reveal" style="justify-content:center">TROE AX SERIES · 2026</div>
+    <h2 class="big reveal d1"><span class="shine">프롬프트는</span><br><span class="shine" style="opacity:.85">코드입니다.</span></h2>
+    <p class="sub reveal d2" style="margin:1.2rem auto 0;text-align:center;max-width:54ch">설계하고, 테스트하고, 개선하세요<br>체계적인 컨텍스트 설계가 갖춰질 때 AI는 진정한 업무 가속 도구가 됩니다</p>
+    <div class="trio reveal d2" style="max-width:680px;margin:1.4rem auto 0">
+      <div class="b"><div class="l">모델 이해</div><div class="eq">+</div><div class="v" style="font-size:1.1rem">라우팅 전략</div></div>
+      <div class="b"><div class="l">구조화 프롬프트</div><div class="eq">+</div><div class="v" style="font-size:1.1rem">검증 루프</div></div>
+      <div class="b"><div class="l">워크플로 자동화</div><div class="eq">+</div><div class="v" style="font-size:1.1rem">지속 개선</div></div>
+    </div>
+    <div class="cta reveal d3">
+      <button class="btn btn-p" onclick="go(0)">처음으로</button>
+      <button class="btn btn-g" id="editBtn">✎ 편집</button>
+    </div>
+  </div>
+</section>
+
+</div><!-- /deck -->
+
+<!-- nav arrows -->
+<div class="navbtn l hide" id="prevBtn">‹</div>
+<div class="navbtn r" id="nextBtn">›</div>
+
+<!-- dots -->
+<div class="dots" id="dots"></div>
+
+<!-- bottom bar -->
+<div class="botbar">
+  <div class="brand">TROE<b>.</b>AX SERIES — LLM 프롬프트 엔지니어링 가이드</div>
+  <div class="right">
+    <span class="counter"><b id="cur">01</b> / <span id="total">16</span></span>
+    <button class="iconbtn" id="ovBtn">⊞ 개요</button>
+    <button class="iconbtn" id="fsBtn">⛶ 전체화면</button>
+  </div>
+</div>
+
+<!-- overview -->
+<div class="overview" id="overview">
+  <div class="ovhead">
+    <h3>SLIDE OVERVIEW · 클릭하면 이동</h3>
+    <button class="iconbtn" id="ovClose" style="font-size:.8rem">✕ 닫기 (Esc)</button>
+  </div>
+  <div class="ovgrid" id="ovgrid"></div>
+</div>
+
+<script>
+const deck=document.getElementById('deck');
+const STORE='llmPromptDeckHTML_v1';
+const getSlides=()=>[...deck.querySelectorAll('.slide')];
+let idx=0, anim=false, editing=false, saveT=null;
+
+const prog=document.getElementById('prog');
+const curEl=document.getElementById('cur');
+const totalEl=document.getElementById('total');
+const prevBtn=document.getElementById('prevBtn');
+const nextBtn=document.getElementById('nextBtn');
+const dotsWrap=document.getElementById('dots');
+const overview=document.getElementById('overview');
+const ovgrid=document.getElementById('ovgrid');
+const toast=document.getElementById('toast');
+const hint=document.getElementById('hint');
+
+try{const saved=localStorage.getItem(STORE); if(saved) deck.innerHTML=saved;}catch(e){}
+
+function buildChrome(){
+  const slides=getSlides();
+  totalEl.textContent=String(slides.length).padStart(2,'0');
+  dotsWrap.innerHTML=''; ovgrid.innerHTML='';
+  slides.forEach((s,i)=>{
+    const d=document.createElement('div');d.className='dot';d.title=s.dataset.title||('Slide '+(i+1));
+    d.addEventListener('click',()=>go(i));
+    dotsWrap.appendChild(d);
+    const c=document.createElement('div');c.className='ovcard';
+    c.innerHTML='<div class="ovn">'+String(i+1).padStart(2,'0')+'</div><div class="ovt"></div><div class="ovd"></div>';
+    c.querySelector('.ovt').textContent=s.dataset.title||'';
+    c.querySelector('.ovd').textContent=s.dataset.desc||'';
+    c.addEventListener('click',()=>{go(i);closeOverview()});
+    ovgrid.appendChild(c);
+  });
+}
+
+function render(){
+  const slides=getSlides(), N=slides.length;
+  slides.forEach((s,i)=>{
+    s.classList.toggle('active',i===idx);
+    s.classList.toggle('prev',i<idx);
+    if(i!==idx) s.scrollTop=0;
+  });
+  [...dotsWrap.children].forEach((d,i)=>d.classList.toggle('on',i===idx));
+  [...ovgrid.children].forEach((c,i)=>c.classList.toggle('cur',i===idx));
+  curEl.textContent=String(idx+1).padStart(2,'0');
+  prog.style.width=(N<=1?100:(idx/(N-1))*100)+'%';
+  prevBtn.classList.toggle('hide',idx===0);
+  nextBtn.classList.toggle('hide',idx===N-1);
+  try{location.hash=idx===0?'':('s'+(idx+1))}catch(e){}
+}
+function go(n){
+  const N=getSlides().length;
+  n=Math.max(0,Math.min(N-1,n));
+  if(n===idx||anim)return;
+  anim=true;idx=n;render();
+  setTimeout(()=>anim=false,420);
+}
+function next(){go(idx+1)}
+function prev(){go(idx-1)}
+prevBtn.addEventListener('click',prev);
+nextBtn.addEventListener('click',next);
+
+addEventListener('keydown',e=>{
+  if(editing && e.target.isContentEditable) return;
+  if(overview.classList.contains('show')){
+    if(e.key==='Escape'||e.key.toLowerCase()==='o'){closeOverview();}
+    return;
+  }
+  switch(e.key){
+    case 'ArrowRight':case 'PageDown':case ' ':e.preventDefault();next();break;
+    case 'ArrowLeft':case 'PageUp':prev();break;
+    case 'Home':go(0);break;
+    case 'End':go(getSlides().length-1);break;
+    case 'f':case 'F':toggleFs();break;
+    case 'o':case 'O':openOverview();break;
+    case 'e':case 'E':toggleEdit();break;
+    case 'Escape':if(document.fullscreenElement)document.exitFullscreen();break;
+    default:
+      if(/^[0-9]$/.test(e.key)){const t=e.key==='0'?9:parseInt(e.key)-1;if(t<getSlides().length)go(t);}
+  }
+});
+
+deck.addEventListener('click',e=>{
+  if(editing)return;
+  if(e.target.closest('a,button,.copy,.navbtn,[data-goto],.sc[data-llm],.code[data-prompt-label]'))return;
+  const x=e.clientX/innerWidth;
+  if(x>0.62)next(); else if(x<0.38)prev();
+});
+deck.addEventListener('click',e=>{
+  if(editing)return;
+  const el=e.target.closest('[data-goto]'); if(!el)return;
+  e.stopPropagation(); go(parseInt(el.dataset.goto));
+});
+
+let wheelLock=false;
+addEventListener('wheel',e=>{
+  if(editing||overview.classList.contains('show'))return;
+  const s=getSlides()[idx];
+  if(s.scrollHeight>s.clientHeight+4){
+    const atTop=s.scrollTop<=0, atBot=s.scrollTop+s.clientHeight>=s.scrollHeight-1;
+    if((e.deltaY>0&&!atBot)||(e.deltaY<0&&!atTop))return;
+  }
+  if(wheelLock)return;
+  if(Math.abs(e.deltaY)<18)return;
+  wheelLock=true;setTimeout(()=>wheelLock=false,650);
+  e.deltaY>0?next():prev();
+},{passive:true});
+
+let tsx=0,tsy=0;
+addEventListener('touchstart',e=>{tsx=e.touches[0].clientX;tsy=e.touches[0].clientY},{passive:true});
+addEventListener('touchend',e=>{
+  if(editing)return;
+  const dx=e.changedTouches[0].clientX-tsx, dy=e.changedTouches[0].clientY-tsy;
+  if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)){dx<0?next():prev()}
+},{passive:true});
+
+function toggleFs(){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen().catch(()=>{})}
+document.getElementById('fsBtn').addEventListener('click',toggleFs);
+function openOverview(){overview.classList.add('show')}
+function closeOverview(){overview.classList.remove('show')}
+document.getElementById('ovBtn').addEventListener('click',openOverview);
+document.getElementById('ovClose').addEventListener('click',closeOverview);
+
+// cursor glow
+const glowEl=document.getElementById('glow');
+let gx=innerWidth/2,gy=innerHeight/2,cx_=gx,cy_=gy;
+addEventListener('mousemove',e=>{gx=e.clientX;gy=e.clientY});
+(function loop(){cx_+=(gx-cx_)*.12;cy_+=(gy-cy_)*.12;glowEl.style.left=cx_+'px';glowEl.style.top=cy_+'px';requestAnimationFrame(loop)})();
+
+// card interactions (tilt + glow + copy)
+function attachInteractions(){
+  document.querySelectorAll('.card.tilt').forEach(card=>{
+    if(card._tilt)return; card._tilt=1;
+    card.addEventListener('mousemove',e=>{
+      if(editing)return;
+      const r=card.getBoundingClientRect();
+      const px=(e.clientX-r.left)/r.width, py=(e.clientY-r.top)/r.height;
+      card.style.transform='perspective(800px) rotateY('+((px-.5)*10)+'deg) rotateX('+((.5-py)*10)+'deg) translateY(-4px)';
+      card.style.setProperty('--mx-c',(px*100)+'%');card.style.setProperty('--my-c',(py*100)+'%');
+    });
+    card.addEventListener('mouseleave',()=>{card.style.transform=''});
+  });
+  document.querySelectorAll('.card').forEach(c=>{
+    if(c._glow)return; c._glow=1;
+    c.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect();
+      c.style.setProperty('--mx-c',((e.clientX-r.left)/r.width*100)+'%');
+      c.style.setProperty('--my-c',((e.clientY-r.top)/r.height*100)+'%')});
+  });
+  document.querySelectorAll('.copy').forEach(btn=>{
+    if(btn._copy)return; btn._copy=1;
+    btn.addEventListener('click',ev=>{
+      ev.stopPropagation(); ev.stopImmediatePropagation(); if(editing)return;
+      const pre=btn.closest('.code').querySelector('pre');
+      const txt=pre.innerText.replace(/<[^>]+>/g,'');
+      navigator.clipboard.writeText(txt).then(()=>{
+        btn.textContent='COPIED';toast.classList.add('show');
+        setTimeout(()=>{btn.textContent='COPY';toast.classList.remove('show')},1400);
+      });
+    });
+  });
+}
+
+// ===== EDITOR =====
+const EDIT_SEL='.slide h1,.slide h2,.slide h3,.slide p,.slide li,.slide .kicker,.slide .callout,.slide .cnum,.slide .nt,.slide .nd,.slide .mt,.slide .md,.slide .l,.slide .v,.slide .clabel,.slide .badge,.slide figcaption,.slide pre,.slide .wf-title,.slide .wf-desc,.slide .pf-title,.slide .pf-desc,.slide .sc-name,.slide .vc .vt,.slide .cl-main,.slide .cl-sub,.slide .tag,.slide .lead,.slide .marq,.slide .sub';
+function editableEls(){
+  const set=new Set(document.querySelectorAll(EDIT_SEL));
+  document.querySelectorAll('.slide .reveal').forEach(el=>{
+    const blocky=[...el.children].some(c=>/^(DIV|UL|OL|FIGURE|IMG|PRE|SECTION|FIGCAPTION|TABLE)$/.test(c.tagName));
+    if(!blocky && el.textContent.trim()) set.add(el);
+  });
+  const arr=[...set];
+  return arr.filter(el=>!arr.some(o=>o!==el && el.contains(o)));
+}
+function setEditable(on){editableEls().forEach(el=>{on?el.setAttribute('contenteditable','true'):el.removeAttribute('contenteditable')});}
+const estatus=document.getElementById('estatus');
+function setStatus(t){if(!estatus)return;estatus.textContent=t;clearTimeout(estatus._t);estatus._t=setTimeout(()=>estatus.textContent='',1800);}
+function scheduleSave(){clearTimeout(saveT);saveT=setTimeout(saveDeck,400);}
+function saveDeck(){
+  try{
+    const clone=deck.cloneNode(true);
+    clone.querySelectorAll('[contenteditable]').forEach(n=>n.removeAttribute('contenteditable'));
+    clone.querySelectorAll('.slide').forEach(s=>s.classList.remove('active','prev'));
+    localStorage.setItem(STORE,clone.innerHTML);
+    setStatus('자동 저장됨 ✓');
+  }catch(e){setStatus('저장 실패');}
+}
+deck.addEventListener('input',e=>{
+  if(!editing)return;
+  const sec=e.target.closest('.slide');
+  if(sec){
+    const head=sec.querySelector('h1,h2');
+    if(head){const t=head.textContent.trim().slice(0,40);if(t)sec.dataset.title=t;}
+    const i=getSlides().indexOf(sec);
+    const ovt=ovgrid.children[i]&&ovgrid.children[i].querySelector('.ovt');if(ovt)ovt.textContent=sec.dataset.title||'';
+    const dot=dotsWrap.children[i];if(dot)dot.title=sec.dataset.title||'';
+  }
+  scheduleSave();
+});
+function toggleEdit(force){
+  editing=(force===undefined)?!editing:force;
+  document.body.classList.toggle('editing',editing);
+  setEditable(editing);
+  const eb=document.getElementById('editBtn');if(eb)eb.textContent=editing?'✓ 보기 모드':'✎ 편집';
+  if(editing){setStatus('텍스트를 클릭해 수정하세요');}else{saveDeck();}
+}
+document.getElementById('editBtn').addEventListener('click',()=>toggleEdit());
+
+document.getElementById('editbar').addEventListener('click',e=>{
+  const b=e.target.closest('button[data-act]');if(!b)return;
+  const act=b.dataset.act, cur=getSlides()[idx];
+  if(act==='add'){
+    const s=document.createElement('section');s.className='slide';s.dataset.title='새 슬라이드';s.dataset.desc='';
+    s.innerHTML='<div class="slide-inner"><div class="kicker">NEW / 새 슬라이드</div><h2 class="title">제목을 입력하세요</h2><p class="sub">부제목을 입력하세요</p><ul class="dlist"><li>내용 항목을 입력하세요</li><li>두 번째 항목</li></ul></div>';
+    cur.after(s);idx++;afterStruct();
+  }else if(act==='dup'){
+    const s=cur.cloneNode(true);s.classList.remove('active','prev');cur.after(s);idx++;afterStruct();
+  }else if(act==='del'){
+    if(getSlides().length<=1){setStatus('마지막 슬라이드는 못 지웁니다');return;}
+    if(!confirm('이 슬라이드를 삭제할까요?'))return;
+    cur.remove();afterStruct();
+  }else if(act==='left'){
+    const p=cur.previousElementSibling;if(p&&p.classList.contains('slide')){p.before(cur);idx--;afterStruct();setStatus('앞으로 이동');}
+  }else if(act==='right'){
+    const n=cur.nextElementSibling;if(n&&n.classList.contains('slide')){n.after(cur);idx++;afterStruct();setStatus('뒤로 이동');}
+  }else if(act==='export'){exportHTML();}
+  else if(act==='reset'){if(confirm('모든 편집을 지우고 원본으로 되돌릴까요?')){localStorage.removeItem(STORE);location.reload();}}
+  else if(act==='done'){toggleEdit(false);}
+});
+function afterStruct(){buildChrome();setEditable(editing);attachInteractions();attachPopupListeners();idx=Math.max(0,Math.min(getSlides().length-1,idx));render();saveDeck();}
+function exportHTML(){
+  const dt=document.documentElement.cloneNode(true);
+  dt.querySelectorAll('[contenteditable]').forEach(n=>n.removeAttribute('contenteditable'));
+  const b=dt.querySelector('body');if(b)b.classList.remove('editing');
+  dt.querySelectorAll('.slide').forEach(s=>s.classList.remove('active','prev'));
+  const ov=dt.querySelector('#overview');if(ov)ov.classList.remove('show');
+  const html='<!DOCTYPE html>\n'+dt.outerHTML;
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([html],{type:'text/html'}));
+  a.download='llm-prompt-guide.html';a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),3000);
+  setStatus('llm-prompt-guide.html 내보냄 ✓');
+}
+
+// init
+buildChrome();
+attachInteractions();
+(function initHash(){
+  const m=(location.hash||'').match(/s(\d+)/);
+  if(m){const n=parseInt(m[1])-1;if(n>=0&&n<getSlides().length)idx=n;}
+})();
+render();
+setTimeout(()=>hint.classList.add('fade'),4200);
+addEventListener('keydown',()=>hint.classList.add('fade'),{once:true});
+// 팝업 리스너는 함수 정의 후 한번 더 재연결
+setTimeout(()=>attachPopupListeners(),0);
+
+function attachPopupListeners(){
+  document.querySelectorAll('.sc[data-llm]').forEach(sc=>{
+    if(sc._popupDone)return; sc._popupDone=1;
+    sc.addEventListener('click',e=>{
+      if(editing)return;
+      e.stopPropagation(); e.stopImmediatePropagation();
+      openLLMPopup(sc.dataset.llm);
+    });
+  });
+  document.querySelectorAll('.code[data-prompt-label]').forEach(codeEl=>{
+    if(codeEl._popupDone)return; codeEl._popupDone=1;
+    codeEl.addEventListener('click',e=>{
+      if(editing)return;
+      if(e.target.closest('.copy,.pop-btn')) return;
+      e.stopPropagation(); e.stopImmediatePropagation();
+      openPromptPopup(codeEl);
+    });
+  });
+}
+
+/* ═══════════════════════════════════════════════════
+   POPUP SYSTEM 1 — LLM Best Case 팝업
+═══════════════════════════════════════════════════ */
+const LLM_DATA={
+  gpt:{
+    name:'GPT-4o / ChatGPT 5.5',
+    tag:'포맷 고정형',
+    dot:'#0f62fe',
+    tabs:['문서·보고서','코드 생성','분석·의사결정'],
+    prompts:[
+`당신은 [도메인] 분야의 시니어 [직무]예요.
+
+저는 [독자·목적]을 위한 [문서 종류]를 작성하려고 해요.
+
+아래 자료를 바탕으로 작성해 주세요:
+[자료 · 메모 · 회의록]
+
+다음 규칙을 지켜 주세요:
+- 톤: [공식적 / 친근한 / 설득적]
+- 금지사항: [특정 표현, 경쟁사 언급 등]
+- 분량: [A4 1장 / 500자 이내 등]
+
+작성 전에 핵심 요구사항 3가지를 먼저 재진술해 주세요.
+제가 OK하면 전체를 작성해 주세요.
+
+출력 구조:
+1. 핵심 메시지 (1문장)
+2. 배경 및 현황
+3. 제안 내용 (3가지)
+4. 기대 효과
+5. 실행 체크리스트
+
+불확실한 내용은 "확실 / 추정 / 모름"으로 라벨링해 주세요.`,
+
+`당신은 [언어·프레임워크] 전문 시니어 개발자예요.
+
+저는 [목적]을 위한 코드를 작성하려고 해요.
+
+현재 환경:
+- OS 및 언어 버전: [입력해 주세요]
+- 사용 프레임워크: [입력해 주세요]
+- 기존 코드: [있으면 첨부해 주세요]
+- 해결하려는 문제: [구체적으로 설명해 주세요]
+
+다음 조건을 지켜 주세요:
+- [성능 우선 / 가독성 우선 / 특정 라이브러리 제한 등]
+
+먼저 접근 방식 요약(계획)만 보여 주세요.
+제가 OK하면 코드를 작성해 주세요.
+
+출력 구조:
+1. 접근 방식 요약
+2. 완성된 코드 (주석 포함)
+3. 주요 로직 설명
+4. 주의사항 및 개선 여지`,
+
+`당신은 [도메인] 분야의 전략 분석가예요.
+
+저는 [의사결정 상황]에 대해 판단해야 해요.
+
+아래 데이터와 맥락을 참고해 주세요:
+[데이터 · 상황 설명]
+
+다음 순서로 분석해 주세요:
+1. 핵심 질문 재정의
+2. 대안 3가지 제시
+3. 각 대안의 장단점 비교 (표 형식)
+4. 리스크 및 반례 먼저 제시
+5. 최종 권고안 (1문장 단정 + 근거)
+
+불확실한 수치나 가정은 반드시 "추정"으로 표시해 주세요.
+루브릭 기준으로 자기 평가도 포함해 주세요.`
+    ],
+    tips:[
+      ['계획 선제시','먼저 계획(목차·논리·체크리스트)을 뽑고, OK 후 작성·수정을 지시해 주세요'],
+      ['루브릭 자기평가','"아래 루브릭에서 1점이라도 낮으면 이유와 수정안을 같이 제시해 주세요" 추가'],
+      ['불확실성 라벨링','"불확실한 내용은 확실/추정/모름으로 라벨링해 주세요" 반드시 포함'],
+      ['요구사항 재진술','긴 컨텍스트에서 "핵심 요구사항 N개를 먼저 요약해 주세요" 강제']
+    ]
+  },
+  claude:{
+    name:'Claude Opus 4.8 / Sonnet 4.6',
+    tag:'정합성 강화형',
+    dot:'#33b1ff',
+    tabs:['문서·분석','의사결정·정합성','코드·기술'],
+    prompts:[
+`당신은 [도메인] 분야의 시니어 전략가예요.
+데이터 기반 의사결정을 중시하고, 불확실한 내용에는 반드시 근거를 제시해 주세요.
+
+[배경] [현재 상황과 맥락을 자세히 설명해 주세요]
+[목적] [최종 산출물과 독자를 명시해 주세요]
+[독자] [이 문서를 읽을 사람이 누구인지 알려 주세요]
+
+아래 자료를 참고해 주세요:
+[관련 데이터 · 자료]
+
+다음 조건을 지켜 주세요:
+- 톤: [공식적 / 친근한]
+- 금지사항: [특정 표현 등]
+- 분량: [원하는 분량]
+
+결론은 반드시 1문장으로 단정해 주세요.
+불확실성은 주석 또는 각주로 분리해 주세요.`,
+
+`당신은 복잡한 의사결정을 전문으로 하는 컨설턴트예요.
+
+저는 [의사결정 상황]에 대해 판단해야 해요.
+
+[배경] [상황을 상세히 설명해 주세요]
+[제약 우선순위]
+  1순위: [가장 중요한 제약]
+  2순위: [두 번째 제약]
+  3순위: [세 번째 제약]
+
+아래 제약들이 서로 충돌할 경우,
+충돌 지점을 먼저 찾고 우선순위를 제안해 주세요.
+
+출력 형식:
+1. 충돌하는 제약 목록 (있을 경우)
+2. 대안 3가지 + trade-off 비교표
+3. 리스크·반례를 먼저 제시한 뒤 최종안
+4. 결론은 1문장으로 단정 (불확실성 주석 분리)`,
+
+`당신은 [언어·프레임워크] 전문 시니어 개발자예요.
+
+저는 [목적]을 위한 코드를 작성하려고 해요.
+
+현재 환경:
+[기술 스택과 버전을 자세히 설명해 주세요]
+
+현재 코드 (있으면 첨부해 주세요):
+[기존 코드]
+
+해결하려는 문제:
+[구체적인 문제 설명]
+
+다음 조건을 지켜 주세요:
+- 기존 코드 스타일과 패턴을 유지해 주세요.
+- 코드에 반드시 주석을 포함해 주세요.
+
+출력 구조:
+1. 접근 방식 요약
+2. 완성된 코드
+3. Do this / Not this 형태의 실행 항목 포함`
+    ],
+    tips:[
+      ['맥락 풍부하게','배경·목적·독자·제약을 모두 포함해 주세요 — Claude는 맥락이 많을수록 좋아요'],
+      ['충돌 제약 해결','"제약들이 충돌할 경우 충돌 지점을 먼저 찾고 우선순위를 제안해 주세요" 추가'],
+      ['결론 단정화','"결론은 1문장으로 단정 + 불확실성은 주석 분리" 패턴 적용'],
+      ['실행 항목 명시','"Do this / Not this 형태의 실행 항목을 포함해 주세요" 추가']
+    ]
+  },
+  gemini:{
+    name:'Gemini 3.5 Flash',
+    tag:'확장→압축형',
+    dot:'#f0c000',
+    tabs:['아이디어 확장','요약·정리','멀티모달'],
+    prompts:[
+`당신은 창의적 아이디어 발굴 전문가예요.
+
+저는 [주제·목적]에 대해 다양한 아이디어가 필요해요.
+
+[1단계 - 확장]
+아래 주제와 관련하여 가능한 한 다양한 아이디어,
+관점, 접근 방법을 나열해 주세요. (최소 10개 이상)
+
+[주제: 입력해 주세요]
+
+[2단계 - 압축]
+위에서 생성한 항목 중 가장 실행 가능성과
+임팩트가 높은 상위 3가지를 선정하고
+선정 근거를 제시해 주세요.
+
+[3단계 - 실행]
+최종 결론을 다음 형식으로 정리해 주세요:
+- 최종 결론 3줄
+- 실행 액션 5개
+- 각 액션의 예상 임팩트 (상/중/하)`,
+
+`당신은 정보 요약 및 구조화 전문가예요.
+
+아래 자료를 요약하고 정리해 주세요.
+
+[자료: 붙여넣기 또는 링크]
+
+다음 순서로 처리해 주세요:
+
+[1단계] 핵심 내용 추출
+- 주요 키워드 10개를 나열해 주세요.
+- 핵심 메시지를 3문장으로 요약해 주세요.
+
+[2단계] 구조화
+- 내용을 카테고리별로 분류해 주세요.
+- 중복 또는 유사 항목은 통합해 주세요.
+
+[3단계] 최종 출력
+다음 형식으로 정리해 주세요:
+1. 핵심 요약 (3줄)
+2. 카테고리별 정리표
+3. 실행 시사점 5개`,
+
+`당신은 이미지와 텍스트를 함께 분석하는 전문가예요.
+
+[첨부 이미지/파일에 대한 설명]
+
+위 자료를 분석하여 다음을 수행해 주세요:
+
+[분석 목적: 입력해 주세요]
+
+출력 형식:
+1. 시각 자료 핵심 요소 설명
+2. 텍스트와의 연관성 분석
+3. 개선 제안 또는 인사이트
+
+결과는 반드시 다음 템플릿을 채우는 형식으로 주세요:
+[템플릿 양식을 여기에 입력해 주세요]`
+    ],
+    tips:[
+      ['확장→압축 흐름','넓게 생성 후 같은 Gemini에게 "중복 제거 + 카테고리화 + 우선순위화"를 지시해 주세요'],
+      ['결론 강제','마지막에 "최종 결론 3줄 + 실행 5개"를 강제로 요청해 주세요'],
+      ['형식 제어','"출력 템플릿을 그대로 채워 주세요 (빈칸 채우기)" 방식으로 형식을 고정해 주세요'],
+      ['멀티모달 활용','이미지·PDF·스크린샷을 텍스트와 함께 첨부하면 통합 분석이 가능해요']
+    ]
+  },
+  o1:{
+    name:'o1 / o3 (Reasoning)',
+    tag:'최소 지시형',
+    dot:'#be95ff',
+    tabs:['복잡한 추론','수학·알고리즘','아키텍처 설계'],
+    prompts:[
+`[문제를 명확하게 서술해 주세요]
+
+아래 조건을 고려해 주세요:
+- [제약 1]
+- [제약 2]
+- [제약 3]
+
+최적의 해결 방법을 제시해 주세요.
+
+참고: 풀이 과정과 근거도 함께 제시해 주세요.`,
+
+`다음 알고리즘 문제를 해결해 주세요.
+
+[문제 설명]
+
+입력:
+[입력 형식과 범위]
+
+출력:
+[출력 형식과 요구사항]
+
+제약 조건:
+- [제약 1]
+- [제약 2]
+
+시간 복잡도와 공간 복잡도 분석도 포함해 주세요.`,
+
+`다음 시스템의 아키텍처를 설계해 주세요.
+
+요구사항:
+[상세 요구사항]
+
+비기능 요구사항:
+- 예상 트래픽: [입력해 주세요]
+- 가용성 요구: [입력해 주세요]
+- 확장성 요구: [입력해 주세요]
+
+기술 스택 제약:
+[있으면 입력해 주세요]
+
+설계 근거와 trade-off 분석도 포함해 주세요.`
+    ],
+    tips:[
+      ['지시는 최소화','o1/o3는 스스로 추론하므로 "단계별로 생각해 주세요" 같은 CoT 유도는 불필요해요'],
+      ['선별적 사용','비용이 높으므로 복잡한 추론이 반드시 필요한 작업에만 사용해 주세요'],
+      ['결과 검증','출력 후 Claude나 GPT로 사실 확인 및 품질 검토를 진행하는 체인을 권장해요'],
+      ['명확한 문제 서술','문제를 최대한 명확하고 완전하게 서술해 주세요 — 모호함이 없어야 해요']
+    ]
+  }
+};
+
+const llmPopup=document.getElementById('llmPopup');
+const llmPopupName=document.getElementById('llmPopupName');
+const llmPopupDot=document.getElementById('llmPopupDot');
+const llmPopupTag=document.getElementById('llmPopupTag');
+const llmTabs=document.getElementById('llmTabs');
+const llmPopupBody=document.getElementById('llmPopupBody');
+const llmCopyBtn=document.getElementById('llmCopyBtn');
+let currentLLM=null, currentLLMTab=0;
+
+function renderLLMTabs(key){
+  const d=LLM_DATA[key]; llmTabs.innerHTML='';
+  d.tabs.forEach((t,i)=>{
+    const b=document.createElement('button');b.className='llm-tab'+(i===currentLLMTab?' on':'');
+    b.textContent=t; b.style.setProperty('--tc',d.dot);
+    if(i===currentLLMTab) b.style.color=d.dot;
+    b.addEventListener('click',()=>{currentLLMTab=i;renderLLMTabs(key);renderLLMBody(key);});
+    llmTabs.appendChild(b);
+  });
+}
+
+function syntaxHL(txt){
+  return txt
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/^(ROLE|DATA|GOAL|RULE|CHECKPOINT|NEXT|OUTPUT|EXTRACT|TONE|CONSTRAINT|CONTEXT|TASK|FORMAT|ENV|ERROR|CODE|AS-IS|TO-BE|SCOPE|PROCESS|REPO|ISSUE|SPEC|STACK|TARGET|FRAMEWORK|FOCUS|배경|목적|독자|제약.*?|출력|설명|참고|분석|첨부|주의사항)(\s)/gm,'<span class="k">$1</span>$2')
+    .replace(/\[([^\]]+)\]/g,'<span class="c">[$1]</span>')
+    .replace(/#([^\n]+)/g,'<span class="cm"># $1</span>');
+}
+
+function renderLLMBody(key){
+  const d=LLM_DATA[key]; const prompt=d.prompts[currentLLMTab]||'';
+  llmPopupBody.innerHTML=`
+    <div class="bc-section">
+      <div class="bc-section-head" style="color:${d.dot};background:rgba(0,0,0,.2)">Best Case 프롬프트 — ${d.tabs[currentLLMTab]}</div>
+      <pre class="bc-prompt">${syntaxHL(prompt)}</pre>
+      <div class="bc-tips">
+        ${d.tips.map(t=>`<div class="bc-tip"><b>${t[0]}</b> — ${t[1]}</div>`).join('')}
+      </div>
+    </div>`;
+}
+
+function openLLMPopup(key){
+  if(!LLM_DATA[key])return;
+  currentLLM=key; currentLLMTab=0;
+  const d=LLM_DATA[key];
+  llmPopupName.textContent=d.name;
+  llmPopupDot.style.background=d.dot;
+  llmPopupTag.textContent=d.tag;
+  renderLLMTabs(key);
+  renderLLMBody(key);
+  llmPopup.classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeLLMPopup(){
+  llmPopup.classList.remove('open');
+  document.body.style.overflow='';
+}
+
+document.getElementById('llmPopupClose').addEventListener('click',closeLLMPopup);
+document.getElementById('llmCloseBtn2').addEventListener('click',closeLLMPopup);
+llmPopup.addEventListener('click',e=>{if(e.target===llmPopup)closeLLMPopup();});
+llmCopyBtn.addEventListener('click',()=>{
+  if(!currentLLM)return;
+  const txt=LLM_DATA[currentLLM].prompts[currentLLMTab]||'';
+  navigator.clipboard.writeText(txt).then(()=>{
+    llmCopyBtn.textContent='✓ 복사됨';
+    setTimeout(()=>llmCopyBtn.textContent='⎘ 복사',1500);
+  });
+});
+
+// sc 카드 · code 블록 클릭 팝업은 attachInteractions()에서 직접 등록합니다
+
+/* ═══════════════════════════════════════════════════
+   POPUP SYSTEM 2 — 프롬프트 확대 팝업
+═══════════════════════════════════════════════════ */
+const promptPopup=document.getElementById('promptPopup');
+const ppLabel=document.getElementById('ppLabel');
+const ppTitle=document.getElementById('ppTitle');
+const ppContent=document.getElementById('ppContent');
+const ppTips=document.getElementById('ppTips');
+const ppCopyBtn=document.getElementById('ppCopyBtn');
+let ppRawText='';
+
+function openPromptPopup(el){
+  const label=el.dataset.promptLabel||el.querySelector('.bar span')?.textContent||'PROMPT';
+  const title=el.dataset.promptTitle||'프롬프트 상세 보기';
+  const tips=el.dataset.promptTips||'';
+  const pre=el.querySelector('pre');
+  if(!pre)return;
+  ppRawText=pre.innerText||pre.textContent;
+  ppLabel.textContent=label;
+  ppTitle.textContent=title;
+  ppTips.textContent=tips;
+  ppContent.innerHTML=syntaxHL(ppRawText);
+  promptPopup.classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closePromptPopup(){
+  promptPopup.classList.remove('open');
+  document.body.style.overflow='';
+}
+
+document.getElementById('promptPopupClose').addEventListener('click',closePromptPopup);
+document.getElementById('ppCloseBtn').addEventListener('click',closePromptPopup);
+promptPopup.addEventListener('click',e=>{if(e.target===promptPopup)closePromptPopup();});
+ppCopyBtn.addEventListener('click',()=>{
+  navigator.clipboard.writeText(ppRawText).then(()=>{
+    ppCopyBtn.textContent='✓ 복사됨';
+    setTimeout(()=>ppCopyBtn.textContent='⎘ 복사',1500);
+  });
+});
+
+// 팝업 이벤트는 attachInteractions()에서 직접 각 요소에 등록합니다
+
+// ESC 키로 팝업 닫기
+addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    if(promptPopup.classList.contains('open')){closePromptPopup();return;}
+    if(llmPopup.classList.contains('open')){closeLLMPopup();return;}
+  }
+},true);
+</script>
+</body>
+</html>
