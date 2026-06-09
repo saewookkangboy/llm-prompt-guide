@@ -65,17 +65,19 @@ body{
 
 /* deck / slide */
 .deck{position:relative;width:100vw;height:100vh;overflow:hidden}
-.slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;
+.slide{position:absolute;inset:0;display:flex;flex-direction:column;
   padding:clamp(3.2rem,8vh,5rem) var(--pad) clamp(3.6rem,8vh,5rem);
   opacity:0;visibility:hidden;pointer-events:none;
   transform:translateX(40px) scale(.985);
   transition:opacity .55s cubic-bezier(.2,.7,.2,1),transform .55s cubic-bezier(.2,.7,.2,1),visibility .55s;
-  overflow-y:auto;overflow-x:hidden;}
+  overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.3) rgba(255,255,255,.05);}
 .slide.active{opacity:1;visibility:visible;pointer-events:auto;transform:none;z-index:2}
 .slide.prev{transform:translateX(-40px) scale(.985)}
-.slide-inner{width:100%;max-width:1180px;margin:0 auto}
-.slide::-webkit-scrollbar{width:8px}
-.slide::-webkit-scrollbar-thumb{background:var(--t12);border-radius:4px}
+.slide-inner{width:100%;max-width:1180px;margin:auto}
+.slide::-webkit-scrollbar{width:10px}
+.slide::-webkit-scrollbar-track{background:rgba(255,255,255,.04);border-radius:4px}
+.slide::-webkit-scrollbar-thumb{background:rgba(255,255,255,.28);border-radius:4px}
+.slide::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.5)}
 
 /* kicker */
 .kicker{font-family:var(--mono);font-size:.72rem;letter-spacing:.28em;color:var(--t50);text-transform:uppercase;margin-bottom:1.2rem;display:flex;align-items:center;gap:.7rem}
