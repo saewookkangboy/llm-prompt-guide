@@ -327,6 +327,8 @@ h2.title{font-size:clamp(1.8rem,4vw,3rem);font-weight:800;line-height:1.12;lette
   background:linear-gradient(to top,rgba(20,22,28,.88),transparent);pointer-events:none}
 .botbar .brand{color:var(--t50)}
 .botbar .brand b{color:var(--accent2)}
+.botbar .cr{position:absolute;left:50%;transform:translateX(-50%);font-size:.6rem;letter-spacing:.07em;color:var(--t30);white-space:nowrap;pointer-events:none}
+@media(max-width:900px){.botbar .cr{display:none}}
 .botbar .right{display:flex;align-items:center;gap:1.2rem;pointer-events:auto}
 .counter{color:var(--t70)}
 .counter b{color:#fff;font-size:.82rem}
@@ -1957,6 +1959,7 @@ ROI가 기대보다 낮았어요.
 <!-- bottom bar -->
 <div class="botbar">
   <div class="brand">TROE<b>.</b>AX SERIES — LLM 프롬프트 엔지니어링 가이드</div>
+  <div class="cr">Copyright &copy; 2026, Made by Chunghyo &amp; TROE</div>
   <div class="right">
     <span class="counter"><b id="cur">01</b> / <span id="total">16</span></span>
     <button class="iconbtn" id="ovBtn">⊞ 개요</button>
