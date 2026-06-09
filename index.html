@@ -573,6 +573,79 @@ body.editing .cursor-glow{display:none}
 .pop-btn-copy:hover{border-color:var(--accent2);color:#fff;background:rgba(51,177,255,.12)}
 .pop-btn-close{border-color:var(--t12);color:var(--t50);background:none}
 .pop-btn-close:hover{border-color:#ff8389;color:#ff8389}
+/* ── Appendix Library ── */
+.app-domains{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin-top:1.6rem}
+@media(max-width:900px){.app-domains{grid-template-columns:1fr}}
+.app-dcard{position:relative;border:1px solid var(--t12);border-radius:8px;padding:1.4rem;
+  background:var(--t03);cursor:pointer;
+  transition:transform .25s cubic-bezier(.2,.7,.2,1),border-color .25s,background .25s,box-shadow .25s;
+  overflow:hidden;display:flex;flex-direction:column;gap:.5rem}
+.app-dcard::before{content:"";position:absolute;inset:0;border-radius:8px;opacity:0;transition:opacity .3s;
+  background:radial-gradient(280px circle at var(--mx-c,50%) var(--my-c,50%),rgba(51,177,255,.1),transparent 65%);
+  pointer-events:none}
+.app-dcard:hover{transform:translateY(-4px);background:var(--t05);box-shadow:0 14px 40px rgba(0,0,0,.35)}
+.app-dcard:hover::before{opacity:1}
+.app-dicon{font-size:1.5rem;line-height:1}
+.app-dtitle{font-size:1rem;font-weight:700;color:#fff}
+.app-ddesc{font-size:.82rem;color:var(--t50);line-height:1.5}
+.app-dbadge{font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;color:var(--accent2);
+  border:1px solid rgba(51,177,255,.3);border-radius:3px;padding:.2rem .55rem;
+  display:inline-block;margin-top:auto;align-self:flex-start;transition:background .2s}
+.app-dcard:hover .app-dbadge{background:rgba(51,177,255,.1)}
+.app-modal{position:fixed;inset:0;z-index:300;background:rgba(13,15,20,.9);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  display:flex;align-items:center;justify-content:center;padding:1.5rem;
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .28s cubic-bezier(.2,.7,.2,1),visibility .28s}
+.app-modal.show{opacity:1;visibility:visible;pointer-events:auto}
+.app-minner{width:100%;max-width:1300px;height:min(calc(100vh - 3rem),820px);
+  display:flex;flex-direction:column;background:var(--bg-deep);
+  border:1px solid var(--t12);border-radius:10px;overflow:hidden;
+  box-shadow:0 40px 100px rgba(0,0,0,.6)}
+.app-mhead{display:flex;align-items:center;padding:.8rem 1.2rem;border-bottom:1px solid var(--t12);gap:.8rem;flex-shrink:0}
+.app-mdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.app-mtitle{font-size:.92rem;font-weight:700;color:#fff}
+.app-mclose{margin-left:auto;font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;
+  color:var(--t50);background:var(--t05);border:1px solid var(--t12);border-radius:3px;
+  padding:.28rem .7rem;cursor:pointer;transition:.2s}
+.app-mclose:hover{color:#fff;border-color:var(--t30)}
+.app-mbody{display:flex;flex:1;overflow:hidden}
+.app-sidebar{width:220px;flex-shrink:0;border-right:1px solid var(--t12);overflow-y:auto;
+  padding:.5rem;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.15) transparent}
+.app-sidebar::-webkit-scrollbar{width:4px}
+.app-sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:4px}
+.app-sitem{padding:.55rem .8rem;border-radius:4px;cursor:pointer;transition:.15s;
+  color:var(--t70);font-size:.83rem;line-height:1.35;border-left:2px solid transparent}
+.app-sitem:hover{background:var(--t05);color:#fff}
+.app-sitem.on{background:rgba(51,177,255,.1);color:var(--accent2);border-left-color:var(--accent2)}
+.app-snum{font-family:var(--mono);font-size:.62rem;color:var(--t30);display:block;margin-bottom:.1rem}
+.app-cpanel{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.app-tabs{display:flex;padding:.6rem 1.2rem 0;border-bottom:1px solid var(--t12);flex-shrink:0;gap:.3rem}
+.app-tab{font-family:var(--mono);font-size:.69rem;letter-spacing:.07em;padding:.42rem .95rem;
+  border:1px solid transparent;border-bottom:none;border-radius:4px 4px 0 0;
+  cursor:pointer;transition:.15s;color:var(--t50);background:transparent;position:relative;bottom:-1px}
+.app-tab:hover{color:var(--t70)}
+.app-tab.on{color:#fff;background:var(--t08);border-color:var(--t12)}
+.app-tab[data-m="gpt"].on{color:#10a37f;border-color:rgba(16,163,127,.4);background:rgba(16,163,127,.08)}
+.app-tab[data-m="claude"].on{color:var(--accent3);border-color:rgba(190,149,255,.4);background:rgba(190,149,255,.08)}
+.app-tab[data-m="gemini"].on{color:#f0c000;border-color:rgba(240,192,0,.4);background:rgba(240,192,0,.08)}
+.app-pwrap{flex:1;overflow-y:auto;padding:1.1rem 1.3rem;
+  scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.15) transparent}
+.app-pwrap::-webkit-scrollbar{width:5px}
+.app-pwrap::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:4px}
+.app-phead{display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem;gap:.8rem}
+.app-pname{font-size:.94rem;font-weight:700;color:#fff;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.app-copybtn{font-family:var(--mono);font-size:.65rem;letter-spacing:.1em;color:var(--t50);
+  background:var(--t05);border:1px solid var(--t12);border-radius:3px;padding:.24rem .62rem;
+  cursor:pointer;transition:.2s;flex-shrink:0}
+.app-copybtn:hover{color:#fff;border-color:var(--accent2);background:rgba(51,177,255,.1)}
+.app-pre{font-family:var(--mono);font-size:.78rem;line-height:1.82;color:var(--t70);
+  white-space:pre-wrap;word-break:break-word;background:var(--bg);
+  border:1px solid var(--t12);border-radius:6px;padding:1.1rem 1.2rem;margin:0}
+.app-tip{margin-top:.75rem;font-size:.8rem;color:var(--t50);line-height:1.6;
+  border-left:2px solid rgba(51,177,255,.25);padding-left:.8rem}
+.app-empty{display:flex;align-items:center;justify-content:center;height:100%;
+  color:var(--t30);font-family:var(--mono);font-size:.85rem}
 </style>
 </head>
 <body>
@@ -1792,6 +1865,49 @@ ROI가 기대보다 낮았어요.
   </div>
 </section>
 
+<!-- ══ APPENDIX ══ -->
+<section class="slide" data-title="부록 — 프롬프트 라이브러리" data-desc="전략·마케팅·커머스·기획 21종 템플릿">
+  <div class="wm">APP</div>
+  <div class="slide-inner">
+    <div class="kicker reveal">APPENDIX / 프롬프트 라이브러리</div>
+    <h2 class="title reveal">도메인별 <span class="hl">프롬프트 템플릿</span></h2>
+    <p class="sub reveal d1">도메인 카드를 클릭하면 <b>ChatGPT 5.5 · Claude Opus 4.8 · Gemini 3.5 Flash</b> 최적화 프롬프트를 바로 복사할 수 있습니다 — 총 21종</p>
+    <div class="app-domains reveal d1">
+      <div class="app-dcard" onclick="appOpenDomain('strategy')">
+        <div class="top-bar" style="background:#0f62fe"></div>
+        <div class="app-dicon">🎯</div>
+        <div class="app-dtitle">전략 프레임워크</div>
+        <div class="app-ddesc">MECE · Five Forces · BCG · SWOT · 시나리오 플래닝 등 핵심 분석 도구 12종</div>
+        <div class="app-dbadge">12종 템플릿 →</div>
+      </div>
+      <div class="app-dcard" onclick="appOpenDomain('marketing')">
+        <div class="top-bar" style="background:var(--accent2)"></div>
+        <div class="app-dicon">📣</div>
+        <div class="app-dtitle">디지털 마케팅 전략</div>
+        <div class="app-ddesc">채널 믹스 · 콘텐츠 전략 · 광고 운영 — 퍼포먼스 마케팅 실무 템플릿</div>
+        <div class="app-dbadge">3종 템플릿 →</div>
+      </div>
+      <div class="app-dcard" onclick="appOpenDomain('commerce')">
+        <div class="top-bar" style="background:var(--accent3)"></div>
+        <div class="app-dicon">🛒</div>
+        <div class="app-dtitle">커머스 전략</div>
+        <div class="app-ddesc">상품·가격·프로모션 · 전환 퍼널 · 재고·LTV — 이커머스 핵심 전략</div>
+        <div class="app-dbadge">3종 템플릿 →</div>
+      </div>
+      <div class="app-dcard" onclick="appOpenDomain('planning')">
+        <div class="top-bar" style="background:var(--accent4)"></div>
+        <div class="app-dicon">💡</div>
+        <div class="app-dtitle">기획 및 아이디어 전략</div>
+        <div class="app-ddesc">캠페인 기획 · 아이디어 브레인스토밍 · 크리에이티브 브리프 작성</div>
+        <div class="app-dbadge">3종 템플릿 →</div>
+      </div>
+    </div>
+    <div class="callout reveal d2" style="margin-top:1.2rem;border-left-color:var(--accent2)">
+      <b>활용법:</b> 도메인 선택 → 프레임워크 선택 → 모델 탭(ChatGPT 5.5 / Claude Opus 4.8 / Gemini 3.5 Flash) → COPY → <code style="font-family:var(--mono);color:var(--accent2);font-size:.9em">[ ]</code> 안을 내 상황으로 채워 붙여넣으세요
+    </div>
+  </div>
+</section>
+
 <!-- ══ 16 CLOSING ══ -->
 <section class="slide closing" data-title="START." data-desc="오늘 본 것 중 딱 하나만 시작하세요">
   <div class="slide-inner">
@@ -1811,6 +1927,24 @@ ROI가 기대보다 낮았어요.
 </section>
 
 </div><!-- /deck -->
+
+<!-- ══ Appendix Modal ══ -->
+<div class="app-modal" id="appModal">
+  <div class="app-minner">
+    <div class="app-mhead">
+      <div class="app-mdot" id="appMDot"></div>
+      <div class="app-mtitle" id="appMTitle"></div>
+      <button class="app-mclose" id="appMClose">ESC · 닫기</button>
+    </div>
+    <div class="app-mbody">
+      <div class="app-sidebar" id="appSidebar"></div>
+      <div class="app-cpanel">
+        <div class="app-tabs" id="appTabBar"></div>
+        <div class="app-pwrap" id="appPWrap"><div class="app-empty">← 왼쪽에서 프레임워크를 선택하세요</div></div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- nav arrows -->
 <div class="navbtn l hide" id="prevBtn">‹</div>
@@ -1903,6 +2037,10 @@ nextBtn.addEventListener('click',next);
 
 addEventListener('keydown',e=>{
   if(editing && e.target.isContentEditable) return;
+  if(document.getElementById('appModal')?.classList.contains('show')){
+    if(e.key==='Escape')appCloseModal();
+    return;
+  }
   if(overview.classList.contains('show')){
     if(e.key==='Escape'||e.key.toLowerCase()==='o'){closeOverview();}
     return;
@@ -1936,6 +2074,7 @@ deck.addEventListener('click',e=>{
 let wheelLock=false;
 addEventListener('wheel',e=>{
   if(editing||overview.classList.contains('show'))return;
+  if(document.getElementById('appModal')?.classList.contains('show'))return;
   const s=getSlides()[idx];
   if(s.scrollHeight>s.clientHeight+4){
     const atTop=s.scrollTop<=0, atBot=s.scrollTop+s.clientHeight>=s.scrollHeight-1;
@@ -2516,6 +2655,768 @@ addEventListener('keydown',e=>{
     if(llmPopup.classList.contains('open')){closeLLMPopup();return;}
   }
 },true);
+
+/* ═══════════════════════════════════════════════
+   APPENDIX PROMPT LIBRARY
+═══════════════════════════════════════════════ */
+const APP_MODELS=[
+  {id:'gpt',label:'ChatGPT 5.5',color:'#10a37f',
+   tip:'ChatGPT 5.5: 계획 선제시 + 루브릭 자기평가 패턴에 강합니다. function_calling으로 출력 구조를 고정하면 더 효과적입니다.'},
+  {id:'claude',label:'Claude Opus 4.8',color:'#be95ff',
+   tip:'Claude Opus 4.8: 역할 + 명확한 출력 요청 형식에 최적화되어 있습니다. 필요시 "표나 불릿으로 요약해 줘"를 추가하세요.'},
+  {id:'gemini',label:'Gemini 3.5 Flash',color:'#f0c000',
+   tip:'Gemini 3.5 Flash: 답변 시 "표와 불릿으로 정리해 줘"를 추가하면 활용도가 높습니다.'}
+];
+
+const APP_DOMAINS={
+strategy:{title:'전략 프레임워크',dot:'#0f62fe',items:[
+{id:'1-1',name:'MECE 이슈 트리',
+en:`You are a strategy consultant. Break down my business problem into a MECE (Mutually Exclusive, Collectively Exhaustive) issue tree.
+
+Deliver:
+1. Problem statement: One clear sentence (no vague or emotional language).
+2. MECE explanation: What it means, why breaking it hurts analysis, how to check each branch.
+3. Level 1: 2–4 top-level categories covering 100% with zero overlap.
+4. Level 2: Under each Level 1, 2–4 sub-issues that are also MECE.
+5. Level 3: For the most important Level 2 items, one more level (root causes or key questions).
+6. Overlap check: Any overlapping branches and how to fix.
+7. Gap check: What the tree misses and where to add it.
+8. Priority: Which branch most likely holds the root cause or biggest opportunity, and why.
+9. Hypothesis per Level 1 branch: One clear guess per branch.
+10. Visual layout: Description clear enough to rebuild in PowerPoint or Miro.
+
+My messy problem: [DESCRIBE YOUR BUSINESS PROBLEM]`,
+ko:`역할: 전략 컨설턴트. MECE 원칙으로 사업 문제를 이슈 트리로 분해해 주세요.
+
+다음 내용을 포함해 주세요 (가능하면 표와 불릿 사용):
+1. 문제 정의: 모호하거나 감정적 표현 없이 한 문장으로.
+2. MECE 설명: 의미, 위반 시 문제, 각 가지 검증 방법.
+3. Level 1: 2–4개 상위 범주 (100% 커버, 중복 없음).
+4. Level 2: 각 Level 1 아래 2–4개 하위 이슈 (MECE 유지).
+5. Level 3: 가장 중요한 Level 2에 대해 근본 원인/핵심 질문 한 단계 더.
+6. 중복·공백 검토: 겹치는 가지, 빠진 부분, 수정 방안.
+7. 우선순위: 근본 원인 또는 최대 기회가 있을 가능성이 가장 높은 가지와 이유.
+8. 가지별 가설: Level 1당 하나의 명확한 가설.
+9. 시각화: PowerPoint나 Miro에 바로 그릴 수 있도록 구조 설명.
+
+Format: 제목, 불릿, 필요 시 표를 사용해 구조화해 주세요.
+
+내 문제: [DESCRIBE YOUR BUSINESS PROBLEM]`},
+{id:'1-2',name:'파이브 포스 산업 분석',
+en:`You are a strategy consultant. Run a full Porter's Five Forces analysis for this industry.
+
+For each force (New Entrants, Supplier Power, Buyer Power, Substitutes, Competitive Rivalry):
+- Rate High / Medium / Low with evidence.
+- Give one specific action a smart company would take.
+
+Also provide:
+- Industry attractiveness score (1–10) and what it means for profit.
+- The single force that matters most for margins and why.
+- The most defensible and profitable position in this market.
+
+Format as a consulting-style report with force ratings, evidence, and ranked recommendations.
+
+Industry: [YOUR INDUSTRY OR MARKET]
+My position: [ENTERING AS / COMPETING AS]`,
+ko:`역할: 전략 컨설턴트. 포터의 파이브 포스 분석을 해 주세요.
+
+다음 형식으로 답해 주세요:
+- 5개 포스별: 위협 수준(High/Medium/Low), 근거, 스마트한 대응 1가지.
+- 산업 매력도 점수(1–10)와 수익성 의미.
+- 마진에 가장 큰 영향을 주는 단일 포스와 이유.
+- 이 시장에서 가장 방어 가능하고 수익성 있는 포지션.
+
+가능하면 표로 정리하고, 마지막에 권장사항 순위를 불릿으로 요약해 주세요.
+
+Industry: [YOUR INDUSTRY OR MARKET]
+My position: [ENTERING AS / COMPETING AS]`},
+{id:'1-3',name:'피라미드 원칙 / SCQA',
+en:`You are a communications expert using the Pyramid Principle (Barbara Minto). Turn my raw data into a boardroom-ready narrative.
+
+Deliver:
+1. Main message: One sentence a CEO would act on immediately.
+2. SCQA: Situation, Complication, Question, Answer.
+3. Pyramid: Three groups of supporting arguments, each with three data points or sub-arguments.
+4. Logic checks: Horizontal (same type of story per group) and vertical (every argument supports the one above).
+5. Executive summary: One polished SCQA paragraph for the opening.
+6. Slide 1: Headline, supporting points, and data highlights.
+
+My raw data and findings: [PASTE YOUR DATA, BULLET POINTS, OR ANALYSIS]
+Audience: [WHO WILL RECEIVE THIS]`,
+ko:`역할: 피라미드 원칙(바바라 민토)에 따른 커뮤니케이션 전문가. 원시 데이터를 보드룸용 스토리로 바꿔 주세요.
+
+포함 내용:
+- 한 문장 메인 메시지 (CEO가 즉시 행동할 수준).
+- SCQA: Situation, Complication, Question, Answer.
+- 피라미드: 3개 논리군, 각 3개 데이터/하위 논리.
+- 수평·수직 논리 검증.
+- 실행 요약 1문단 + 1번 슬라이드(헤드라인, 포인트, 데이터).
+
+불릿과 짧은 문단으로 구분해 주세요.
+
+My raw data and findings: [PASTE YOUR DATA]
+Audience: [WHO WILL RECEIVE THIS]`},
+{id:'1-4',name:'BCG 매트릭스',
+en:`You are a corporate strategy consultant. Build a BCG Growth-Share Matrix for my product portfolio.
+
+Deliver:
+- What each quadrant means (Stars, Cash Cows, Question Marks, Dogs) and the strategy logic.
+- How to set high/low growth cutoff and how to calculate relative market share for this industry.
+- Quadrant placement for each product with reasoning.
+- For each quadrant: who belongs, investment/cash implications, and what to do next.
+- Portfolio balance: Is the mix too heavy in one quadrant? What would better balance look like?
+- Where to move cash: From Cash Cows to fund which Stars and Question Marks.
+
+My product portfolio: [LIST PRODUCTS WITH REVENUE, MARKET SHARE, AND MARKET GROWTH DATA]`,
+ko:`역할: 기업 전략 컨설턴트. 내 제품 포트폴리오에 대한 BCG 성장-점유율 매트릭스를 만들어 주세요.
+
+다음 내용을 포함해 주세요 (가능하면 표 사용):
+1. 사분면 설명: Stars, Cash Cows, Question Marks, Dogs 각각의 의미와 전략 로직.
+2. 축 기준: 고성장/저성장 구분 기준, 상대 시장점유율 계산 방법.
+3. 제품별 사분면 배치: 각 제품을 어느 사분면에 넣을지와 이유.
+4. 사분면별 요약: 투자/현금 함의, 다음 행동.
+5. 포트폴리오 균형: 한 사분면에 치우침 여부, 더 나은 균형 모습.
+6. 자금 이동: Cash Cows에서 어떤 Stars·Question Marks로 자금을 돌릴지.
+
+Format: 제목, 표(사분면·제품 배치), 불릿 요약으로 구조화해 주세요.
+
+My product portfolio: [LIST PRODUCTS WITH REVENUE, MARKET SHARE, AND MARKET GROWTH DATA]`},
+{id:'1-5',name:'가설 기반 분석',
+en:`You are a strategy consultant on Day 1 of a new project. Set up a hypothesis-driven analysis.
+
+Deliver:
+- One clear, testable starting hypothesis and why it's the best starting point.
+- The 5 key questions that would prove or kill the hypothesis.
+- For each question: analyses needed and data sources.
+- A 3-week work plan (week-by-week).
+- Two backup hypotheses and what would make you switch.
+- Early signals that support or challenge the hypothesis.
+- Presentation outline (slide titles only) if the hypothesis holds.
+- What result would disprove the hypothesis and force a restart.
+
+Business situation: [DESCRIBE WHAT YOU KNOW SO FAR]
+Decision to be made: [WHAT THE ANALYSIS MUST ANSWER]`,
+ko:`역할: 전략 컨설턴트. 새 프로젝트 1일차에 가설 기반 분석을 설계해 주세요.
+
+다음 내용을 포함해 주세요 (가능하면 표·체크리스트 사용):
+1. 출발 가설: 검증 가능한 한 문장, 왜 이게 최선의 출발점인지.
+2. 핵심 질문 5개: 가설을 증명하거나 기각할 수 있는 질문.
+3. 질문별: 필요한 분석·데이터, 데이터 출처.
+4. 3주 워크플랜: 주차별 일정 표.
+5. 백업 가설 2개: 데이터가 다른 결론을 가리킬 때의 대안, 전환 조건.
+6. 초기 신호: 이미 있는 데이터 중 가설을 지지하거나 반박하는 것.
+7. 프레젠테이션 골격: 가설이 맞을 때 최종 덱의 슬라이드 제목만.
+8. 기각 조건: 어떤 결과가 나오면 가설을 버리고 다시 시작해야 하는지.
+
+Format: 제목, 표(워크플랜·질문-분석-출처), 불릿으로 구조화해 주세요.
+
+Business situation: [DESCRIBE WHAT YOU KNOW SO FAR]
+Decision to be made: [WHAT THE ANALYSIS MUST ANSWER]`},
+{id:'1-6',name:'경쟁 환경 요약',
+en:`You are a strategy analyst. Compress a competitive intelligence view into one executive-ready slide.
+
+Deliver:
+- Top 8 competitors ranked by relevance to my situation.
+- 6–8 comparison dimensions (pricing, target customer, distribution, type of advantage, growth direction, etc.).
+- Competitor grid: short rating and note per dimension.
+- Clusters: who is fighting the same fight vs. different game.
+- Open space: positions nobody owns.
+- Who is gaining, stuck, or losing.
+- Biggest threat in the next 18 months and how.
+- One-slide layout: what goes where.
+- Three-sentence CEO summary.
+
+My company or product: [DESCRIBE YOUR OFFERING AND MARKET POSITION]
+Key competitors: [LIST WHO YOU CONSIDER COMPETITION]`,
+ko:`역할: 전략 애널리스트. 경쟁 인텔리전스를 한 장의 실행형 슬라이드로 압축해 주세요.
+
+다음 내용을 포함해 주세요 (가능하면 표 사용):
+1. 상위 8개 경쟁사: 내 상황에 대한 중요도 순.
+2. 비교 차원 6~8개: 가격 모델, 타깃 고객, 유통, 경쟁 우위 유형, 성장 방향 등.
+3. 경쟁사 그리드: 차원별 평가와 한 줄 설명.
+4. 클러스터: 같은 전쟁을 하는 경쟁사 vs 완전히 다른 게임.
+5. 오픈 스페이스: 아무도 차지하지 않은 포지션.
+6. 동향: 성장하는 곳, 정체, 쇠퇴.
+7. 최대 위협: 향후 18개월 내 1개와 방식.
+8. 원슬라이드 레이아웃 + 3문장 CEO 요약.
+
+Format: 표(그리드·레이아웃), 불릿, 짧은 문단으로 구조화해 주세요.
+
+My company or product: [DESCRIBE YOUR OFFERING AND MARKET POSITION]
+Key competitors: [LIST WHO YOU CONSIDER COMPETITION]`},
+{id:'1-7',name:'실행 가능한 SWOT',
+en:`You are a strategy consultant. Produce a specific, evidence-based SWOT—no vague or generic items.
+
+Deliver:
+- Strengths: 4–5 real advantages with proof (measurable, hard to copy).
+- Weaknesses: 4–5 honest internal problems and how hard each is to fix.
+- Opportunities: 4–5 specific external conditions with timing.
+- Threats: 4–5 external forces with probability and impact.
+- Interaction analysis: 4 key combinations (S+O, S+T, W+O, W+T) and the strategic move each suggests.
+- Top priorities: one strength to lean into, one weakness to fix first, one opportunity to chase, one threat to address now.
+- Three concrete strategic actions from this SWOT.
+- "So what?" test: every item must lead to a clear action; otherwise remove.
+- One-slide 2x2 layout for the boardroom.
+
+My business: [COMPANY, PRODUCT, OR INITIATIVE]
+Context: [WHAT DECISION THIS SWOT IS HELPING WITH]`,
+ko:`역할: 전략 컨설턴트. 모호하지 않고 증거 기반인 SWOT를 만들어 주세요.
+
+다음 내용을 포함해 주세요 (가능하면 2x2 표 + 불릿):
+1. Strengths: 4~5개 실제 경쟁 우위, 근거(측정 가능·모방 어려움).
+2. Weaknesses: 4~5개 솔직한 내부 약점, 각각 개선 난이도.
+3. Opportunities: 4~5개 구체적 외부 조건, 타임라인.
+4. Threats: 4~5개 외부 위협, 발생 확률·영향도.
+5. 상호작용: S+O, S+T, W+O, W+T 중 가장 중요한 4가지와 전략적 행동.
+6. 우선순위: 가장 쓸 강점 1, 가장 먼저 고칠 약점 1, 당장 잡을 기회 1, 당장 대응할 위협 1.
+7. 전략 액션 3가지 + "So what?" 검증 + 원슬라이드 2x2 보드룸 레이아웃.
+
+Format: 2x2 표, 불릿, 한 슬라이드 레이아웃 설명으로 구조화해 주세요.
+
+My business: [COMPANY, PRODUCT, OR INITIATIVE]
+Context: [WHAT DECISION THIS SWOT IS HELPING WITH]`},
+{id:'1-8',name:'"So What?" 스트레스 테스트',
+en:`You are a senior strategy partner. Stress-test my recommendations by asking "So what?" until they are concrete and actionable.
+
+Deliver:
+- For each recommendation: "So what?" three times, down to a concrete, actionable insight.
+- Flag vague language ("improve efficiency," "drive growth," "optimize") and rewrite in specific, measurable terms.
+- Logic chain: Data → Insight → Implication → Recommendation → Action; flag broken links.
+- Specificity: what exactly, by how much, by when, owned by whom.
+- Pushback: what a skeptical CFO or board member would say and how to respond.
+- Priority order by impact and ease; correct sequence and dependencies.
+- Confidence: strong evidence vs. educated guess.
+- Slide title test: would each recommendation work as a slide headline that people can act on?
+
+My recommendations: [PASTE YOUR CURRENT RECOMMENDATIONS OR ANALYSIS]`,
+ko:`역할: 시니어 전략 파트너. 내 권고안에 "So what?"을 반복해 구체적·실행 가능할 때까지 검증해 주세요.
+
+다음 내용을 포함해 주세요 (가능하면 표·Before/After 사용):
+1. 권고별 "So what?" 3회: 구체적·실행 가능한 인사이트까지 끌어내기.
+2. 모호 표현 표시: "효율 개선", "성장 촉진" 등 → 구체적·측정 가능한 표현으로 대체.
+3. 논리 사슬: Data → Insight → Implication → Recommendation → Action; 끊긴 고리 표시.
+4. 구체성: 무엇을, 얼마나, 언제까지, 누가 책임지는지 누락 여부.
+5. 푸시백 리허설: 회의적인 CFO·이사회가 할 말과 내 대응.
+6. 우선순위: 영향도·실행 용이성 순, 의존관계와 올바른 순서.
+7. 신뢰도: 강한 근거 vs 추정 구분 + 슬라이드 제목 테스트.
+
+Format: 표(Before/After·우선순위), 불릿, 최종 우선순위 리스트로 구조화해 주세요.
+
+My recommendations: [PASTE YOUR CURRENT RECOMMENDATIONS OR ANALYSIS]`},
+{id:'1-9',name:'가치 사슬',
+en:`You are a strategy analyst. Map the value chain to find where we create, capture, and lose value.
+
+Deliver:
+- Primary activities: list and performance (inbound, operations, outbound, marketing/sales, service).
+- Support activities: systems, people, technology, purchasing; how they help or hinder primary.
+- Where we create value vs. competitors.
+- Where we lose value (margin leak to suppliers, middlemen, waste).
+- Cost structure: which activities consume most cost vs. value.
+- Competitor comparison: how our chain differs and what that means.
+- Make vs. buy: what could be outsourced without losing strategic control.
+- Integration: forward or backward moves that could improve margins or position.
+- Biggest lever: one activity where a 20% improvement would have the largest effect.
+
+My business: [DESCRIBE YOUR COMPANY AND INDUSTRY]
+My biggest cost or margin concern: [WHERE YOU FEEL THE MOST PRESSURE]`,
+ko:`역할: 전략 애널리스트. 가치 사슬을 매핑해 가치 창출·포착·유출 지점을 찾아 주세요.
+
+다음 내용을 포함해 주세요 (가능하면 표·다이어그램 설명 사용):
+1. 주 활동: 입고, 생산, 출고, 마케팅·영업, 서비스별 성과 평가.
+2. 지원 활동: 시스템, 인력, 기술, 구매; 주 활동을 돕거나 방해하는 부분.
+3. 가치 창출: 경쟁사 대비 우리가 진짜 더 나은 가치를 만드는 구간.
+4. 가치 유출: 마진이 공급처·중간·낭비로 빠지는 곳.
+5. 비용 구조: 가치 대비 비용이 가장 큰 활동.
+6. 경쟁사 비교: 우리 사슬과 최대 경쟁사 차이, 우위·열위.
+7. Make vs Buy: 전략적 통제를 잃지 않고 아웃소싱 가능한 활동.
+8. 통합 기회: 전방·후방 확장으로 마진·포지션 개선 가능성.
+9. 최대 레버: 20% 개선 시 전체 경쟁 포지션에 가장 큰 효과를 주는 단일 활동.
+
+Format: 제목, 표(활동·성과·비교), 불릿, 우선 개선 단계 순서로 구조화해 주세요.
+
+My business: [DESCRIBE YOUR COMPANY AND INDUSTRY]
+My biggest cost or margin concern: [WHERE YOU FEEL THE MOST PRESSURE]`},
+{id:'1-10',name:'시나리오 플래닝',
+en:`You are a strategy partner running scenario planning for a leadership team facing major uncertainty.
+
+Deliver:
+- Two key uncertainties (high impact, high uncertainty) as the two axes.
+- 2x2 scenario grid with four internally consistent scenarios.
+- For each scenario: 5–7 sentence story of the world in 3–5 years; a short name; 3 specific effects on our strategy, product, pricing, or operations.
+- Strategic options: safe bets (work across scenarios) vs. gambles (pay off in one).
+- Early warning signs: 3 signals per scenario to watch.
+- Protection plan: how to survive the worst scenario and win in the best.
+- Decision triggers: when to switch from one approach to another.
+
+My business context: [DESCRIBE YOUR INDUSTRY AND SITUATION]
+The uncertainty I worry about most: [BIGGEST UNKNOWN YOU FACE]`,
+ko:`역할: 전략 파트너. 불확실성이 큰 리더십 팀을 위한 시나리오 플래닝을 진행해 주세요.
+
+다음 내용을 포함해 주세요 (가능하면 2x2 표·불릿 사용):
+1. 핵심 불확실성 2개: 영향·불확실성 모두 큰 요인 → 매트릭스 두 축.
+2. 2x2 시나리오: 두 요인의 상·하 조합으로 만든 4가지 일관된 시나리오.
+3. 시나리오 스토리: 각 시나리오별 3~5년 후 세계를 5~7문장 + 짧은 이름 + 효과 3가지.
+4. 전략 옵션: 여러 시나리오에서 통하는 안전한 수 vs 한 시나리오에서만 성과 나는 도박적 수.
+5. 조기 경고 신호: 시나리오별로 지금 추적할 3가지 신호.
+6. 보호 계획: 최악 시나리오에서 살아남고 최선 시나리오에서 이기는 포지셔닝.
+7. 결정 트리거: 어떤 시점에서 어떤 접근으로 전환할지.
+
+Format: 2x2 표, 제목, 불릿, 짧은 문단으로 구조화해 주세요.
+
+My business context: [DESCRIBE YOUR INDUSTRY AND SITUATION]
+The uncertainty I worry about most: [BIGGEST UNKNOWN YOU FACE]`},
+{id:'1-11',name:'운영 모델',
+en:`You are an organization design consultant. Design an operating model that turns strategy into execution.
+
+Deliver:
+- How the stated strategy should shape each part of the operating model.
+- Structure options: functional, divisional, matrix, network—pros and cons for my situation.
+- Recommended structure and why.
+- Decision rights: for the 10 most important recurring decisions, who decides, who is consulted, who is informed (RACI).
+- Five critical processes, current gaps, and what must run well.
+- Performance tracking: what to measure, how often, what behavior to encourage.
+- 3–5 critical roles for competitive advantage and what "great" looks like.
+- 3–4 behaviors the model must encourage and how to make them stick.
+- Coordination: how teams stay aligned without excess meetings or approvals.
+- Rollout order to minimize disruption and get early wins.
+
+My business: [DESCRIBE COMPANY, STRATEGY, AND CURRENT SETUP]
+Biggest execution challenge: [WHERE STRATEGY IS NOT TURNING INTO RESULTS]`,
+ko:`역할: 조직 설계 컨설턴트. 전략을 일상 실행으로 바꾸는 운영 모델을 설계해 주세요.
+
+다음 내용을 포함해 주세요 (가능하면 표·RACI 사용):
+1. 전략→모델: 선언된 전략이 운영 모델 각 요소를 어떻게 구체적으로 반영해야 하는지.
+2. 구조 옵션: 기능형, 사업부형, 매트릭스, 네트워크—내 상황에 대한 장단.
+3. 권장 구조: 전략·규모·인력에 맞는 구조와 이유.
+4. 의사결정 권한: 가장 중요한 10가지 반복 의사결정에 대해 RACI.
+5. 핵심 프로세스 5개: 전략 실행에 필수인 프로세스, 현재 갭.
+6. 성과 추적: 무엇을, 얼마나 자주 측정할지, 유도할 행동.
+7. 핵심 역할 3~5개: 경쟁 우위에 가장 중요한 직무, "훌륭함"의 기준.
+8. 문화·행동, 조정, 롤아웃 순서.
+
+Format: 제목, 표(RACI·프로세스·롤아웃), 불릿으로 구조화해 주세요.
+
+My business: [DESCRIBE COMPANY, STRATEGY, AND CURRENT SETUP]
+Biggest execution challenge: [WHERE STRATEGY IS NOT TURNING INTO RESULTS]`},
+{id:'1-12',name:'전략 합성 마스터',
+en:`You are a senior strategy partner presenting final recommendations to the CEO and board. Synthesize everything into one strategy document.
+
+Deliver:
+- Where we stand: current state (market position, competition, financials, team capability).
+- The core question this analysis set out to answer.
+- Top 5 findings as sharp, evidence-backed insights.
+- Pyramid narrative: main message, three supporting arguments, nine data points.
+- Three strategic options: expected value, risk, capabilities needed, time to results.
+- My recommendation with reasoning for a skeptical board member.
+- Five success requirements for the recommended strategy.
+- 30-60-90 day plan: actions at 30 days, check at 60, turning point at 90.
+- Top 5 risks: probability, impact, mitigation.
+- One-page board summary: headline, three key findings, recommendation, next steps.
+
+My business: [FULL CONTEXT: COMPANY, MARKET, STAGE, TEAM, REVENUE, BIGGEST CHALLENGE]
+Decision to make: [THE STRATEGIC CHOICE THAT NEEDS TO BE RESOLVED]
+Timeline: [WHEN A DECISION MUST BE MADE]`,
+ko:`역할: 시니어 전략 파트너. CEO·이사회에 최종 권고를 제시하는 전략 문서로 모두 합성해 주세요.
+
+다음 내용을 포함해 주세요 (가능하면 표·불릿·한 페이지 요약 사용):
+1. 현재 위치: 시장 포지션, 경쟁, 재무, 팀 역량을 담은 현재 상태.
+2. 핵심 질문: 이번 분석이 답하려 한 단일 질문.
+3. 상위 5개 발견: 증거 기반의 날카로운 인사이트 5개.
+4. 피라미드 내러티브: 메인 메시지, 3개 지지 논리, 9개 데이터 포인트.
+5. 세 가지 전략 옵션: 기대 가치, 리스크, 필요 역량, 성과 시점.
+6. 내 권고: 회의적인 이사회를 설득할 논리.
+7. 성공 조건 5가지.
+8. 30-60-90일 계획: 30일 액션, 60일 점검, 90일 터닝포인트.
+9. 상위 5개 리스크: 확률, 영향, 완화 방안.
+10. 원페이지 보드 요약: 헤드라인, 핵심 발견 3, 권고, 다음 단계.
+
+Format: 제목, 표(옵션 비교·리스크·30-60-90), 불릿, 마지막에 한 페이지 보드 요약으로 구조화해 주세요.
+
+My business: [FULL CONTEXT: COMPANY, MARKET, STAGE, TEAM, REVENUE, BIGGEST CHALLENGE]
+Decision to make: [THE STRATEGIC CHOICE THAT NEEDS TO BE RESOLVED]
+Timeline: [WHEN A DECISION MUST BE MADE]`}
+]},
+marketing:{title:'디지털 마케팅 전략',dot:'#33b1ff',items:[
+{id:'2-1',name:'채널 전략',
+en:`You are a digital marketing strategist. Design a channel strategy that fits my business goals and budget.
+
+Deliver:
+- Channel mix: Which channels (owned, earned, paid—e.g. SEO, social, email, paid search, display, affiliates, influencers) to use and why, given my objectives.
+- Organic vs paid: For each relevant channel, recommend the balance (organic vs paid) and the reasoning.
+- Role per channel: Awareness vs consideration vs conversion vs retention—which channel does what in the funnel.
+- KPIs per channel: 2–3 metrics per channel (e.g. reach, CTR, CPA, ROAS, LTV) and how they ladder to business goals.
+- Budget allocation: How to split budget across channels (%), and how to reallocate if one underperforms.
+- Dependencies: Which channels depend on others (e.g. paid feeding retargeting, organic feeding email) and sequencing.
+- One-page channel map: A single visual description (or table) of channels, roles, and budget share.
+
+My business / brand: [COMPANY, PRODUCT, OR BRAND]
+Marketing objective: [AWARENESS / LEADS / SALES / RETENTION / OTHER]
+Budget level: [BUDGET RANGE OR RELATIVE: LIMITED / MODERATE / LARGE]
+Current channels in use: [LIST CURRENT CHANNELS AND ROUGH PERFORMANCE IF ANY]`,
+ko:`역할: 디지털 마케팅 전략가. 우리 목표와 예산에 맞는 채널 전략을 설계해 주세요.
+
+다음 내용을 포함해 주세요 (가능하면 표 사용):
+1. 채널 믹스: 사용할 채널(SEO, 소셜, 이메일, 검색/디스플레이 광고, 제휴, 인플루언서 등)과 선택 이유.
+2. 오가닉 vs 유료: 채널별 오가닉/유료 비중과 근거.
+3. 채널별 역할: 인지·검토·전환·유지별로 어떤 채널이 무슨 역할.
+4. 채널별 KPI: 채널당 2~3개 지표(도달, CTR, CPA, ROAS, LTV 등).
+5. 예산 배분: 채널별 예산 비중(%)과 부진 시 재배분 원칙.
+6. 의존관계: 채널 간 연계와 실행 순서.
+7. 원페이지 채널 맵: 채널·역할·예산을 한 장 표로 요약.
+
+Format: 제목, 표(채널·KPI·예산), 불릿으로 구조화해 주세요.
+
+My business / brand: [COMPANY, PRODUCT, OR BRAND]
+Marketing objective: [AWARENESS / LEADS / SALES / RETENTION / OTHER]
+Budget level: [BUDGET RANGE OR RELATIVE: LIMITED / MODERATE / LARGE]
+Current channels in use: [LIST CURRENT CHANNELS AND ROUGH PERFORMANCE IF ANY]`},
+{id:'2-2',name:'콘텐츠 전략',
+en:`You are a content strategist. Build a content strategy that supports my marketing and business goals.
+
+Deliver:
+- Content funnel: What content we need at each stage (awareness, consideration, conversion, loyalty) and the job it does.
+- Format mix: Which formats (blog, video, short-form, podcast, newsletter, UGC, etc.) for which stages and channels, with rationale.
+- Content pillars: 3–5 thematic pillars that align with brand and search/audience needs; 3–5 topic ideas per pillar.
+- Calendar approach: How to plan by season, campaign, and always-on; cadence per channel and format.
+- Production feasibility: What we can realistically produce with my team/resources; what to prioritize or simplify.
+- Performance measurement: What to track (traffic, engagement, leads, conversions, shares) and how to attribute content to outcomes.
+- Quick wins: 3–5 content moves that can show results in the next 4–8 weeks.
+
+My business / brand: [COMPANY, PRODUCT, OR BRAND]
+Target audience: [WHO WE WANT TO REACH]
+Goals: [BRAND AWARENESS / LEADS / SALES / COMMUNITY / OTHER]
+Current content: [WHAT WE ALREADY PUBLISH AND WHERE]
+Resources: [TEAM SIZE, BUDGET, FREQUENCY WE CAN COMMIT]`,
+ko:`역할: 콘텐츠 전략가. 마케팅·사업 목표에 맞는 콘텐츠 전략을 수립해 주세요.
+
+다음 내용을 포함해 주세요 (가능하면 표 사용):
+1. 콘텐츠 퍼널: 인지·검토·전환·충성 단계별 필요한 콘텐츠와 역할.
+2. 포맷 믹스: 블로그, 영상, 숏폼, 팟캐스트, 뉴스레터, UGC 등 포맷별 단계·채널·근거.
+3. 콘텐츠 필러: 3~5개 테마; 필러당 3~5개 토픽 아이디어.
+4. 캘린더: 시즌·캠페인·상시 운영 기준, 채널·포맷별 발행 주기.
+5. 제작 현실성: 현재 리소스로 가능한 양·퀄리티; 우선순위와 단순화 방안.
+6. 성과 측정: 트래픽, 참여, 리드, 전환 등 추적 지표와 콘텐츠 기여도 보는 방법.
+7. 빠른 성과: 4~8주 내 결과를 낼 수 있는 콘텐츠 액션 3~5개.
+
+Format: 제목, 표(필러·토픽, 캘린더 템플릿), 불릿으로 구조화해 주세요.
+
+My business / brand: [COMPANY, PRODUCT, OR BRAND]
+Target audience: [WHO WE WANT TO REACH]
+Goals: [BRAND AWARENESS / LEADS / SALES / COMMUNITY / OTHER]
+Current content: [WHAT WE ALREADY PUBLISH AND WHERE]
+Resources: [TEAM SIZE, BUDGET, FREQUENCY WE CAN COMMIT]`},
+{id:'2-3',name:'광고 운영 전략',
+en:`You are a paid media strategist. Design an advertising operations strategy for my campaigns.
+
+Deliver:
+- Campaign structure: How to organize campaigns and ad sets (by objective, audience, creative, or product) for the platforms I use; naming convention.
+- Targeting approach: Audience segments (demographics, interests, lookalike, retargeting), and how to test and narrow without over-restricting.
+- Bidding and budget: Recommended bid strategy (e.g. lowest cost, target CPA/ROAS, manual) and budget pacing (daily vs lifetime, by campaign); when to scale or cut.
+- Creative and testing: How many creatives/copies to test per ad set; A/B test plan (what to test first, sample size, decision rule); refresh cadence.
+- Tracking and attribution: What events to track, how to use UTM and conversion APIs; attribution model choice and limitations.
+- Reporting: Key metrics per objective (impressions, CTR, CPC, CPA, ROAS, etc.); report frequency and one-page dashboard outline.
+- Platform-specific notes: Any must-dos for the platforms I use (e.g. Meta, Google, TikTok, LinkedIn).
+
+Platforms: [META / GOOGLE / TIKTOK / LINKEDIN / OTHER]
+Primary objective: [AWARENESS / TRAFFIC / LEADS / SALES / APP INSTALLS]
+Budget: [DAILY OR MONTHLY RANGE]
+Current setup: [WHAT WE HAVE RUNNING NOW, IF ANY]`,
+ko:`역할: 페이드 미디어 전략가. 우리 캠페인의 광고 운영 전략을 설계해 주세요.
+
+다음 내용을 포함해 주세요 (가능하면 표 사용):
+1. 캠페인 구조: 목표·오디언스·크리에이티브별 캠페인/광고세트 구성; 네이밍 규칙.
+2. 타깃팅: 인구·관심·룩알라이크·리타겟 세그먼트; 테스트와 축소 시 주의점.
+3. 입찰·예산: 입찰 전략(최저비용, 목표CPA/ROAS 등), 예산 페이싱; 스케일업·커트 기준.
+4. 크리에이티브·테스트: 광고세트당 크리에이티브/카피 수, A/B 테스트 계획; 리프레시 주기.
+5. 추적·어트리뷰션: 전환 이벤트, UTM·전환 API 활용; 어트리뷰션 모델과 한계.
+6. 리포팅: 목표별 핵심 지표(노출, CTR, CPC, CPA, ROAS 등); 리포트 주기와 원페이지 대시보드 구성.
+7. 플랫폼별 참고: 사용 플랫폼(메타, 구글, 틱톡, 링크드인 등)별 유의사항.
+
+Format: 제목, 표(캠페인 구조·리포팅 템플릿), 불릿으로 구조화해 주세요.
+
+Platforms: [META / GOOGLE / TIKTOK / LINKEDIN / OTHER]
+Primary objective: [AWARENESS / TRAFFIC / LEADS / SALES / APP INSTALLS]
+Budget: [DAILY OR MONTHLY RANGE]
+Current setup: [WHAT WE HAVE RUNNING NOW, IF ANY]`}
+]},
+commerce:{title:'커머스 전략',dot:'#be95ff',items:[
+{id:'3-1',name:'상품·카탈로그 및 가격·프로모션',
+en:`You are an e-commerce strategist. Help me define product/catalog and pricing/promotion strategy.
+
+Deliver:
+- Product and catalog strategy: What to emphasize (hero products, bundles, categories); how to organize the catalog for discovery and conversion; any gaps or opportunities in the current lineup.
+- Pricing strategy: How to position on price (premium, value, penetration); price elasticity considerations; psychological pricing or discount framing if relevant.
+- Promotion strategy: Types of promotions (flash sales, BOGO, % off, bundles, loyalty) and when to use each; calendar approach for key seasons and events.
+- Channel-specific pricing/promo: If we sell on multiple channels (own site, marketplaces, social), how to keep consistency or where to differentiate.
+- Metrics: KPIs to track (ASP, margin, sell-through, promo lift, discount depth) and how to evaluate promo effectiveness.
+
+My business: [BRAND / CATEGORY / TYPE OF PRODUCTS]
+Sales channels: [OWN SITE / MARKETPLACES / SOCIAL COMMERCE / OTHER]
+Current pricing and promo: [BRIEF DESCRIPTION]
+Goals: [VOLUME / MARGIN / NEW CUSTOMERS / CLEARANCE / OTHER]`,
+ko:`역할: 이커머스 전략가. 상품·카탈로그와 가격·프로모션 전략을 정리해 주세요.
+
+다음 내용을 포함해 주세요 (가능하면 표 사용):
+1. 상품·카탈로그: 히어로 상품, 번들, 카테고리 구성; 발견·전환 높이는 방법; 현재 라인업 갭·기회.
+2. 가격 전략: 포지셔닝(프리미엄/가치/침투); 가격 탄력성; 심리적 가격·할인 프레이밍.
+3. 프로모션 전략: 프로모 유형(플래시, BOGO, %할인, 번들, 로열티)과 사용 시점; 시즌·이벤트 캘린더.
+4. 채널별 가격·프로모: 자사·마켓플레이스·소셜커머스 간 일관성 또는 차별화 방향.
+5. 지표: ASP, 마진, 셀스루, 프로모 리프트, 할인 깊이 등 추적 KPI와 프로모 효과 평가 방법.
+
+Format: 제목, 표(프로모 캘린더 등), 불릿으로 구조화해 주세요.
+
+My business: [BRAND / CATEGORY / TYPE OF PRODUCTS]
+Sales channels: [OWN SITE / MARKETPLACES / SOCIAL COMMERCE / OTHER]
+Current pricing and promo: [BRIEF DESCRIPTION]
+Goals: [VOLUME / MARGIN / NEW CUSTOMERS / CLEARANCE / OTHER]`},
+{id:'3-2',name:'전환 퍼널·CRO 및 채널 전략',
+en:`You are an e-commerce strategist. Design conversion funnel, CRO, and channel strategy for my business.
+
+Deliver:
+- Funnel map: Steps from first touch to purchase (and repeat); where we lose people and biggest drop-off points.
+- CRO priorities: 3–5 levers to improve conversion (e.g. product page, cart/checkout, trust, mobile, speed); quick wins vs longer tests.
+- Channel role: For each sales channel (own site, marketplaces, social commerce), define role (volume, margin, acquisition, brand) and how they support each other.
+- Cross-channel: How to drive traffic and loyalty across channels (e.g. social to site, marketplace to email); attribution and measurement approach.
+- One-page funnel + channel view: Single summary of funnel stages, key metrics per stage, and channel roles.
+
+My business: [BRAND / CATEGORY]
+Sales channels: [OWN SITE / WHICH MARKETPLACES / SOCIAL COMMERCE]
+Current conversion / traffic: [KEY NUMBERS IF ANY]
+Biggest conversion concern: [WHERE WE FEEL WE LOSE CUSTOMERS]`,
+ko:`역할: 이커머스 전략가. 전환 퍼널, CRO, 채널 전략을 설계해 주세요.
+
+다음 내용을 포함해 주세요 (가능하면 표 사용):
+1. 퍼널 맵: 첫 접점부터 구매·재구매까지 단계; 이탈 구간과 주요 원인.
+2. CRO 우선순위: 전환 개선 레버 3~5개(상품페이지, 장바구니/결제, 신뢰, 모바일, 속도 등); 빠른 개선 vs 실험.
+3. 채널 역할: 자사몰·마켓플레이스·소셜커머스별 역할(물량, 마진, 신규 확보, 브랜드); 상호 보완 관계.
+4. 크로스 채널: 채널 간 유입·재방문 유도; 측정·어트리뷰션 방향.
+5. 원페이지: 퍼널 단계·주요 지표·채널 역할을 한 장으로 요약.
+
+Format: 제목, 표(퍼널·채널 역할), 불릿으로 구조화해 주세요.
+
+My business: [BRAND / CATEGORY]
+Sales channels: [OWN SITE / WHICH MARKETPLACES / SOCIAL COMMERCE]
+Current conversion / traffic: [KEY NUMBERS IF ANY]
+Biggest conversion concern: [WHERE WE FEEL WE LOSE CUSTOMERS]`},
+{id:'3-3',name:'재고·풀필먼트 및 LTV·리텐션',
+en:`You are an e-commerce and retention strategist. Advise on inventory/fulfillment and LTV/retention.
+
+Deliver:
+- Inventory strategy: How to balance stock levels (best sellers vs long tail); when to reorder; how to avoid overstock and stockouts; any seasonal or event-driven plan.
+- Fulfillment: Options (in-house vs 3PL, same-day/next-day); cost vs speed vs control; how fulfillment affects conversion and returns.
+- LTV view: How to define and measure LTV; what drives LTV in our category (repeat rate, AOV, tenure); segment (e.g. high vs low LTV) and how to treat each.
+- Retention tactics: Post-purchase flow (email, SMS, loyalty, reviews); win-back; subscription or repeat incentives if relevant.
+- Metrics: KPIs for inventory (turn, fill rate, days of stock), fulfillment (delivery time, return rate), and retention (repeat rate, LTV, churn).
+
+My business: [BRAND / CATEGORY]
+Fulfillment today: [IN-HOUSE / 3PL / MARKETPLACE FULFILLMENT]
+Repeat purchase rate / LTV: [CURRENT NUMBERS OR ESTIMATE]
+Retention goal: [MORE REPEAT / REDUCE CHURN / GROW LTV / OTHER]`,
+ko:`역할: 이커머스·리텐션 전략가. 재고·풀필먼트와 LTV·리텐션 전략을 정리해 주세요.
+
+다음 내용을 포함해 주세요 (가능하면 표 사용):
+1. 재고 전략: 베스트셀러 vs 롱테일 균형; 재고 시점; 과재고·품절 방지; 시즌·이벤트 대응.
+2. 풀필먼트: 자체 vs 3PL, 당일/익일 배송; 비용·속도·통제 트레이드오프; 전환·반품에 미치는 영향.
+3. LTV: LTV 정의·측정; 우리 카테고리에서 LTV를 높이는 요인; 세그먼트(고/저 LTV)와 대응.
+4. 리텐션: 구매 후 플로우(이메일, SMS, 로열티, 리뷰); 윈백; 구독·재구매 인센티브.
+5. 지표: 재고(회전율, 채우기율, 재고일수), 풀필먼트(배송일수, 반품률), 리텐션(재구매율, LTV, 이탈).
+
+Format: 제목, 표(지표·액션), 불릿으로 구조화해 주세요.
+
+My business: [BRAND / CATEGORY]
+Fulfillment today: [IN-HOUSE / 3PL / MARKETPLACE FULFILLMENT]
+Repeat purchase rate / LTV: [CURRENT NUMBERS OR ESTIMATE]
+Retention goal: [MORE REPEAT / REDUCE CHURN / GROW LTV / OTHER]`}
+]},
+planning:{title:'기획 및 아이디어 전략',dot:'#42be65',items:[
+{id:'4-1',name:'캠페인·프로모션 기획',
+en:`You are a campaign and promotion planner. Help me plan a campaign or promotion from brief to execution outline.
+
+Deliver:
+- Objective and success criteria: One clear objective (awareness, consideration, conversion, retention) and 2–3 measurable success metrics.
+- Target audience: Who we are targeting; one-sentence persona or segment description; where they are (channels, touchpoints).
+- Concept and message: One campaign idea or theme; key message and proof points; tone and manner.
+- Channel and tactic plan: Which channels and tactics (paid, organic, email, PR, events, etc.) and what each does in the campaign.
+- Timeline: Phases (pre-launch, launch, sustain, wrap); key dates and milestones.
+- Budget and resource: How to split budget across channels/tactics; any resource or dependency (creative, tech, partners).
+- Risks and contingencies: What could go wrong and one mitigation per risk.
+- One-page campaign brief: Headline, objective, audience, concept, channels, timeline, and success metrics.
+
+Campaign or promotion name: [NAME]
+Business context: [PRODUCT / BRAND / SEASON / EVENT]
+Budget and timeline: [BUDGET RANGE, START AND END]
+Target audience: [WHO]
+Current idea or constraint: [ANY EXISTING CREATIVE OR LIMITATION]`,
+ko:`역할: 캠페인·프로모션 기획자. 캠페인/프로모션을 브리프부터 실행 골격까지 기획해 주세요.
+
+다음 내용을 포함해 주세요 (가능하면 표 사용):
+1. 목표·성공 지표: 단일 목표(인지/검토/전환/유지); 성공 지표 2~3개.
+2. 타깃: 타깃 오디언스; 페르소나/세그먼트 한 줄; 접점(채널, 터치포인트).
+3. 콘셉트·메시지: 캠페인 아이디어/테마; 핵심 메시지·근거; 톤앤매너.
+4. 채널·전술: 채널·전술별 역할(유료·오가닉·이메일·PR·이벤트 등); 단계별 기여.
+5. 일정: 프리런치·런치·유지·마감; 주요 마일스톤.
+6. 예산·리소스: 채널/전술별 예산 배분; 크리에이티브·기술·파트너 의존사항.
+7. 리스크·대응: 리스크와 각 1개 완화 방안.
+8. 원페이지 캠페인 브리프: 헤드라인, 목표, 오디언스, 콘셉트, 채널, 일정, 성공 지표.
+
+Format: 제목, 표(일정·예산), 불릿으로 구조화해 주세요.
+
+Campaign or promotion name: [NAME]
+Business context: [PRODUCT / BRAND / SEASON / EVENT]
+Budget and timeline: [BUDGET RANGE, START AND END]
+Target audience: [WHO]
+Current idea or constraint: [ANY EXISTING CREATIVE OR LIMITATION]`},
+{id:'4-2',name:'아이디어 브레인스토밍 및 콘셉트 정교화',
+en:`You are a creative strategist. Run an idea-generation and concept-sharpening process for my project.
+
+Deliver:
+- Idea generation: 8–12 distinct ideas (campaign ideas, angles, hooks, or formats) that fit the brief; mix of safe and bold options.
+- Selection criteria: 3–5 criteria to score ideas (e.g. fit to objective, memorability, feasibility, differentiation); apply them and rank or shortlist.
+- Top 3 concepts: For the top 3 ideas, one paragraph each: what it is, why it works, what we need to make it (assets, channels, timeline).
+- Concept refinement: For the chosen concept, sharpen the big idea, key message, and one-liner; suggest visual or tone directions.
+- "So what?" check: For the chosen concept, why would the audience care and what action we want; one objection and how we answer it.
+
+Project / campaign: [NAME OR BRIEF DESCRIPTION]
+Objective: [WHAT WE WANT TO ACHIEVE]
+Target audience: [WHO]
+Constraints: [BUDGET, CHANNELS, BRAND GUIDELINES, ETC.]`,
+ko:`역할: 크리에이티브 전략가. 아이디어 발상·선정·콘셉트 다듬기를 진행해 주세요.
+
+다음 내용을 포함해 주세요 (가능하면 표 사용):
+1. 아이디어 생성: 브리프에 맞는 8~12개 아이디어(캠페인·앵글·훅·포맷); 안전한 옵션과 대담한 옵션 혼합.
+2. 선정 기준: 목표 부합도, 기억도, 실행 가능성, 차별화 등 3~5개 기준; 적용해 순위·숏리스트.
+3. 상위 3개 콘셉트: 각 1문단—무엇인지, 왜 효과적인지, 필요 자산·채널·일정.
+4. 콘셉트 정교화: 선정 콘셉트의 빅 아이디어·핵심 메시지·원라이너; 비주얼·톤 방향.
+5. "So what?" 검증: 타깃이 왜 신경 쓸지, 원하는 행동; 예상 반론 1개와 답변.
+
+Format: 제목, 표(아이디어·점수), 불릿으로 구조화해 주세요.
+
+Project / campaign: [NAME OR BRIEF DESCRIPTION]
+Objective: [WHAT WE WANT TO ACHIEVE]
+Target audience: [WHO]
+Constraints: [BUDGET, CHANNELS, BRAND GUIDELINES, ETC.]`},
+{id:'4-3',name:'커뮤니케이션 방향 및 크리에이티브 브리프',
+en:`You are a creative strategist. Turn my campaign or product context into a clear communication direction and creative brief.
+
+Deliver:
+- Communication strategy: What we want to say and why; single-minded takeaway; proof points or reasons to believe.
+- Audience insight: One insight that unlocks the message or creative (need, desire, barrier, or behavior).
+- Tone and manner: How we want to sound and look (e.g. bold, warm, expert, playful); what to avoid.
+- Channel adaptation: How the core message adapts by channel (e.g. short-form vs long-form, visual vs copy-led) without losing the idea.
+- Creative brief (one page): Objective, audience, insight, key message, tone, mandatories (do's and don'ts), deliverables, and success metrics.
+- Reference direction: 2–3 reference styles or benchmarks (mood, format, or brand) that illustrate the direction (describe in text if no images).
+
+Project: [CAMPAIGN / PRODUCT / LAUNCH]
+Context: [BACKGROUND, COMPETITION, OPPORTUNITY]
+Target audience: [WHO]
+Current draft message or idea: [ANY EXISTING COPY OR CONCEPT]
+Deliverables needed: [E.G. VIDEO, STATIC ADS, SOCIAL, EMAIL]`,
+ko:`역할: 크리에이티브 전략가. 캠페인/제품 맥락을 커뮤니케이션 방향과 크리에이티브 브리프로 정리해 주세요.
+
+다음 내용을 포함해 주세요 (가능하면 표 사용):
+1. 커뮤니케이션 전략: 말할 내용과 이유; 단일 테이크어웨이; 근거·RTB.
+2. 오디언스 인사이트: 메시지/크리에이티브를 여는 한 줄 인사이트(니즈·욕구·장벽·행동).
+3. 톤앤매너: 소리·보이는 방식; 피할 것.
+4. 채널별 적용: 코어 메시지를 채널(숏폼/롱폼, 비주얼/카피 중심)별로 어떻게 바꿀지.
+5. 크리에이티브 브리프(1페이지): 목표, 오디언스, 인사이트, 핵심 메시지, 톤, 필수/금지, 디리버러블, 성공 지표.
+6. 레퍼런스: 무드·포맷·브랜드 참고 2~3개(텍스트로 설명).
+
+Format: 제목, 브리프 표, 불릿으로 구조화해 주세요.
+
+Project: [CAMPAIGN / PRODUCT / LAUNCH]
+Context: [BACKGROUND, COMPETITION, OPPORTUNITY]
+Target audience: [WHO]
+Current draft message or idea: [ANY EXISTING COPY OR CONCEPT]
+Deliverables needed: [E.G. VIDEO, STATIC ADS, SOCIAL, EMAIL]`}
+]}};
+
+let _appDomain=null, _appItemIdx=0, _appModel='gpt';
+
+function appGetPrompt(item,modelId){
+  if(modelId==='gemini') return item.ko;
+  return item.en;
+}
+
+function appOpenDomain(domainId){
+  const d=APP_DOMAINS[domainId]; if(!d)return;
+  _appDomain=domainId; _appItemIdx=0; _appModel='gpt';
+  document.getElementById('appMDot').style.background=d.dot;
+  document.getElementById('appMTitle').textContent=d.title;
+  appBuildSidebar(d);
+  appShowItem(0);
+  document.getElementById('appModal').classList.add('show');
+  document.body.style.overflow='hidden';
+}
+
+function appBuildSidebar(d){
+  const sb=document.getElementById('appSidebar');
+  sb.innerHTML=d.items.map((item,i)=>
+    `<div class="app-sitem${i===0?' on':''}" onclick="appShowItem(${i})">
+      <span class="app-snum">${item.id}</span>${item.name}
+    </div>`
+  ).join('');
+}
+
+function appShowItem(idx){
+  _appItemIdx=idx;
+  document.querySelectorAll('.app-sitem').forEach((el,i)=>el.classList.toggle('on',i===idx));
+  appBuildTabs();
+  appRenderContent();
+}
+
+function appBuildTabs(){
+  const bar=document.getElementById('appTabBar');
+  bar.innerHTML=APP_MODELS.map(m=>
+    `<button class="app-tab${m.id===_appModel?' on':''}" data-m="${m.id}" onclick="appSelectModel('${m.id}')">${m.label}</button>`
+  ).join('');
+}
+
+function appSelectModel(modelId){
+  _appModel=modelId;
+  document.querySelectorAll('.app-tab').forEach(t=>t.classList.toggle('on',t.dataset.m===modelId));
+  appRenderContent();
+}
+
+function appRenderContent(){
+  const d=APP_DOMAINS[_appDomain]; if(!d)return;
+  const item=d.items[_appItemIdx]; if(!item)return;
+  const text=appGetPrompt(item,_appModel);
+  const tip=APP_MODELS.find(m=>m.id===_appModel)?.tip||'';
+  const esc=text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  document.getElementById('appPWrap').innerHTML=`
+    <div class="app-phead">
+      <div class="app-pname">${item.id} · ${item.name}</div>
+      <button class="app-copybtn" id="appCopyBtn">COPY</button>
+    </div>
+    <pre class="app-pre">${esc}</pre>
+    <div class="app-tip">${tip}</div>`;
+  document.getElementById('appCopyBtn').addEventListener('click',()=>{
+    navigator.clipboard.writeText(text).then(()=>{
+      const btn=document.getElementById('appCopyBtn');
+      btn.textContent='COPIED ✓';
+      setTimeout(()=>btn.textContent='COPY',1400);
+    });
+  });
+}
+
+function appCloseModal(){
+  document.getElementById('appModal').classList.remove('show');
+  document.body.style.overflow='';
+}
+
+document.getElementById('appMClose').addEventListener('click',appCloseModal);
+document.getElementById('appModal').addEventListener('click',e=>{
+  if(e.target===document.getElementById('appModal'))appCloseModal();
+});
+
+// glow effect on domain cards
+document.querySelectorAll('.app-dcard').forEach(c=>{
+  c.addEventListener('mousemove',e=>{
+    const r=c.getBoundingClientRect();
+    c.style.setProperty('--mx-c',((e.clientX-r.left)/r.width*100)+'%');
+    c.style.setProperty('--my-c',((e.clientY-r.top)/r.height*100)+'%');
+  });
+});
 </script>
 </body>
 </html>
