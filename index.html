@@ -391,9 +391,140 @@ body.editing .slide{padding-top:4.5rem}
 body.editing .helphint{display:none}
 body.editing .cursor-glow{display:none}
 
+/* ═══════════════════════════════════
+   RESPONSIVE — TABLET (≤ 1024px)
+═══════════════════════════════════ */
+@media(max-width:1024px){
+  .wm{font-size:clamp(5rem,12vw,10rem)}
+  h2.title{font-size:clamp(1.7rem,3.8vw,2.6rem)}
+}
+
+/* ═══════════════════════════════════
+   RESPONSIVE — MOBILE (≤ 760px)
+═══════════════════════════════════ */
 @media(max-width:760px){
-  .navbtn{width:40px;height:40px;font-size:1.1rem}
+  /* --- 기본 레이아웃 --- */
+  :root{--pad:1.1rem}
+  .slide{
+    padding-top:clamp(2.6rem,6vh,3.4rem);
+    padding-bottom:clamp(3.4rem,8vh,4.5rem);
+  }
+  .slide-inner{max-width:100%}
+
+  /* --- 워터마크 --- */
+  .wm{font-size:clamp(3.2rem,18vw,5.5rem);top:clamp(1.6rem,4vh,2.5rem);opacity:.55}
+
+  /* --- 타이포그래피 --- */
+  h2.title{font-size:clamp(1.4rem,7vw,2rem);letter-spacing:-.02em}
+  .sub{font-size:.88rem;max-width:100%;margin-top:.6rem}
+  .kicker{font-size:.62rem;letter-spacing:.16em;margin-bottom:.8rem}
+  .callout{font-size:.84rem;padding:.8rem 1rem}
+
+  /* --- 히어로 --- */
+  .hero h1{font-size:clamp(2.6rem,14vw,4.5rem)}
+  .hero .lead{font-size:clamp(.92rem,4vw,1.1rem);margin-top:1rem}
+  .hero .marq{font-size:.62rem;letter-spacing:.18em;margin-top:1.4rem}
+  .hero .meta-chips{margin-top:1rem}
+  .hero .meta-chips .chip{font-size:.62rem;padding:.25rem .55rem}
+
+  /* --- 테이블 (가로 스크롤 강제) --- */
+  .tbl{min-width:580px;font-size:.76rem}
+  .tbl th{padding:.45rem .6rem;font-size:.62rem;letter-spacing:.06em}
+  .tbl td{padding:.45rem .6rem;font-size:.76rem;line-height:1.5}
+  .tbl th:first-child,.tbl td:first-child{min-width:80px}
+  .badge{font-size:.58rem;padding:.15rem .4rem;margin-left:.25rem}
+
+  /* --- 카드 --- */
+  .card{padding:1.1rem}
+  .card p{font-size:.84rem}
+  .card h3{font-size:1rem}
+
+  /* --- 전략 카드 (.sc) --- */
+  .sc{padding:1rem}
+  .sc li{font-size:.8rem}
+  .sc-name{font-size:.92rem}
+  .sc-click-hint{font-size:.6rem}
+
+  /* --- 목록 --- */
+  .dlist li{font-size:.86rem}
+  .pf-desc{font-size:.8rem}
+  .pf-title{font-size:.86rem}
+  .wf-title{font-size:.9rem}
+  .wf-desc{font-size:.8rem}
+  .wf-num{width:44px;font-size:1.3rem}
+
+  /* --- 코드 블록 --- */
+  .code pre{font-size:.74rem;line-height:1.65}
+  .bc-prompt{font-size:.78rem;line-height:1.7}
+  .pp-pre{font-size:.82rem;line-height:1.75}
+
+  /* --- 내비게이션 버튼 (하단 배치, 엄지 도달 범위) --- */
+  .navbtn{
+    width:44px;height:44px;font-size:1.2rem;
+    top:auto;bottom:3.4rem;transform:none
+  }
+  .navbtn.l{left:.6rem}
+  .navbtn.r{right:.6rem}
+
+  /* --- 하단 바 --- */
   .botbar .brand{display:none}
+  .botbar{padding:.45rem .9rem}
+  .iconbtn{font-size:.62rem}
+
+  /* --- 헬프 힌트 (키보드 전용 → 모바일 숨김) --- */
+  .helphint{display:none}
+
+  /* --- 팝업: 바텀 시트 스타일 --- */
+  .popup-overlay{align-items:flex-end;padding:0}
+  .llm-popup,.prompt-popup{
+    width:100vw;max-width:100vw;
+    max-height:92vh;
+    border-radius:14px 14px 0 0;
+    border-left:none;border-right:none;border-bottom:none
+  }
+  .llm-popup-head{padding:.9rem 1.1rem}
+  .llm-popup-body{padding:1rem 1.1rem}
+  .llm-tabs{padding:.6rem 1.1rem .3rem;gap:.3rem}
+  .llm-tab{font-size:.66rem;padding:.32rem .7rem}
+  .popup-foot{padding:.7rem 1rem;gap:.5rem}
+  .pop-btn{font-size:.66rem;padding:.38rem .8rem}
+  .bc-prompt{font-size:.76rem;padding:.85rem 1rem}
+
+  /* --- 개요(목차) 모달 --- */
+  .ovgrid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:.55rem}
+  .ovcard{min-height:80px;padding:.75rem .85rem .85rem}
+  .ovcard .ovt{font-size:.86rem}
+  .ovcard .ovd{font-size:.7rem}
+  .overview{padding:1.6rem 1rem 1.5rem}
+  .overview .ovhead{margin-bottom:1rem;flex-wrap:wrap;gap:.5rem}
+  .overview .ovhead h3{font-size:.7rem;letter-spacing:.12em;white-space:nowrap}
+  #ovClose{font-size:.72rem!important}
+
+  /* --- 부록 앱 모달 --- */
+  .app-modal{padding:.5rem}
+  .app-minner{height:calc(100vh - 1rem);border-radius:10px}
+  .app-mbody{flex-direction:column}
+  .app-sidebar{
+    width:100%;height:auto;max-height:120px;
+    border-right:none;border-bottom:1px solid var(--t12);
+    overflow-x:auto;overflow-y:hidden;
+    display:flex;flex-direction:row;padding:.35rem;
+    white-space:nowrap
+  }
+  .app-sitem{display:inline-flex;padding:.42rem .7rem;font-size:.78rem;white-space:nowrap}
+  .app-snum{display:none}
+  .app-cpanel{min-width:0}
+  .app-tabs{padding:.45rem .85rem 0;gap:.25rem}
+  .app-tab{font-size:.64rem;padding:.35rem .7rem}
+  .app-pwrap{padding:.8rem .9rem}
+  .app-pre{font-size:.72rem;line-height:1.7;padding:.85rem .95rem}
+
+  /* --- 도우미 요소 --- */
+  .trio .b .v{font-size:1.2rem}
+  .vc .vt{font-size:.9rem}
+  .dd-item{font-size:.82rem;padding:.6rem .75rem}
+  .cl-item{font-size:.8rem;padding:.5rem .7rem}
+  .cl-sub{font-size:.74rem}
 }
 
 /* ═══════════════════════════════════
