@@ -793,18 +793,18 @@ body.editing .cursor-glow{display:none}
             <td>개발 보조, JSON 구조화</td>
           </tr>
           <tr>
-            <td><b>Claude 3.7</b><span class="badge bc">Anthropic</span></td>
-            <td class="good">긴 문서 이해, 논리적 추론</td>
-            <td>자연스러운 대화체<br>맥락 풍부하게 제공</td>
-            <td class="warn">지나친 거절 경향<br>명확한 허용 명시 필요</td>
-            <td>문서 분석, 전략 기획</td>
+            <td><b>Claude Fable 5</b><span class="badge bc">Anthropic</span></td>
+            <td class="good">초장문(100만 토큰), 복잡한 자율 추론</td>
+            <td>맥락 풍부하게 제공<br>자연스러운 대화체</td>
+            <td class="warn">속도 느림 (깊이 사고)<br>비용 높음 ($10/$50)</td>
+            <td>긴 문서 분석, 복잡한 장기 프로젝트</td>
           </tr>
           <tr>
-            <td><b>Gemini 2.0</b><span class="badge by">Google</span></td>
-            <td class="good">멀티모달, 검색 연계, 한국어</td>
+            <td><b>Gemini 3.5 Flash</b><span class="badge by">Google</span></td>
+            <td class="good">4배 빠른 속도, 멀티모달, 검색 연계</td>
             <td>질문형 프롬프트 효과적<br>Google 생태계 연동</td>
             <td class="warn">복잡한 추론 시 단계 분리</td>
-            <td>이미지+텍스트, 실시간 정보</td>
+            <td>이미지+텍스트, 실시간 정보, 에이전트</td>
           </tr>
           <tr>
             <td><b>o1 / o3</b><span class="badge bp">Reasoning</span></td>
@@ -817,7 +817,98 @@ body.editing .cursor-glow{display:none}
       </table>
     </div>
     <div class="callout reveal d2">
-      <b>핵심 원칙:</b> 작업 유형에 맞는 모델 선택 → <b>GPT = 포맷 고정·단계형</b>, <b>Claude = 정합성·긴 맥락</b>, <b>Gemini = 확장·멀티모달</b>, <b>o1/o3 = 복잡 추론</b>
+      <b>핵심 원칙:</b> 작업 유형에 맞는 모델 선택 → <b>ChatGPT 5.5 = 자율 에이전트</b>, <b>Claude Fable 5 = 초장문·정합성</b>, <b>Gemini 3.5 Flash = 속도·멀티모달</b>, <b>o1/o3 = 복잡 추론</b>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 03b FABLE5 GUIDE ══ -->
+<section class="slide" data-title="Claude Fable 5 — 비교 & 활용 가이드" data-desc="Claude 모델 진화 · 2026 3대 모델 비교 · 사용자별 추천">
+  <div class="wm">NEW</div>
+  <div class="slide-inner">
+    <div class="kicker reveal">NEW MODEL / 2026.06.09</div>
+    <h2 class="title reveal">Claude <span class="hl">Fable 5</span> — 무엇이 달라졌나?</h2>
+    <p class="sub reveal d1">2026년 6월 출시 <b>Anthropic 최상위 모델</b> — 이전 Claude, 경쟁사와의 차이, 그리고 <b>누가 어떻게 쓰면 좋은지</b> 중학생 눈높이로 정리했습니다</p>
+
+    <div class="grid g2 reveal d1" style="margin-top:.8rem;align-items:start">
+      <!-- Claude 모델 진화 비교 -->
+      <div>
+        <div class="kicker" style="margin:0 0 .4rem">Claude 모델 진화 비교</div>
+        <div style="overflow-x:auto">
+          <table class="tbl" style="margin-top:0;font-size:.8rem">
+            <thead><tr><th>항목</th><th>Fable 5 ✦</th><th>Opus 4.8</th><th>Sonnet 4.6</th></tr></thead>
+            <tbody>
+              <tr><td>수준</td><td class="good"><b>최상위</b> (Mythos)</td><td>고급</td><td>중급</td></tr>
+              <tr><td>기억 용량</td><td class="good"><b>100만 토큰</b></td><td>20만</td><td>20만</td></tr>
+              <tr><td>코딩 실력</td><td class="good"><b>80.3%</b></td><td>69.2%</td><td>~59%</td></tr>
+              <tr><td>처리 속도</td><td class="warn">느림</td><td>보통</td><td class="good">빠름</td></tr>
+              <tr><td>가격 (M당)</td><td class="warn"><b>$10 / $50</b></td><td>$5 / $25</td><td>$3 / $15</td></tr>
+              <tr><td>적합한 작업</td><td>복잡한 장기 프로젝트</td><td>전략 기획·분석</td><td>일상 업무·요약</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- 2026 3대 모델 비교 -->
+      <div>
+        <div class="kicker" style="margin:0 0 .4rem">2026 3대 모델 비교</div>
+        <div style="overflow-x:auto">
+          <table class="tbl" style="margin-top:0;font-size:.8rem">
+            <thead><tr><th>항목</th><th>ChatGPT 5.5</th><th>Fable 5</th><th>Gemini 3.5 Flash</th></tr></thead>
+            <tbody>
+              <tr><td>핵심 강점</td><td>자율 에이전트</td><td class="good"><b>초장문 처리</b></td><td>속도·멀티모달</td></tr>
+              <tr><td>환각 줄임</td><td class="good">-52.5%</td><td class="good">자체 검증</td><td class="good">실시간 검색</td></tr>
+              <tr><td>무료 사용</td><td class="good">O (기본 모델)</td><td class="warn">X (유료 전용)</td><td class="good">O (Gemini 앱)</td></tr>
+              <tr><td>특이점</td><td>메모리·Gmail 연동</td><td>위험시 Opus 대체</td><td>구글 생태계 통합</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 사용자 유형별 추천 활용법 -->
+    <div class="kicker reveal d2" style="margin:1rem 0 .4rem">사용자 유형별 추천 활용법</div>
+    <div class="reveal d2" style="overflow-x:auto">
+      <table class="tbl" style="margin-top:0">
+        <thead><tr><th>사용자</th><th>추천 모델</th><th>이런 점이 좋아요 (한마디)</th><th>이렇게 써보세요 (예시)</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>일반 사용자</b></td>
+            <td><b>Gemini 3.5 Flash</b><span class="badge by">Google</span></td>
+            <td>번개처럼 빠르고 무료 — 사진도 이해해요</td>
+            <td>"이 사진 뭔지 알려줘", "오늘 뉴스 요약해줘"</td>
+          </tr>
+          <tr>
+            <td><b>일반 사용자</b></td>
+            <td><b>ChatGPT 5.5</b><span class="badge bl">OpenAI</span></td>
+            <td>복잡한 일도 혼자서 척척 처리해요</td>
+            <td>"이 파일 읽고 핵심 3가지 뽑아줘"</td>
+          </tr>
+          <tr>
+            <td><b>마케터</b></td>
+            <td><b>Claude Fable 5</b><span class="badge bc">Anthropic</span></td>
+            <td>100페이지 보고서도 통째로 이해해요</td>
+            <td>"시장조사 전체 읽고 주요 인사이트 뽑아줘"</td>
+          </tr>
+          <tr>
+            <td><b>마케터</b></td>
+            <td><b>ChatGPT 5.5</b><span class="badge bl">OpenAI</span></td>
+            <td>데이터 분석부터 보고서까지 혼자 완성해요</td>
+            <td>"광고 성과 데이터 → 임원 보고 슬라이드 만들어줘"</td>
+          </tr>
+          <tr>
+            <td><b>PM</b></td>
+            <td><b>Claude Fable 5</b><span class="badge bc">Anthropic</span></td>
+            <td>기획서 속 모순과 논리 구멍을 찾아줘요</td>
+            <td>"이 PRD에서 충돌 요구사항 찾고 우선순위 제안해줘"</td>
+          </tr>
+          <tr>
+            <td><b>PM</b></td>
+            <td><b>ChatGPT 5.5</b><span class="badge bl">OpenAI</span></td>
+            <td>개발 도구와 연동해서 일을 자동 처리해요</td>
+            <td>"GitHub 이슈 분류하고 스프린트 계획 세워줘"</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </section>
@@ -930,10 +1021,11 @@ body.editing .cursor-glow{display:none}
         <div class="sc-click-hint">클릭하면 Best Case 프롬프트를 볼 수 있어요 →</div>
       </div>
       <div class="sc" data-llm="claude">
-        <div class="sc-header"><div class="sc-dot" style="background:var(--accent2)"></div><span class="sc-name">Claude Opus 4.8 / Sonnet 4.6</span><span class="sc-tag">정합성 강화형</span></div>
+        <div class="sc-header"><div class="sc-dot" style="background:var(--accent2)"></div><span class="sc-name">Claude Fable 5 / Opus 4.8</span><span class="sc-tag">정합성 강화형</span></div>
         <ul>
+          <li><b>Fable 5 전용:</b> 100만 토큰 — <b>초대형 문서·장기 복합 프로젝트</b>에 최적해요</li>
           <li><b>맥락을 최대한 풍부하게</b> 제공해 주세요 — 배경, 목적, 독자 모두 포함</li>
-          <li>200K 토큰 컨텍스트 — <b>긴 문서 분석</b>에 적극 활용해 주세요</li>
+          <li>200K~1M 토큰 컨텍스트 — <b>긴 문서 분석</b>에 적극 활용해 주세요</li>
           <li><b>"아래 제약이 충돌할 경우 충돌 지점을 먼저 명시하고 우선순위를 제안해 주세요"</b></li>
           <li><b>"결론은 1문장으로 단정해 주세요"</b> + 불확실성은 주석으로 분리</li>
           <li>Extended Thinking 모드로 <b>복잡한 추론</b>을 활용해 주세요</li>
