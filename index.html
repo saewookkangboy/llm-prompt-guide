@@ -800,7 +800,7 @@ body.editing .cursor-glow{display:none}
     <div class="llm-popup-head" id="llmPopupHead">
       <div class="ph-left">
         <div class="llm-popup-dot" id="llmPopupDot"></div>
-        <span class="ph-name" id="llmPopupName">GPT-4o / ChatGPT 5.5</span>
+        <span class="ph-name" id="llmPopupName">ChatGPT 5.5</span>
         <span class="ph-tag" id="llmPopupTag">포맷 고정형</span>
       </div>
       <button class="popup-close" id="llmPopupClose" aria-label="닫기">✕</button>
@@ -867,7 +867,7 @@ body.editing .cursor-glow{display:none}
     <div class="tag reveal">TROE AX SERIES · 2026</div>
     <h1 class="reveal d1"><span class="shine">LLM 프롬프트</span><br><span class="shine" style="font-size:.65em;opacity:.85">엔지니어링</span></h1>
     <div class="lead reveal d2">모델별 특성에 맞춰 프롬프트 / 워크플로 / 검증 루프를 최적화하기 위한 실무 가이드</div>
-    <div class="marq reveal d3">ChatGPT 5.5 · Claude Opus 4.8 · Gemini 3.5 Flash</div>
+    <div class="marq reveal d3">ChatGPT 5.5 · Claude Fable 5 · Gemini 3.5 Flash</div>
     <div class="meta-chips reveal d3">
       <span class="chip on">개발</span>
       <span class="chip on">학습</span>
@@ -891,7 +891,7 @@ body.editing .cursor-glow{display:none}
         <ul class="dlist" style="margin-top:0">
           <li>LLM은 도구입니다 — <b>같은 질문도 모델별, 입력 방식에 따라 결과가 극명히 다릅니다</b></li>
           <li>단순 팁 모음이 아니라 <b>실제 비즈니스에서 반복 적용 가능한 패턴</b>을 정리합니다</li>
-          <li>ChatGPT 5.5 / Claude Opus 4.8 / Gemini 3.5 Flash <b>2026 기준</b></li>
+          <li>ChatGPT 5.5 / Claude Fable 5 / Gemini 3.5 Flash <b>2026 기준</b></li>
         </ul>
         <div class="callout">이 문서는 <b>프롬프트 엔지니어링</b>이 아니라 <b>"컨텍스트 엔지니어링"</b>의 관점으로 — 모델이 판단하는 데 필요한 모든 정보를 어떻게 설계할 것인가에 집중합니다.</div>
       </div>
@@ -906,7 +906,7 @@ body.editing .cursor-glow{display:none}
 </section>
 
 <!-- ══ 03 MODEL COMPARE ══ -->
-<section class="slide" data-title="모델별 특성 비교" data-desc="GPT·Claude·Gemini·o1 — 선택 기준">
+<section class="slide" data-title="모델별 특성 비교" data-desc="ChatGPT 5.5·Claude Fable 5·Gemini 3.5·o1 — 선택 기준">
   <div class="wm">03</div>
   <div class="slide-inner">
     <div class="kicker reveal">MODELS / 비교</div>
@@ -917,7 +917,7 @@ body.editing .cursor-glow{display:none}
         <thead><tr><th>모델</th><th>강점 영역</th><th>프롬프트 스타일</th><th>주의사항</th><th>최적 활용</th></tr></thead>
         <tbody>
           <tr>
-            <td><b>GPT-4o</b><span class="badge bl">OpenAI</span></td>
+            <td><b>ChatGPT 5.5</b><span class="badge bl">OpenAI</span></td>
             <td class="good">코드 생성, 구조화 출력</td>
             <td>직접적·구체적 지시<br>System Prompt 중요</td>
             <td class="warn">과도한 확신 경향<br>Hallucination 주의</td>
@@ -1141,7 +1141,7 @@ body.editing .cursor-glow{display:none}
     <h2 class="title reveal">모델별 <span class="hl">최적 프롬프트</span> 전략</h2>
     <div class="grid g2 reveal d1">
       <div class="sc" data-llm="gpt">
-        <div class="sc-header"><div class="sc-dot" style="background:var(--accent)"></div><span class="sc-name">GPT-4o / ChatGPT 5.5</span><span class="sc-tag">포맷 고정형</span></div>
+        <div class="sc-header"><div class="sc-dot" style="background:var(--accent)"></div><span class="sc-name">ChatGPT 5.5</span><span class="sc-tag">포맷 고정형</span></div>
         <ul>
           <li>System Prompt에 <b>페르소나 + 행동 원칙</b> 모두 정의해 주세요</li>
           <li>JSON 출력 시 <b>function calling</b> 또는 response_format을 활용해 주세요</li>
@@ -1250,7 +1250,7 @@ body.editing .cursor-glow{display:none}
         <div class="dd-head dont">❌ DON'T — 이건 피하세요</div>
         <div class="dd-item"><span class="di">❌</span><div><div><b>한 번에 너무 많은 작업을 요청</b>하지 마세요.</div><div>"분석하고, 요약하고, 번역하고, 이미지도 만들어줘" → 단계별 분리.</div></div></div>
         <div class="dd-item"><span class="di">❌</span><div><div><b>막연한 품질 요구</b>를 하지 마세요.</div><div>"최선을 다해줘" — 모델은 기준이 없으면 자체 판단으로 처리.</div></div></div>
-        <div class="dd-item"><span class="di">❌</span><div><div><b>모든 모델에 같은 프롬프트를 사용</b>하지 마세요.</div><div>Claude와 GPT-4o는 선호하는 입력 스타일이 다릅니다. 모델별 최적화 필요.</div></div></div>
+        <div class="dd-item"><span class="di">❌</span><div><div><b>모든 모델에 같은 프롬프트를 사용</b>하지 마세요.</div><div>Claude와 ChatGPT 5.5는 선호하는 입력 스타일이 다릅니다. 모델별 최적화 필요.</div></div></div>
         <div class="dd-item"><span class="di">❌</span><div><div><b>첫 번째 결과를 그대로 사용</b>하지 마세요.</div><div>항상 검증 루프를 거쳐 최소 2~3회 반복 개선 후 최종 활용.</div></div></div>
       </div>
     </div>
@@ -1706,12 +1706,12 @@ GitHub Issue #142를 해결해 주세요.
         <div style="padding:.5rem .9rem;font-size:.76rem;color:var(--t50);border-top:1px solid var(--t08)">포인트: 계획 선제시 + 루브릭</div>
       </div>
       <div style="background:var(--t03);border:1px solid rgba(51,177,255,.3);border-radius:6px;overflow:hidden">
-        <div style="background:rgba(51,177,255,.12);padding:.6rem 1rem;border-bottom:1px solid rgba(51,177,255,.3);font-family:var(--mono);font-size:.72rem;color:var(--accent2);font-weight:700;letter-spacing:.12em">Claude Opus 4.8 — 정합성 강화형</div>
+        <div style="background:rgba(51,177,255,.12);padding:.6rem 1rem;border-bottom:1px solid rgba(51,177,255,.3);font-family:var(--mono);font-size:.72rem;color:var(--accent2);font-weight:700;letter-spacing:.12em">Claude Fable 5 — 정합성 강화형</div>
         <div class="code" style="margin:0;border:0;border-radius:0"
-          data-prompt-label="모델별 비교 · Claude Opus 4.8"
+          data-prompt-label="모델별 비교 · Claude Fable 5"
           data-prompt-title="마케팅 성과 분석 보고서 — Claude 정합성 강화형"
           data-prompt-tips="포인트: 제약 우선순위 명시 + 충돌 해결 요청 — Claude Opus는 복잡한 의사결정과 정합성 검토에 강해요">
-          <div class="bar"><span>Claude Opus 4.8</span><span class="zoom-hint">🔍 클릭해서 확대</span></div>
+          <div class="bar"><span>Claude Fable 5</span><span class="zoom-hint">🔍 클릭해서 확대</span></div>
           <pre style="font-size:.76rem">당신은 B2B 마케팅 전략 컨설턴트예요.
 
 [<span class="c">배경</span>] 6월 퍼포먼스 마케팅 중심 운영,
@@ -2097,7 +2097,7 @@ ROI가 기대보다 낮았어요.
   <div class="slide-inner">
     <div class="kicker reveal">APPENDIX / 프롬프트 라이브러리</div>
     <h2 class="title reveal">도메인별 <span class="hl">프롬프트 템플릿</span></h2>
-    <p class="sub reveal d1">도메인 카드를 클릭하면 <b>ChatGPT 5.5 · Claude Opus 4.8 · Gemini 3.5 Flash</b> 최적화 프롬프트를 바로 복사할 수 있습니다 — 총 21종</p>
+    <p class="sub reveal d1">도메인 카드를 클릭하면 <b>ChatGPT 5.5 · Claude Fable 5 · Gemini 3.5 Flash</b> 최적화 프롬프트를 바로 복사할 수 있습니다 — 총 21종</p>
     <div class="app-domains reveal d1">
       <div class="app-dcard" onclick="appOpenDomain('strategy')">
         <div class="top-bar" style="background:#0f62fe"></div>
@@ -2129,7 +2129,7 @@ ROI가 기대보다 낮았어요.
       </div>
     </div>
     <div class="callout reveal d2" style="margin-top:1.2rem;border-left-color:var(--accent2)">
-      <b>활용법:</b> 도메인 선택 → 프레임워크 선택 → 모델 탭(ChatGPT 5.5 / Claude Opus 4.8 / Gemini 3.5 Flash) → COPY → <code style="font-family:var(--mono);color:var(--accent2);font-size:.9em">[ ]</code> 안을 내 상황으로 채워 붙여넣으세요
+      <b>활용법:</b> 도메인 선택 → 프레임워크 선택 → 모델 탭(ChatGPT 5.5 / Claude Fable 5 / Gemini 3.5 Flash) → COPY → <code style="font-family:var(--mono);color:var(--accent2);font-size:.9em">[ ]</code> 안을 내 상황으로 채워 붙여넣으세요
     </div>
   </div>
 </section>
@@ -2486,7 +2486,7 @@ function attachPopupListeners(){
 ═══════════════════════════════════════════════════ */
 const LLM_DATA={
   gpt:{
-    name:'GPT-4o / ChatGPT 5.5',
+    name:'ChatGPT 5.5',
     tag:'포맷 고정형',
     dot:'#0f62fe',
     tabs:['문서·보고서','코드 생성','분석·의사결정'],
@@ -2562,7 +2562,7 @@ const LLM_DATA={
     ]
   },
   claude:{
-    name:'Claude Opus 4.8 / Sonnet 4.6',
+    name:'Claude Fable 5 / Opus 4.8',
     tag:'정합성 강화형',
     dot:'#33b1ff',
     tabs:['문서·분석','의사결정·정합성','코드·기술'],
@@ -2889,8 +2889,8 @@ addEventListener('keydown',e=>{
 const APP_MODELS=[
   {id:'gpt',label:'ChatGPT 5.5',color:'#10a37f',
    tip:'ChatGPT 5.5: 계획 선제시 + 루브릭 자기평가 패턴에 강합니다. function_calling으로 출력 구조를 고정하면 더 효과적입니다.'},
-  {id:'claude',label:'Claude Opus 4.8',color:'#be95ff',
-   tip:'Claude Opus 4.8: 역할 + 명확한 출력 요청 형식에 최적화되어 있습니다. 필요시 "표나 불릿으로 요약해 줘"를 추가하세요.'},
+  {id:'claude',label:'Claude Fable 5',color:'#be95ff',
+   tip:'Claude Fable 5: 맥락을 풍부하게 제공할수록 정확도가 높아집니다. 100만 토큰 컨텍스트를 활용해 긴 문서를 통째로 넣어보세요.'},
   {id:'gemini',label:'Gemini 3.5 Flash',color:'#f0c000',
    tip:'Gemini 3.5 Flash: 답변 시 "표와 불릿으로 정리해 줘"를 추가하면 활용도가 높습니다.'}
 ];
