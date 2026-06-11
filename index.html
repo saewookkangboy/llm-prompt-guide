@@ -1044,6 +1044,163 @@ body.editing .cursor-glow{display:none}
   </div>
 </section>
 
+<!-- ══ 03c FABLE5 PROMPT PATTERNS ══ -->
+<section class="slide" data-title="Fable 5 — 전용 프롬프트 설계 패턴" data-desc="초장문 압축·자기검증·복합추론·멀티라운드 4대 핵심 패턴">
+  <div class="wm" style="-webkit-text-stroke-color:rgba(190,149,255,.09)">F5</div>
+  <div class="slide-inner">
+    <div class="kicker reveal" style="color:rgba(190,149,255,.8)">FABLE 5 / 프롬프트 설계</div>
+    <h2 class="title reveal">Fable 5에서만 되는 <span style="background:linear-gradient(110deg,var(--accent2),var(--accent3));-webkit-background-clip:text;background-clip:text;color:transparent">4가지 패턴</span></h2>
+    <p class="sub reveal d1">Claude Opus 4.8 / Sonnet 4.6과 다르게 Fable 5만 가진 <b>100만 토큰</b>·<b>자기 검증</b>·<b>복합 자율 추론</b>을 이끌어 내는 전용 프롬프트 설계법</p>
+
+    <div class="pf reveal d1">
+      <div class="pf-row">
+        <div class="pf-num" style="color:var(--accent3)">1</div>
+        <div class="pf-block" style="border-color:rgba(190,149,255,.25)">
+          <div class="pf-tag tc">초장문</div>
+          <div>
+            <div class="pf-title">컨텍스트 압축 요청 — 100만 토큰 활용법</div>
+            <div class="pf-desc">문서 전체를 첨부한 뒤 <code>먼저 전체 구조를 파악하고, 그 다음 아래 세 가지를 추출해 주세요</code>처럼 <b>2단계로 지시</b>해요. 토큰 한계를 걱정하지 말고 원문을 자르지 마세요.</div>
+          </div>
+        </div>
+      </div>
+      <div class="pf-row">
+        <div class="pf-num" style="color:var(--accent3)">2</div>
+        <div class="pf-block" style="border-color:rgba(190,149,255,.25)">
+          <div class="pf-tag tc">자기검증</div>
+          <div>
+            <div class="pf-title">검증 루프 내장 — 스스로 오류를 찾게 하기</div>
+            <div class="pf-desc">답변 마지막에 <code>이 답변에서 논리 오류나 반례가 있다면 스스로 지적해 주세요</code>를 붙이면 Fable 5는 자체 검증 단계를 실행해요. 다른 모델보다 정확도가 크게 높아집니다.</div>
+          </div>
+        </div>
+      </div>
+      <div class="pf-row">
+        <div class="pf-num" style="color:var(--accent3)">3</div>
+        <div class="pf-block" style="border-color:rgba(190,149,255,.25)">
+          <div class="pf-tag tc">복합추론</div>
+          <div>
+            <div class="pf-title">조건 충돌 해결 — 복잡한 요구사항 자율 정리</div>
+            <div class="pf-desc">서로 충돌하는 조건이 있을 때 <code>제약 간 우선순위를 스스로 정하고 결정 이유를 설명해 주세요</code>라고 넣으면 Fable 5가 자율적으로 해결안을 도출해요.</div>
+          </div>
+        </div>
+      </div>
+      <div class="pf-row">
+        <div class="pf-num" style="color:var(--accent3)">4</div>
+        <div class="pf-block" style="border-color:rgba(190,149,255,.25)">
+          <div class="pf-tag tc">멀티라운드</div>
+          <div>
+            <div class="pf-title">장기 프로젝트 선언 — 대화 전체를 하나의 작업으로</div>
+            <div class="pf-desc">첫 턴에 <code>이 대화는 X 프로젝트 전체를 다룹니다. 이전 응답을 항상 참조하며 일관성을 유지해 주세요</code>라고 선언하면 Fable 5가 대화 전체를 하나의 작업으로 취급해요.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout reveal d2" style="border-left-color:var(--accent3);margin-top:.9rem">
+      <b>언제 Fable 5를 선택해야 하나요?</b> 문서가 50페이지 이상이거나, 조건이 5개 이상 충돌하거나, 한 대화에서 여러 작업을 이어서 해야 할 때예요. 그 외엔 <b>Opus 4.8 / Sonnet 4.6이 더 빠르고 경제적</b>이에요.
+    </div>
+  </div>
+</section>
+
+<!-- ══ 03d FABLE5 PRACTICE ══ -->
+<section class="slide" data-title="Fable 5 — 전용 프롬프트 실습" data-desc="대형 문서 분석·PRD 검증·복합 프로젝트 3종 예시">
+  <div class="wm" style="-webkit-text-stroke-color:rgba(190,149,255,.09)">F5</div>
+  <div class="slide-inner">
+    <div class="kicker reveal" style="color:rgba(190,149,255,.8)">FABLE 5 PRACTICE / 전용 실습</div>
+    <h2 class="title reveal">Fable 5 <span style="background:linear-gradient(110deg,var(--accent2),var(--accent3));-webkit-background-clip:text;background-clip:text;color:transparent">전용 실습</span> 예시</h2>
+    <p class="sub reveal d1">100만 토큰·자기검증·복합추론 — Fable 5의 강점을 직접 체험하는 3가지 실전 프롬프트</p>
+
+    <div class="grid g3 reveal d1">
+      <!-- 예시 1: 대형 문서 분석 (마케터) -->
+      <div style="background:var(--t03);border:1px solid rgba(190,149,255,.3);border-radius:6px;overflow:hidden">
+        <div style="background:rgba(190,149,255,.1);padding:.6rem 1rem;border-bottom:1px solid rgba(190,149,255,.25);font-family:var(--mono);font-size:.72rem;color:var(--accent3);font-weight:700;letter-spacing:.12em">예시 ① — 대형 문서 분석 <span style="color:var(--t50);font-weight:400">(마케터)</span></div>
+        <div class="code" style="margin:0;border:0;border-radius:0"
+          data-prompt-label="Fable 5 실습 ①"
+          data-prompt-title="대형 시장조사 보고서 분석"
+          data-prompt-tips="100만 토큰 컨텍스트 활용 — 보고서 전체를 잘라내지 말고 통째로 붙여넣으세요. Fable 5가 전체를 읽고 핵심만 뽑아줘요 · 마지막 자기검증 줄을 꼭 유지하세요">
+          <div class="bar"><span>Fable 5 전용</span><span class="zoom-hint">🔍 클릭해서 확대</span><button class="copy">COPY</button></div>
+          <pre style="font-size:.76rem"><span class="k">ROLE</span> 당신은 마케팅 전략 컨설턴트예요.
+
+[<span class="c">첨부 자료</span>] 아래 시장조사 보고서 전체를
+읽어 주세요. (전문을 아래 붙여넣기)
+
+<span class="k">먼저 전체 구조와 목차를 파악</span>해 주세요.
+그 다음 아래 세 가지를 추출해 주세요:
+
+1. <span class="c">핵심 인사이트 Top 5</span> (각 3줄, 근거 포함)
+2. <span class="c">우리 브랜드에 적용 가능한 기회</span> 3가지
+3. <span class="c">경쟁사 대비 놓친 포인트</span> 2가지
+
+답변 마지막에:
+<span class="k">이 분석에서 놓쳤을 수 있는 부분을
+스스로 지적해 주세요.</span></pre>
+        </div>
+        <div style="padding:.5rem .9rem;font-size:.76rem;color:var(--t50);border-top:1px solid var(--t08)">패턴: <span style="color:var(--accent3)">초장문</span> + <span style="color:var(--accent2)">자기검증</span></div>
+      </div>
+
+      <!-- 예시 2: PRD 논리 검증 (PM) -->
+      <div style="background:var(--t03);border:1px solid rgba(190,149,255,.3);border-radius:6px;overflow:hidden">
+        <div style="background:rgba(190,149,255,.1);padding:.6rem 1rem;border-bottom:1px solid rgba(190,149,255,.25);font-family:var(--mono);font-size:.72rem;color:var(--accent3);font-weight:700;letter-spacing:.12em">예시 ② — PRD 논리 검증 <span style="color:var(--t50);font-weight:400">(PM)</span></div>
+        <div class="code" style="margin:0;border:0;border-radius:0"
+          data-prompt-label="Fable 5 실습 ②"
+          data-prompt-title="PRD 요구사항 충돌 &amp; 논리 오류 검증"
+          data-prompt-tips="복합추론 능력 활용 — 요구사항 간 충돌을 찾고 우선순위를 자율적으로 제안하게 해요 · 충돌 쌍에 결정 이유를 요청하는 줄이 Fable 5에서 특히 효과적이에요">
+          <div class="bar"><span>Fable 5 전용</span><span class="zoom-hint">🔍 클릭해서 확대</span><button class="copy">COPY</button></div>
+          <pre style="font-size:.76rem"><span class="k">ROLE</span> 당신은 시니어 PM 리뷰어예요.
+
+[<span class="c">검토 대상</span>] 아래 PRD 전체를 읽어 주세요.
+(PRD 문서를 이 아래에 붙여넣기)
+
+다음 세 가지를 순서대로 수행해 주세요:
+
+1. <span class="c">충돌하는 요구사항</span>을 모두 찾아 주세요.
+   각 충돌 쌍에 대해 <span class="k">우선순위를 스스로 정하고
+   결정 이유를 한 줄로 설명</span>해 주세요.
+
+2. <span class="c">논리 구멍 또는 빠진 엣지케이스</span> 3가지
+
+3. <span class="c">개발 팀이 오해할 수 있는 모호한 표현</span>
+   → 명확한 대안 문장으로 바꿔 주세요.</pre>
+        </div>
+        <div style="padding:.5rem .9rem;font-size:.76rem;color:var(--t50);border-top:1px solid var(--t08)">패턴: <span style="color:var(--accent3)">복합추론</span> + 조건 충돌 해결</div>
+      </div>
+
+      <!-- 예시 3: 장기 복합 프로젝트 (일반/기획자) -->
+      <div style="background:var(--t03);border:1px solid rgba(190,149,255,.3);border-radius:6px;overflow:hidden">
+        <div style="background:rgba(190,149,255,.1);padding:.6rem 1rem;border-bottom:1px solid rgba(190,149,255,.25);font-family:var(--mono);font-size:.72rem;color:var(--accent3);font-weight:700;letter-spacing:.12em">예시 ③ — 복합 프로젝트 기획 <span style="color:var(--t50);font-weight:400">(일반)</span></div>
+        <div class="code" style="margin:0;border:0;border-radius:0"
+          data-prompt-label="Fable 5 실습 ③"
+          data-prompt-title="장기 복합 프로젝트 단계별 기획"
+          data-prompt-tips="멀티 라운드 설계 패턴 활용 — 첫 턴에 전체 프로젝트 선언 후 대화를 이어가면 Fable 5가 모든 내용을 기억하며 일관성 있게 도와줘요 · 2단계부터는 이어서 질문해도 돼요">
+          <div class="bar"><span>Fable 5 전용</span><span class="zoom-hint">🔍 클릭해서 확대</span><button class="copy">COPY</button></div>
+          <pre style="font-size:.76rem"><span class="k">이 대화는 '온라인 쇼핑몰 론칭' 프로젝트
+전체를 다룹니다.</span> 이전 응답을 항상 참조하며
+일관성을 유지해 주세요.
+
+<span class="k">ROLE</span> 당신은 스타트업 창업 코치예요.
+
+[<span class="c">1단계</span>] 아래 정보를 읽고,
+6개월 프로젝트 로드맵을 짜 주세요:
+- 혼자 운영, 예산 500만 원
+- 패션 소품 카테고리
+- SNS 마케팅 경험 없음
+
+[<span class="c">출력</span>] 월별 핵심 목표 + 주의사항 1가지씩
+(2단계부터는 이어서 물어볼게요)</pre>
+        </div>
+        <div style="padding:.5rem .9rem;font-size:.76rem;color:var(--t50);border-top:1px solid var(--t08)">패턴: <span style="color:var(--accent3)">멀티라운드</span> + 장기 프로젝트</div>
+      </div>
+    </div>
+
+    <div class="callout reveal d2" style="border-left-color:var(--accent3);margin-top:.8rem">
+      <b>Fable 5 프롬프트 황금 공식</b> &nbsp;:&nbsp;
+      <span style="font-family:var(--mono);color:var(--accent3)">전체 붙여넣기</span> →
+      <span style="font-family:var(--mono);color:var(--accent2)">2단계 지시 (파악 → 추출)</span> →
+      <span style="font-family:var(--mono);color:var(--accent4)">자기검증 요청</span>
+      &nbsp;— 이 세 가지만 기억해도 충분해요.
+    </div>
+  </div>
+</section>
+
 <!-- ══ 04 PROMPT STRUCTURE ══ -->
 <section class="slide" data-title="프롬프트 구조 설계" data-desc="역할·컨텍스트·태스크·포맷·제약 5단계">
   <div class="wm">04</div>
