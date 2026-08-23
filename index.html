@@ -809,7 +809,7 @@ body.editing .cursor-glow{display:none}
     <div class="llm-popup-head" id="llmPopupHead">
       <div class="ph-left">
         <div class="llm-popup-dot" id="llmPopupDot"></div>
-        <span class="ph-name" id="llmPopupName">ChatGPT 5.5</span>
+        <span class="ph-name" id="llmPopupName">ChatGPT GPT-5.6</span>
         <span class="ph-tag" id="llmPopupTag">포맷 고정형</span>
       </div>
       <button class="popup-close" id="llmPopupClose" aria-label="닫기">✕</button>
@@ -876,7 +876,7 @@ body.editing .cursor-glow{display:none}
     <div class="tag reveal">TROE AX SERIES · 2026</div>
     <h1 class="reveal d1"><span class="shine">LLM 프롬프트</span><br><span class="shine" style="font-size:.65em;opacity:.85">엔지니어링</span></h1>
     <div class="lead reveal d2">모델별 특성에 맞춰 프롬프트 / 워크플로 / 검증 루프를 최적화하기 위한 실무 가이드</div>
-    <div class="marq reveal d3">ChatGPT 5.5 · Claude Opus 4.8 · Gemini 3.5 Flash</div>
+    <div class="marq reveal d3">ChatGPT GPT-5.6 · Claude Opus 5 · Gemini 3.7 Flash</div>
     <div class="meta-chips reveal d3">
       <span class="chip on">개발</span>
       <span class="chip on">학습</span>
@@ -901,7 +901,7 @@ body.editing .cursor-glow{display:none}
         <ul class="dlist" style="margin-top:0">
           <li>LLM은 도구입니다 — <b>같은 질문도 모델별, 입력 방식에 따라 결과가 극명히 다릅니다</b></li>
           <li>단순 팁 모음이 아니라 <b>실제 비즈니스에서 반복 적용 가능한 패턴</b>을 정리합니다</li>
-          <li>ChatGPT 5.5 / Claude Opus 4.8 / Gemini 3.5 Flash <b>2026 기준</b></li>
+          <li>ChatGPT GPT-5.6 / Claude Opus 5 / Gemini 3.7 Flash <b>2026 기준</b></li>
         </ul>
         <div class="callout">이 문서는 <b>프롬프트 엔지니어링</b>이 아니라 <b>"컨텍스트 엔지니어링"</b>의 관점으로 — 모델이 판단하는 데 필요한 모든 정보를 어떻게 설계할 것인가에 집중합니다.</div>
       </div>
@@ -916,7 +916,7 @@ body.editing .cursor-glow{display:none}
 </section>
 
 <!-- ══ 03 MODEL COMPARE ══ -->
-<section class="slide" data-title="모델별 특성 비교" data-desc="GPT-5.5·Claude Fable 5·Gemini 3.5 Flash·o1/o3 — 선택 기준">
+<section class="slide" data-title="모델별 특성 비교" data-desc="GPT-5.6·Claude Opus 5·Gemini 3.7 Flash·o1/o3 — 선택 기준">
   <div class="wm">03</div>
   <div class="slide-inner">
     <div class="kicker reveal">MODELS / 비교</div>
@@ -927,21 +927,21 @@ body.editing .cursor-glow{display:none}
         <thead><tr><th>모델</th><th>강점 영역</th><th>프롬프트 스타일</th><th>주의사항</th><th>최적 활용</th></tr></thead>
         <tbody>
           <tr>
-            <td><b>GPT-5.5</b><span class="badge bl">OpenAI</span></td>
+            <td><b>GPT-5.6</b><span class="badge bl">OpenAI</span></td>
             <td class="good">코드 생성, 구조화 출력</td>
             <td>직접적·구체적 지시<br>System Prompt 중요</td>
             <td class="warn">과도한 확신 경향<br>Hallucination 주의</td>
             <td>개발 보조, JSON 구조화</td>
           </tr>
           <tr>
-            <td><b>Claude Fable 5</b><span class="badge bc">Anthropic</span></td>
+            <td><b>Claude Opus 5</b><span class="badge bc">Anthropic</span></td>
             <td class="good">초장문(100만 토큰), 복잡한 자율 추론</td>
             <td>맥락 풍부하게 제공<br>자연스러운 대화체</td>
             <td class="warn">속도 느림 (깊이 사고)<br>비용 높음 ($10/$50)</td>
             <td>긴 문서 분석, 복잡한 장기 프로젝트</td>
           </tr>
           <tr>
-            <td><b>Gemini 3.5 Flash</b><span class="badge by">Google</span></td>
+            <td><b>Gemini 3.7 Flash</b><span class="badge by">Google</span></td>
             <td class="good">고속 (Flash 레벨), 멀티모달, 검색 연계</td>
             <td>질문형 프롬프트 효과적<br>Google 생태계 연동</td>
             <td class="warn">복잡한 추론 시 단계 분리</td>
@@ -958,18 +958,18 @@ body.editing .cursor-glow{display:none}
       </table>
     </div>
     <div class="callout reveal d2">
-      <b>핵심 원칙:</b> 작업 유형에 맞는 모델 선택 → <b>GPT-5.5 = 코딩·업무 자동화</b>, <b>Claude Fable 5 = 초장문·정합성</b>, <b>Gemini 3.5 Flash = 속도·멀티모달</b>, <b>o1/o3 = 복잡 추론</b>
+      <b>핵심 원칙:</b> 작업 유형에 맞는 모델 선택 → <b>GPT-5.6 = 코딩·업무 자동화</b>, <b>Claude Opus 5 = 초장문·정합성</b>, <b>Gemini 3.7 Flash = 속도·멀티모달</b>, <b>o1/o3 = 복잡 추론</b>
     </div>
   </div>
 </section>
 
-<!-- ══ 03b FABLE5 GUIDE ══ -->
-<section class="slide" data-title="Claude Fable 5 — 비교 & 활용 가이드" data-desc="Claude 모델 진화 · 2026 3대 모델 비교 · 사용자별 추천">
+<!-- ══ 03b OPUS5 GUIDE ══ -->
+<section class="slide" data-title="Claude Opus 5 — 비교 & 활용 가이드" data-desc="Claude 모델 진화 · 2026 3대 모델 비교 · 사용자별 추천">
   <div class="wm">NEW</div>
   <div class="slide-inner">
-    <div class="kicker reveal">NEW MODEL / 2026.06.09</div>
-    <h2 class="title reveal">Claude <span class="hl">Fable 5</span> — 무엇이 달라졌나?</h2>
-    <p class="sub reveal d1">2026년 6월 출시 <b>Anthropic 최상위 모델</b> — 이전 Claude, 경쟁사와의 차이, 그리고 <b>누가 어떻게 쓰면 좋은지</b> 중학생 눈높이로 정리했습니다</p>
+    <div class="kicker reveal">NEW MODEL / 2026.08 · strategy-prompts v2.5.0</div>
+    <h2 class="title reveal">Claude <span class="hl">Opus 5</span> — 무엇이 달라졌나?</h2>
+    <p class="sub reveal d1">2026년 8월 기준 <b>Anthropic 최상위 모델 (claude-opus-5)</b> — 이전 Claude, 경쟁사와의 차이, 그리고 <b>누가 어떻게 쓰면 좋은지</b> 중학생 눈높이로 정리했습니다</p>
 
     <div class="grid g2 reveal d1" style="margin-top:.8rem;align-items:start">
       <!-- Claude 모델 진화 비교 -->
@@ -977,14 +977,14 @@ body.editing .cursor-glow{display:none}
         <div class="kicker" style="margin:0 0 .4rem">Claude 모델 진화 비교</div>
         <div style="overflow-x:auto">
           <table class="tbl" style="margin-top:0;font-size:0.92rem">
-            <thead><tr><th>항목</th><th>Fable 5 ✦</th><th>Opus 4.8</th><th>Sonnet 4.6</th></tr></thead>
+            <thead><tr><th>항목</th><th>Opus 5 ✦</th><th>Sonnet 5</th><th>이전 Opus 4.x</th></tr></thead>
             <tbody>
-              <tr><td>수준</td><td class="good"><b>최상위</b> (Mythos)</td><td>고급</td><td>중급</td></tr>
-              <tr><td>기억 용량</td><td class="good"><b>100만 토큰</b></td><td>100만 토큰</td><td>100만 토큰</td></tr>
-              <tr><td>코딩 실력</td><td class="good"><b>최고 수준</b><br><span style="font-size:0.93rem;color:var(--t50)">FrontierCode 1위</span></td><td>72.5%<br><span style="font-size:0.93rem;color:var(--t50)">(SWE-bench)</span></td><td>72.7%<br><span style="font-size:0.93rem;color:var(--t50)">(SWE-bench)</span></td></tr>
-              <tr><td>처리 속도</td><td class="warn">느림</td><td>보통</td><td class="good">빠름</td></tr>
-              <tr><td>가격 (M당)</td><td class="warn"><b>$10 / $50</b></td><td>$5 / $25</td><td>$3 / $15</td></tr>
-              <tr><td>적합한 작업</td><td>복잡한 장기 프로젝트</td><td>전략 기획·분석</td><td>일상 업무·요약</td></tr>
+              <tr><td>수준</td><td class="good"><b>최상위</b> (권장)</td><td>고급·병행</td><td>레거시</td></tr>
+              <tr><td>API ID</td><td class="good"><b>claude-opus-5</b></td><td>claude-sonnet-5</td><td>claude-opus-4-8</td></tr>
+              <tr><td>강점</td><td class="good"><b>장문·리서치·정합성</b><br><span style="font-size:0.93rem;color:var(--t50)">위기·합성·마이닝</span></td><td>빠른 초안·일상 업무</td><td>이전 세대</td></tr>
+              <tr><td>처리 속도</td><td class="warn">깊이 사고 (느림)</td><td class="good">빠름</td><td>보통</td></tr>
+              <tr><td>권장 활용</td><td class="good"><b>전략·PR·리서치·덱</b></td><td>초안·반복 작업</td><td>마이그레이션 대상</td></tr>
+              <tr><td>적합한 작업</td><td>긴 맥락·복합 추론</td><td>일상 업무·요약</td><td>—</td></tr>
             </tbody>
           </table>
         </div>
@@ -994,7 +994,7 @@ body.editing .cursor-glow{display:none}
         <div class="kicker" style="margin:0 0 .4rem">2026 3대 모델 비교</div>
         <div style="overflow-x:auto">
           <table class="tbl" style="margin-top:0;font-size:0.92rem">
-            <thead><tr><th>항목</th><th>ChatGPT 5.5</th><th>Fable 5</th><th>Gemini 3.5 Flash</th></tr></thead>
+            <thead><tr><th>항목</th><th>ChatGPT GPT-5.6</th><th>Opus 5</th><th>Gemini 3.7 Flash</th></tr></thead>
             <tbody>
               <tr><td>핵심 강점</td><td>자율 에이전트</td><td class="good"><b>초장문 처리</b></td><td>속도·멀티모달</td></tr>
               <tr><td>환각 줄임</td><td class="good">-52.5%</td><td class="good">자체 검증</td><td class="good">실시간 검색</td></tr>
@@ -1014,37 +1014,37 @@ body.editing .cursor-glow{display:none}
         <tbody>
           <tr>
             <td><b>일반 사용자</b></td>
-            <td><b>Gemini 3.5 Flash</b><span class="badge by">Google</span></td>
+            <td><b>Gemini 3.7 Flash</b><span class="badge by">Google</span></td>
             <td>번개처럼 빠르고 무료 — 사진도 이해해요</td>
             <td>"이 사진 뭔지 알려줘", "오늘 뉴스 요약해줘"</td>
           </tr>
           <tr>
             <td><b>일반 사용자</b></td>
-            <td><b>ChatGPT 5.5</b><span class="badge bl">OpenAI</span></td>
+            <td><b>ChatGPT GPT-5.6</b><span class="badge bl">OpenAI</span></td>
             <td>복잡한 일도 혼자서 척척 처리해요</td>
             <td>"이 파일 읽고 핵심 3가지 뽑아줘"</td>
           </tr>
           <tr>
             <td><b>마케터</b></td>
-            <td><b>Claude Fable 5</b><span class="badge bc">Anthropic</span></td>
+            <td><b>Claude Opus 5</b><span class="badge bc">Anthropic</span></td>
             <td>100페이지 보고서도 통째로 이해해요</td>
             <td>"시장조사 전체 읽고 주요 인사이트 뽑아줘"</td>
           </tr>
           <tr>
             <td><b>마케터</b></td>
-            <td><b>ChatGPT 5.5</b><span class="badge bl">OpenAI</span></td>
+            <td><b>ChatGPT GPT-5.6</b><span class="badge bl">OpenAI</span></td>
             <td>데이터 분석부터 보고서까지 혼자 완성해요</td>
             <td>"광고 성과 데이터 → 임원 보고 슬라이드 만들어줘"</td>
           </tr>
           <tr>
             <td><b>PM</b></td>
-            <td><b>Claude Fable 5</b><span class="badge bc">Anthropic</span></td>
+            <td><b>Claude Opus 5</b><span class="badge bc">Anthropic</span></td>
             <td>기획서 속 모순과 논리 구멍을 찾아줘요</td>
             <td>"이 PRD에서 충돌 요구사항 찾고 우선순위 제안해줘"</td>
           </tr>
           <tr>
             <td><b>PM</b></td>
-            <td><b>ChatGPT 5.5</b><span class="badge bl">OpenAI</span></td>
+            <td><b>ChatGPT GPT-5.6</b><span class="badge bl">OpenAI</span></td>
             <td>개발 도구와 연동해서 일을 자동 처리해요</td>
             <td>"GitHub 이슈 분류하고 스프린트 계획 세워줘"</td>
           </tr>
@@ -1054,13 +1054,13 @@ body.editing .cursor-glow{display:none}
   </div>
 </section>
 
-<!-- ══ 03c FABLE5 PROMPT PATTERNS ══ -->
-<section class="slide" data-title="Fable 5 — 전용 프롬프트 설계 패턴" data-desc="초장문 압축·자기검증·복합추론·멀티라운드 4대 핵심 패턴">
-  <div class="wm" style="-webkit-text-stroke-color:rgba(105,41,196,.09)">F5</div>
+<!-- ══ 03c OPUS5 PROMPT PATTERNS ══ -->
+<section class="slide" data-title="Opus 5 — 전용 프롬프트 설계 패턴" data-desc="초장문 압축·자기검증·복합추론·멀티라운드 4대 핵심 패턴">
+  <div class="wm" style="-webkit-text-stroke-color:rgba(105,41,196,.09)">O5</div>
   <div class="slide-inner">
-    <div class="kicker reveal" style="color:rgba(105,41,196,.8)">FABLE 5 / 프롬프트 설계</div>
-    <h2 class="title reveal">Fable 5에서만 되는 <span style="background:linear-gradient(110deg,var(--accent2),var(--accent3));-webkit-background-clip:text;background-clip:text;color:transparent">4가지 패턴</span></h2>
-    <p class="sub reveal d1">Claude Opus 4.8 / Sonnet 4.6과 다르게 Fable 5만 가진 <b>100만 토큰</b>·<b>자기 검증</b>·<b>복합 자율 추론</b>을 이끌어 내는 전용 프롬프트 설계법</p>
+    <div class="kicker reveal" style="color:rgba(105,41,196,.8)">OPUS 5 / 프롬프트 설계</div>
+    <h2 class="title reveal">Opus 5에서만 되는 <span style="background:linear-gradient(110deg,var(--accent2),var(--accent3));-webkit-background-clip:text;background-clip:text;color:transparent">4가지 패턴</span></h2>
+    <p class="sub reveal d1">Sonnet 5와 다르게 Opus 5가 특히 강한 <b>장문 맥락</b>·<b>자기 검증</b>·<b>복합 자율 추론</b>을 이끌어 내는 전용 프롬프트 설계법</p>
 
     <div class="pf reveal d1">
       <div class="pf-row">
@@ -1079,7 +1079,7 @@ body.editing .cursor-glow{display:none}
           <div class="pf-tag tc">자기검증</div>
           <div>
             <div class="pf-title">검증 루프 내장 — 스스로 오류를 찾게 하기</div>
-            <div class="pf-desc">답변 마지막에 <code>이 답변에서 논리 오류나 반례가 있다면 스스로 지적해 주세요</code>를 붙이면 Fable 5는 자체 검증 단계를 실행해요. 다른 모델보다 정확도가 크게 높아집니다.</div>
+            <div class="pf-desc">답변 마지막에 <code>이 답변에서 논리 오류나 반례가 있다면 스스로 지적해 주세요</code>를 붙이면 Opus 5는 자체 검증 단계를 실행해요. 다른 모델보다 정확도가 크게 높아집니다.</div>
           </div>
         </div>
       </div>
@@ -1089,7 +1089,7 @@ body.editing .cursor-glow{display:none}
           <div class="pf-tag tc">복합추론</div>
           <div>
             <div class="pf-title">조건 충돌 해결 — 복잡한 요구사항 자율 정리</div>
-            <div class="pf-desc">서로 충돌하는 조건이 있을 때 <code>제약 간 우선순위를 스스로 정하고 결정 이유를 설명해 주세요</code>라고 넣으면 Fable 5가 자율적으로 해결안을 도출해요.</div>
+            <div class="pf-desc">서로 충돌하는 조건이 있을 때 <code>제약 간 우선순위를 스스로 정하고 결정 이유를 설명해 주세요</code>라고 넣으면 Opus 5가 자율적으로 해결안을 도출해요.</div>
           </div>
         </div>
       </div>
@@ -1099,19 +1099,19 @@ body.editing .cursor-glow{display:none}
           <div class="pf-tag tc">멀티라운드</div>
           <div>
             <div class="pf-title">장기 프로젝트 선언 — 대화 전체를 하나의 작업으로</div>
-            <div class="pf-desc">첫 턴에 <code>이 대화는 X 프로젝트 전체를 다룹니다. 이전 응답을 항상 참조하며 일관성을 유지해 주세요</code>라고 선언하면 Fable 5가 대화 전체를 하나의 작업으로 취급해요.</div>
+            <div class="pf-desc">첫 턴에 <code>이 대화는 X 프로젝트 전체를 다룹니다. 이전 응답을 항상 참조하며 일관성을 유지해 주세요</code>라고 선언하면 Opus 5가 대화 전체를 하나의 작업으로 취급해요.</div>
           </div>
         </div>
       </div>
     </div>
 
     <div class="callout reveal d2" style="border-left-color:var(--accent3);margin-top:.9rem">
-      <b>언제 Fable 5를 선택해야 하나요?</b> 문서가 50페이지 이상이거나, 조건이 5개 이상 충돌하거나, 한 대화에서 여러 작업을 이어서 해야 할 때예요. 그 외엔 <b>Opus 4.8 / Sonnet 4.6이 더 빠르고 경제적</b>이에요.
+      <b>언제 Opus 5를 선택해야 하나요?</b> 문서가 50페이지 이상이거나, 조건이 5개 이상 충돌하거나, 한 대화에서 여러 작업을 이어서 해야 할 때예요. 그 외엔 <b>Sonnet 5가 더 빠르고 경제적</b>이에요.
     </div>
   </div>
 </section>
 
-<!-- ══ 03d FABLE5 PRACTICE ══ -->
+<!-- ══ 03d OPUS5 PRACTICE ══ -->
 <!-- ══ 04 PROMPT STRUCTURE ══ -->
 <section class="slide" data-title="프롬프트 구조 설계" data-desc="역할·컨텍스트·태스크·포맷·제약 5단계">
   <div class="wm">04</div>
@@ -1511,7 +1511,7 @@ body.editing .cursor-glow{display:none}
     <h2 class="title reveal">모델별 <span class="hl">최적 프롬프트</span> 전략</h2>
     <div class="grid g2 reveal d1">
       <div class="sc" data-llm="gpt">
-        <div class="sc-header"><div class="sc-dot" style="background:var(--accent)"></div><span class="sc-name">ChatGPT 5.5</span><span class="sc-tag">포맷 고정형</span></div>
+        <div class="sc-header"><div class="sc-dot" style="background:var(--accent)"></div><span class="sc-name">ChatGPT GPT-5.6</span><span class="sc-tag">포맷 고정형</span></div>
         <ul>
           <li>System Prompt에 <b>페르소나 + 행동 원칙</b> 모두 정의해 주세요</li>
           <li>JSON 출력 시 <b>function calling</b> 또는 response_format을 활용해 주세요</li>
@@ -1522,9 +1522,9 @@ body.editing .cursor-glow{display:none}
         <div class="sc-click-hint">클릭하면 Best Case 프롬프트를 볼 수 있어요 →</div>
       </div>
       <div class="sc" data-llm="claude">
-        <div class="sc-header"><div class="sc-dot" style="background:var(--accent2)"></div><span class="sc-name">Claude Opus 4.8 / Sonnet 4.6</span><span class="sc-tag">정합성 강화형</span></div>
+        <div class="sc-header"><div class="sc-dot" style="background:var(--accent2)"></div><span class="sc-name">Claude Opus 5 / Sonnet 5</span><span class="sc-tag">정합성 강화형</span></div>
         <ul>
-          <li><b>Fable 5 전용:</b> 100만 토큰 — <b>초대형 문서·장기 복합 프로젝트</b>에 최적해요</li>
+          <li><b>Opus 5 전용:</b> 100만 토큰 — <b>초대형 문서·장기 복합 프로젝트</b>에 최적해요</li>
           <li><b>맥락을 최대한 풍부하게</b> 제공해 주세요 — 배경, 목적, 독자 모두 포함</li>
           <li>200K~1M 토큰 컨텍스트 — <b>긴 문서 분석</b>에 적극 활용해 주세요</li>
           <li><b>"아래 제약이 충돌할 경우 충돌 지점을 먼저 명시하고 우선순위를 제안해 주세요"</b></li>
@@ -1534,7 +1534,7 @@ body.editing .cursor-glow{display:none}
         <div class="sc-click-hint">클릭하면 Best Case 프롬프트를 볼 수 있어요 →</div>
       </div>
       <div class="sc" data-llm="gemini">
-        <div class="sc-header"><div class="sc-dot" style="background:#9c7100"></div><span class="sc-name">Gemini 3.5 Flash</span><span class="sc-tag">확장→압축형</span></div>
+        <div class="sc-header"><div class="sc-dot" style="background:#9c7100"></div><span class="sc-name">Gemini 3.7 Flash</span><span class="sc-tag">확장→압축형</span></div>
         <ul>
           <li>이미지+텍스트 <b>멀티모달 입력</b>을 적극 활용해 주세요</li>
           <li><b>넓게 생성 → 압축/카테고리화</b> 흐름이 잘 맞아요</li>
@@ -1620,7 +1620,7 @@ body.editing .cursor-glow{display:none}
         <div class="dd-head dont">❌ DON'T — 이건 피하세요</div>
         <div class="dd-item"><span class="di">❌</span><div><div><b>한 번에 너무 많은 작업을 요청</b>하지 마세요.</div><div>"분석하고, 요약하고, 번역하고, 이미지도 만들어줘" → 단계별 분리.</div></div></div>
         <div class="dd-item"><span class="di">❌</span><div><div><b>막연한 품질 요구</b>를 하지 마세요.</div><div>"최선을 다해줘" — 모델은 기준이 없으면 자체 판단으로 처리.</div></div></div>
-        <div class="dd-item"><span class="di">❌</span><div><div><b>모든 모델에 같은 프롬프트를 사용</b>하지 마세요.</div><div>Claude와 ChatGPT 5.5는 선호하는 입력 스타일이 다릅니다. 모델별 최적화 필요.</div></div></div>
+        <div class="dd-item"><span class="di">❌</span><div><div><b>모든 모델에 같은 프롬프트를 사용</b>하지 마세요.</div><div>Claude와 ChatGPT GPT-5.6은 선호하는 입력 스타일이 다릅니다. 모델별 최적화 필요.</div></div></div>
         <div class="dd-item"><span class="di">❌</span><div><div><b>첫 번째 결과를 그대로 사용</b>하지 마세요.</div><div>항상 검증 루프를 거쳐 최소 2~3회 반복 개선 후 최종 활용.</div></div></div>
       </div>
     </div>
@@ -1650,7 +1650,7 @@ body.editing .cursor-glow{display:none}
   <div class="slide-inner">
     <div class="kicker reveal" style="color:rgba(25,128,56,.7)">PRACTICE 01 / 일상생활</div>
     <h2 class="title reveal">일상생활 <span class="hl">프롬프트 실습</span></h2>
-    <p class="sub reveal d1">ChatGPT 5.5 · Claude · Gemini 공용 — 역할·데이터·제약·출력 4덩어리 구조를 일상에 적용</p>
+    <p class="sub reveal d1">ChatGPT GPT-5.6 · Claude · Gemini 공용 — 역할·데이터·제약·출력 4덩어리 구조를 일상에 적용</p>
     <div class="grid g3 reveal d1">
       <div class="card ac4"><div class="top-bar"></div>
         <div class="clabel">예시 ① — 여행 계획</div>
@@ -2052,12 +2052,12 @@ GitHub Issue #142를 해결해 주세요.
     </div>
     <div class="grid g3 reveal d1">
       <div style="background:var(--t03);border:1px solid rgba(0,80,216,.3);border-radius:6px;overflow:hidden">
-        <div style="background:rgba(0,80,216,.15);padding:.6rem 1rem;border-bottom:1px solid rgba(0,80,216,.3);font-family:var(--mono);font-size:0.94rem;color:var(--accent);font-weight:700;letter-spacing:.12em">ChatGPT 5.5 — 포맷 고정형</div>
+        <div style="background:rgba(0,80,216,.15);padding:.6rem 1rem;border-bottom:1px solid rgba(0,80,216,.3);font-family:var(--mono);font-size:0.94rem;color:var(--accent);font-weight:700;letter-spacing:.12em">ChatGPT GPT-5.6 — 포맷 고정형</div>
         <div class="code" style="margin:0;border:0;border-radius:0"
-          data-prompt-label="모델별 비교 · ChatGPT 5.5"
+          data-prompt-label="모델별 비교 · ChatGPT GPT-5.6"
           data-prompt-title="마케팅 성과 분석 보고서 — GPT 포맷 고정형"
           data-prompt-tips="포인트: 계획 선제시 + 루브릭 자기평가 요청 — GPT는 단계형 실행 플랜 생성에 강해요">
-          <div class="bar"><span>ChatGPT 5.5</span><span class="zoom-hint">🔍 클릭해서 확대</span></div>
+          <div class="bar"><span>ChatGPT GPT-5.6</span><span class="zoom-hint">🔍 클릭해서 확대</span></div>
           <pre style="font-size:0.97rem">당신은 디지털 마케팅 애널리스트예요.
 
 [<span class="c">데이터</span>] 아래 수치를 기준으로 분석해 주세요:
@@ -2076,12 +2076,12 @@ GitHub Issue #142를 해결해 주세요.
         <div style="padding:.5rem .9rem;font-size:0.97rem;color:var(--t50);border-top:1px solid var(--t08)">포인트: 계획 선제시 + 루브릭</div>
       </div>
       <div style="background:var(--t03);border:1px solid rgba(0,115,230,.3);border-radius:6px;overflow:hidden">
-        <div style="background:rgba(0,115,230,.12);padding:.6rem 1rem;border-bottom:1px solid rgba(0,115,230,.3);font-family:var(--mono);font-size:0.94rem;color:var(--accent2);font-weight:700;letter-spacing:.12em">Claude Opus 4.8 — 정합성 강화형</div>
+        <div style="background:rgba(0,115,230,.12);padding:.6rem 1rem;border-bottom:1px solid rgba(0,115,230,.3);font-family:var(--mono);font-size:0.94rem;color:var(--accent2);font-weight:700;letter-spacing:.12em">Claude Opus 5 — 정합성 강화형</div>
         <div class="code" style="margin:0;border:0;border-radius:0"
-          data-prompt-label="모델별 비교 · Claude Opus 4.8"
+          data-prompt-label="모델별 비교 · Claude Opus 5"
           data-prompt-title="마케팅 성과 분석 보고서 — Claude 정합성 강화형"
           data-prompt-tips="포인트: 제약 우선순위 명시 + 충돌 해결 요청 — Claude Opus는 복잡한 의사결정과 정합성 검토에 강해요">
-          <div class="bar"><span>Claude Opus 4.8</span><span class="zoom-hint">🔍 클릭해서 확대</span></div>
+          <div class="bar"><span>Claude Opus 5</span><span class="zoom-hint">🔍 클릭해서 확대</span></div>
           <pre style="font-size:0.97rem">당신은 B2B 마케팅 전략 컨설턴트예요.
 
 [<span class="c">배경</span>] 6월 퍼포먼스 마케팅 중심 운영,
@@ -2100,12 +2100,12 @@ ROI가 기대보다 낮았어요.
         <div style="padding:.5rem .9rem;font-size:0.97rem;color:var(--t50);border-top:1px solid var(--t08)">포인트: 우선순위 + 충돌 해결</div>
       </div>
       <div style="background:var(--t03);border:1px solid rgba(156,113,0,0.3);border-radius:6px;overflow:hidden">
-        <div style="background:rgba(156,113,0,0.15);padding:.6rem 1rem;border-bottom:1px solid rgba(156,113,0,0.3);font-family:var(--mono);font-size:0.94rem;color:#9c7100;font-weight:700;letter-spacing:.12em">Gemini 3.5 Flash — 확장→압축형</div>
+        <div style="background:rgba(156,113,0,0.15);padding:.6rem 1rem;border-bottom:1px solid rgba(156,113,0,0.3);font-family:var(--mono);font-size:0.94rem;color:#9c7100;font-weight:700;letter-spacing:.12em">Gemini 3.7 Flash — 확장→압축형</div>
         <div class="code" style="margin:0;border:0;border-radius:0"
-          data-prompt-label="모델별 비교 · Gemini 3.5 Flash"
+          data-prompt-label="모델별 비교 · Gemini 3.7 Flash"
           data-prompt-title="마케팅 성과 분석 보고서 — Gemini 확장→압축형"
           data-prompt-tips="포인트: 넓게 확장 → 압축 → 구조화 3단계 — Gemini는 대량 아이디어 생성과 요약에 강해요">
-          <div class="bar"><span>Gemini 3.5 Flash</span><span class="zoom-hint">🔍 클릭해서 확대</span></div>
+          <div class="bar"><span>Gemini 3.7 Flash</span><span class="zoom-hint">🔍 클릭해서 확대</span></div>
           <pre style="font-size:0.97rem">당신은 마케팅 데이터 분석가예요.
 
 [<span class="c">1단계 - 확장</span>]
@@ -2160,23 +2160,23 @@ ROI가 기대보다 낮았어요.
 </section>
 
 
-<!-- ══ Fable 5 실습 ══ -->
-<section class="slide" data-title="Fable 5 — 전용 프롬프트 실습" data-desc="대형 문서 분석·PRD 검증·복합 프로젝트 3종 예시">
-  <div class="wm" style="-webkit-text-stroke-color:rgba(105,41,196,.09)">F5</div>
+<!-- ══ Opus 5 실습 ══ -->
+<section class="slide" data-title="Opus 5 — 전용 프롬프트 실습" data-desc="대형 문서 분석·PRD 검증·복합 프로젝트 3종 예시">
+  <div class="wm" style="-webkit-text-stroke-color:rgba(105,41,196,.09)">O5</div>
   <div class="slide-inner">
-    <div class="kicker reveal" style="color:rgba(105,41,196,.8)">FABLE 5 PRACTICE / 전용 실습</div>
-    <h2 class="title reveal">Fable 5 <span style="background:linear-gradient(110deg,var(--accent2),var(--accent3));-webkit-background-clip:text;background-clip:text;color:transparent">전용 실습</span> 예시</h2>
-    <p class="sub reveal d1">100만 토큰·자기검증·복합추론 — Fable 5의 강점을 직접 체험하는 3가지 실전 프롬프트</p>
+    <div class="kicker reveal" style="color:rgba(105,41,196,.8)">OPUS 5 PRACTICE / 전용 실습</div>
+    <h2 class="title reveal">Opus 5 <span style="background:linear-gradient(110deg,var(--accent2),var(--accent3));-webkit-background-clip:text;background-clip:text;color:transparent">전용 실습</span> 예시</h2>
+    <p class="sub reveal d1">100만 토큰·자기검증·복합추론 — Opus 5의 강점을 직접 체험하는 3가지 실전 프롬프트</p>
 
     <div class="grid g3 reveal d1">
       <!-- 예시 1: 대형 문서 분석 (마케터) -->
       <div style="background:var(--t03);border:1px solid rgba(105,41,196,.3);border-radius:6px;overflow:hidden">
         <div style="background:rgba(105,41,196,.1);padding:.6rem 1rem;border-bottom:1px solid rgba(105,41,196,.25);font-family:var(--mono);font-size:0.94rem;color:var(--accent3);font-weight:700;letter-spacing:.12em">예시 ① — 대형 문서 분석 <span style="color:var(--t50);font-weight:400">(마케터)</span></div>
         <div class="code" style="margin:0;border:0;border-radius:0"
-          data-prompt-label="Fable 5 실습 ①"
+          data-prompt-label="Opus 5 실습 ①"
           data-prompt-title="대형 시장조사 보고서 분석"
-          data-prompt-tips="100만 토큰 컨텍스트 활용 — 보고서 전체를 잘라내지 말고 통째로 붙여넣으세요. Fable 5가 전체를 읽고 핵심만 뽑아줘요 · 마지막 자기검증 줄을 꼭 유지하세요">
-          <div class="bar"><span>Fable 5 전용</span><span class="zoom-hint">🔍 클릭해서 확대</span><button class="copy">COPY</button></div>
+          data-prompt-tips="100만 토큰 컨텍스트 활용 — 보고서 전체를 잘라내지 말고 통째로 붙여넣으세요. Opus 5가 전체를 읽고 핵심만 뽑아줘요 · 마지막 자기검증 줄을 꼭 유지하세요">
+          <div class="bar"><span>Opus 5 전용</span><span class="zoom-hint">🔍 클릭해서 확대</span><button class="copy">COPY</button></div>
           <pre style="font-size:0.97rem"><span class="k">ROLE</span> 당신은 마케팅 전략 컨설턴트예요.
 
 [<span class="c">첨부 자료</span>] 아래 시장조사 보고서 전체를
@@ -2200,10 +2200,10 @@ ROI가 기대보다 낮았어요.
       <div style="background:var(--t03);border:1px solid rgba(105,41,196,.3);border-radius:6px;overflow:hidden">
         <div style="background:rgba(105,41,196,.1);padding:.6rem 1rem;border-bottom:1px solid rgba(105,41,196,.25);font-family:var(--mono);font-size:0.94rem;color:var(--accent3);font-weight:700;letter-spacing:.12em">예시 ② — PRD 논리 검증 <span style="color:var(--t50);font-weight:400">(PM)</span></div>
         <div class="code" style="margin:0;border:0;border-radius:0"
-          data-prompt-label="Fable 5 실습 ②"
+          data-prompt-label="Opus 5 실습 ②"
           data-prompt-title="PRD 요구사항 충돌 &amp; 논리 오류 검증"
-          data-prompt-tips="복합추론 능력 활용 — 요구사항 간 충돌을 찾고 우선순위를 자율적으로 제안하게 해요 · 충돌 쌍에 결정 이유를 요청하는 줄이 Fable 5에서 특히 효과적이에요">
-          <div class="bar"><span>Fable 5 전용</span><span class="zoom-hint">🔍 클릭해서 확대</span><button class="copy">COPY</button></div>
+          data-prompt-tips="복합추론 능력 활용 — 요구사항 간 충돌을 찾고 우선순위를 자율적으로 제안하게 해요 · 충돌 쌍에 결정 이유를 요청하는 줄이 Opus 5에서 특히 효과적이에요">
+          <div class="bar"><span>Opus 5 전용</span><span class="zoom-hint">🔍 클릭해서 확대</span><button class="copy">COPY</button></div>
           <pre style="font-size:0.97rem"><span class="k">ROLE</span> 당신은 시니어 PM 리뷰어예요.
 
 [<span class="c">검토 대상</span>] 아래 PRD 전체를 읽어 주세요.
@@ -2227,10 +2227,10 @@ ROI가 기대보다 낮았어요.
       <div style="background:var(--t03);border:1px solid rgba(105,41,196,.3);border-radius:6px;overflow:hidden">
         <div style="background:rgba(105,41,196,.1);padding:.6rem 1rem;border-bottom:1px solid rgba(105,41,196,.25);font-family:var(--mono);font-size:0.94rem;color:var(--accent3);font-weight:700;letter-spacing:.12em">예시 ③ — 복합 프로젝트 기획 <span style="color:var(--t50);font-weight:400">(일반)</span></div>
         <div class="code" style="margin:0;border:0;border-radius:0"
-          data-prompt-label="Fable 5 실습 ③"
+          data-prompt-label="Opus 5 실습 ③"
           data-prompt-title="장기 복합 프로젝트 단계별 기획"
-          data-prompt-tips="멀티 라운드 설계 패턴 활용 — 첫 턴에 전체 프로젝트 선언 후 대화를 이어가면 Fable 5가 모든 내용을 기억하며 일관성 있게 도와줘요 · 2단계부터는 이어서 질문해도 돼요">
-          <div class="bar"><span>Fable 5 전용</span><span class="zoom-hint">🔍 클릭해서 확대</span><button class="copy">COPY</button></div>
+          data-prompt-tips="멀티 라운드 설계 패턴 활용 — 첫 턴에 전체 프로젝트 선언 후 대화를 이어가면 Opus 5가 모든 내용을 기억하며 일관성 있게 도와줘요 · 2단계부터는 이어서 질문해도 돼요">
+          <div class="bar"><span>Opus 5 전용</span><span class="zoom-hint">🔍 클릭해서 확대</span><button class="copy">COPY</button></div>
           <pre style="font-size:0.97rem"><span class="k">이 대화는 '온라인 쇼핑몰 론칭' 프로젝트
 전체를 다룹니다.</span> 이전 응답을 항상 참조하며
 일관성을 유지해 주세요.
@@ -2251,7 +2251,7 @@ ROI가 기대보다 낮았어요.
     </div>
 
     <div class="callout reveal d2" style="border-left-color:var(--accent3);margin-top:.8rem">
-      <b>Fable 5 프롬프트 황금 공식</b> &nbsp;:&nbsp;
+      <b>Opus 5 프롬프트 황금 공식</b> &nbsp;:&nbsp;
       <span style="font-family:var(--mono);color:var(--accent3)">전체 붙여넣기</span> →
       <span style="font-family:var(--mono);color:var(--accent2)">2단계 지시 (파악 → 추출)</span> →
       <span style="font-family:var(--mono);color:var(--accent4)">자기검증 요청</span>
@@ -2664,12 +2664,12 @@ ROI가 기대보다 낮았어요.
 </section>
 
 <!-- ══ APPENDIX ══ -->
-<section class="slide" data-title="부록 — 프롬프트 라이브러리" data-desc="전략·마케팅·커머스·기획 21종 템플릿">
+<section class="slide" data-title="부록 — 프롬프트 라이브러리" data-desc="전략·마케팅·커머스·기획 21종 · strategy-prompts v2.5.0 연계">
   <div class="wm">APP</div>
   <div class="slide-inner">
     <div class="kicker reveal">APPENDIX / 프롬프트 라이브러리</div>
     <h2 class="title reveal">도메인별 <span class="hl">프롬프트 템플릿</span></h2>
-    <p class="sub reveal d1">도메인 카드를 클릭하면 <b>ChatGPT 5.5 · Claude Opus 4.8 · Gemini 3.5 Flash</b> 최적화 프롬프트를 바로 복사할 수 있습니다 — 총 21종</p>
+    <p class="sub reveal d1">도메인 카드를 클릭하면 <b>ChatGPT GPT-5.6 · Claude Opus 5 · Gemini 3.7 Flash</b> 최적화 프롬프트를 바로 복사할 수 있습니다 — Part 1~4 <b>21종</b> (전체 라이브러리 <b>63개</b>: <a href="https://github.com/saewookkangboy/strategy-prompts" target="_blank" rel="noopener" style="color:var(--accent2)">strategy-prompts v2.5.0</a>)</p>
     <div class="app-domains reveal d1">
       <div class="app-dcard" onclick="appOpenDomain('strategy')">
         <div class="top-bar" style="background:#0f62fe"></div>
@@ -2701,7 +2701,7 @@ ROI가 기대보다 낮았어요.
       </div>
     </div>
     <div class="callout reveal d2" style="margin-top:1.2rem;border-left-color:var(--accent2)">
-      <b>활용법:</b> 도메인 선택 → 프레임워크 선택 → 모델 탭(ChatGPT 5.5 / Claude Opus 4.8 / Gemini 3.5 Flash) → COPY → <code style="font-family:var(--mono);color:var(--accent2);font-size:.9em">[ ]</code> 안을 내 상황으로 채워 붙여넣으세요
+      <b>활용법:</b> 도메인 선택 → 프레임워크 선택 → 모델 탭(ChatGPT GPT-5.6 / Claude Opus 5 / Gemini 3.7 Flash) → COPY · 전체 63개·Part 6 리서치·덱 체인은 strategy-prompts 참고 → <code style="font-family:var(--mono);color:var(--accent2);font-size:.9em">[ ]</code> 안을 내 상황으로 채워 붙여넣으세요
     </div>
   </div>
 </section>
@@ -3059,7 +3059,7 @@ function attachPopupListeners(){
 ═══════════════════════════════════════════════════ */
 const LLM_DATA={
   gpt:{
-    name:'ChatGPT 5.5',
+    name:'ChatGPT GPT-5.6',
     tag:'포맷 고정형',
     dot:'#0f62fe',
     tabs:['문서·보고서','코드 생성','분석·의사결정'],
@@ -3135,7 +3135,7 @@ const LLM_DATA={
     ]
   },
   claude:{
-    name:'Claude Opus 4.8 / Sonnet 4.6',
+    name:'Claude Opus 5 / Sonnet 5',
     tag:'정합성 강화형',
     dot:'#33b1ff',
     tabs:['문서·분석','의사결정·정합성','코드·기술'],
@@ -3207,7 +3207,7 @@ const LLM_DATA={
     ]
   },
   gemini:{
-    name:'Gemini 3.5 Flash',
+    name:'Gemini 3.7 Flash',
     tag:'확장→압축형',
     dot:'#9c7100',
     tabs:['아이디어 확장','요약·정리','멀티모달'],
@@ -3460,12 +3460,12 @@ addEventListener('keydown',e=>{
    APPENDIX PROMPT LIBRARY
 ═══════════════════════════════════════════════ */
 const APP_MODELS=[
-  {id:'gpt',label:'ChatGPT 5.5',color:'#10a37f',
-   tip:'ChatGPT 5.5: 계획 선제시 + 루브릭 자기평가 패턴에 강합니다. function_calling으로 출력 구조를 고정하면 더 효과적입니다.'},
-  {id:'claude',label:'Claude Opus 4.8',color:'#be95ff',
-   tip:'Claude Opus 4.8: 역할 + 명확한 출력 요청 형식에 최적화되어 있습니다. 필요시 "표나 불릿으로 요약해 줘"를 추가하세요.'},
-  {id:'gemini',label:'Gemini 3.5 Flash',color:'#9c7100',
-   tip:'Gemini 3.5 Flash: 답변 시 "표와 불릿으로 정리해 줘"를 추가하면 활용도가 높습니다.'}
+  {id:'gpt',label:'ChatGPT GPT-5.6',color:'#10a37f',
+   tip:'ChatGPT GPT-5.6: 계획 선제시 + 루브릭 자기평가 패턴에 강합니다. function_calling으로 출력 구조를 고정하면 더 효과적입니다.'},
+  {id:'claude',label:'Claude Opus 5',color:'#be95ff',
+   tip:'Claude Opus 5: 역할 + 명확한 출력 요청 형식에 최적화되어 있습니다. 필요시 "표나 불릿으로 요약해 줘"를 추가하세요.'},
+  {id:'gemini',label:'Gemini 3.7 Flash',color:'#9c7100',
+   tip:'Gemini 3.7 Flash: 답변 시 "표와 불릿으로 정리해 줘"를 추가하면 활용도가 높습니다.'}
 ];
 
 const APP_DOMAINS={
