@@ -1,0 +1,18 @@
+{
+  "name": "fetch_campaign_metrics",
+  "description": "집행된 캠페인의 성과 지표를 조회한다. 노출·클릭·전환·비용을 반환한다. 아직 집행되지 않은 캠페인의 예측치를 얻는 데는 쓸 수 없다.",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "campaign_id": {"type": "string"},
+      "start_date": {"type": "string", "format": "date"},
+      "end_date": {"type": "string", "format": "date"},
+      "metrics": {
+        "type": "array",
+        "items": {"type": "string", "enum": ["impressions", "clicks", "conversions", "spend", "roas"]},
+        "default": ["impressions", "clicks", "conversions", "spend"]
+      }
+    },
+    "required": ["campaign_id", "start_date", "end_date"]
+  }
+}

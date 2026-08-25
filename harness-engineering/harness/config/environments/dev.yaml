@@ -1,0 +1,11 @@
+# dev — 기본값과의 차이만 적는다
+extends: ../defaults.yaml
+
+budget:
+  max_cost_usd_per_run: 0.50
+
+tools:
+  dry_run_side_effects: true
+
+observability:
+  trace_sample_rate: 1.0

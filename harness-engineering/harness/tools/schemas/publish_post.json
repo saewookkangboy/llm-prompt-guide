@@ -1,0 +1,15 @@
+{
+  "name": "publish_post",
+  "description": "승인된 콘텐츠를 지정 채널에 발행한다. 되돌릴 수 없는 외부 공개 작업이므로, 사용자가 발행을 명시적으로 요청했고 검수를 통과한 경우에만 호출한다. 초안 작성이나 미리보기에는 draft_content를 쓴다.",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "channel": {"type": "string", "enum": ["blog", "instagram", "linkedin", "newsletter"]},
+      "content_id": {"type": "string", "description": "검수를 통과한 콘텐츠의 ID"},
+      "scheduled_at": {"type": "string", "format": "date-time"}
+    },
+    "required": ["channel", "content_id"]
+  },
+  "x-side-effects": "irreversible",
+  "x-approval": "human_required_in_prod"
+}

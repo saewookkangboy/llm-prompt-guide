@@ -1,0 +1,30 @@
+version: 1
+
+loop:
+  max_iterations: 6
+  self_critique_prompt: task.self_critique
+  retry_on_validation_failure: 1
+
+budget:
+  max_context_tokens: 120000
+  max_cost_usd_per_run: 2.00
+  on_exceed: halt          # halt | degrade — 기본은 중단
+
+retrieval:
+  max_chunks: 8
+  min_score: 0.62
+  fail_on_empty: true
+
+routing:
+  default_workflow: campaign_brief
+  complexity_rules:
+    - if: {step: intake}
+      tier: fast
+    - if: {step: [research, copy]}
+      tier: balanced
+    - if: {step: [strategy, review]}
+      tier: deep
+
+observability:
+  trace_sample_rate: 1.0
+  redact_pii_in_traces: true

@@ -1,0 +1,20 @@
+{
+  "run_id": "run_8f2a19c4",
+  "trace_id": "tr_5510ab",
+  "workflow": "campaign_brief",
+  "prompt_versions": {"sys.orchestrator": "v3", "sys.copywriter": "v2"},
+  "status": "halted",
+  "halt_reason": "max_iterations",
+  "iterations": 6,
+  "cost_usd": 2.04,
+  "steps": [
+    {"id": "intake", "model": "claude-haiku-4-5-20251001", "in": 1240, "out": 310, "ms": 900},
+    {"id": "research", "model": "claude-sonnet-5", "in": 18400, "out": 1920, "ms": 12400,
+     "tools": [{"name": "search_documents", "allowed": true, "chunks": 5}]},
+    {"id": "copy", "model": "claude-sonnet-5", "in": 9100, "out": 1450, "ms": 8200,
+     "tools": [{"name": "publish_post", "allowed": false, "reason": "policy_denied"}]}
+  ],
+  "evicted": ["doc-17", "doc-22"],
+  "guardrail_events": [{"policy": "injection.tool_coercion", "action": "drop_chunk", "chunk": "doc-9"}],
+  "note": "테스트용 축약 트레이스. 회귀 케이스 reg-2026-08-12-01의 원본."
+}

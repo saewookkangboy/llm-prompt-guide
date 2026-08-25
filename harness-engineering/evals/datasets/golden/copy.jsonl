@@ -1,0 +1,2 @@
+{"id": "gold-041", "input": "위 전략을 바탕으로 링크드인 포스트 카피 3안. 각 300자 이내.", "expect": {"schema": "output_contract", "max_chars_per_variant": 300, "variant_count": 3, "must_not_include": ["최고의", "100% 보장"], "rubric": "brand_tone"}, "tags": ["copy", "linkedin"]}
+{"id": "gold-042", "input": "뉴스레터 제목 5안. 이모지 금지.", "expect": {"schema": "output_contract", "variant_count": 5, "forbid_emoji": true, "rubric": "brand_tone"}, "tags": ["copy", "newsletter"]}

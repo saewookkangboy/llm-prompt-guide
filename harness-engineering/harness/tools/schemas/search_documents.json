@@ -1,0 +1,20 @@
+{
+  "name": "search_documents",
+  "description": "사내 마케팅 자료(브랜드 가이드, 과거 캠페인 리포트, 제품 문서)를 검색한다. 사실 확인이나 과거 사례가 필요할 때 쓴다. 웹 검색이나 실시간 지표 조회에는 쓰지 않는다 — 그것은 각각 다른 툴이다.",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "query": {
+        "type": "string",
+        "description": "검색어. 자연어 질문 형태로 쓴다."
+      },
+      "collection": {
+        "type": "string",
+        "enum": ["brand_guide", "campaign_reports", "product_docs", "all"],
+        "default": "all"
+      },
+      "top_k": {"type": "integer", "minimum": 1, "maximum": 8, "default": 5}
+    },
+    "required": ["query"]
+  }
+}

@@ -1,0 +1,13 @@
+extends: ../defaults.yaml
+
+tools:
+  dry_run_side_effects: false
+  require_human_approval: [publish_post, send_email]
+
+budget:
+  max_cost_usd_per_run: 2.00
+  on_exceed: halt
+
+observability:
+  trace_sample_rate: 0.1      # 전량 저장은 비용과 보관 정책 문제
+  redact_pii_in_traces: true

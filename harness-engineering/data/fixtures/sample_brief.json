@@ -1,0 +1,15 @@
+{
+  "brief_id": "fx-001",
+  "raw_text": "다음 분기에 신제품 무선 이어폰 런칭합니다. 20대 후반 직장인 타깃이고 예산은 3천만원 정도 생각 중이에요. 인지도부터 올리고 싶습니다.",
+  "expected_intake": {
+    "goal": "신제품 인지도 확보",
+    "target": "20대 후반 직장인",
+    "channels": [],
+    "period": null,
+    "budget": 30000000,
+    "kpi": [],
+    "constraints": [],
+    "missing": ["period", "channels", "kpi"]
+  },
+  "note": "'다음 분기'는 상대 시간 표현. 실험 2026-08-router-ab에서 fast 티어가 이를 null로 처리한 케이스."
+}

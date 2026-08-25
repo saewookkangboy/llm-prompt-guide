@@ -1,0 +1,10 @@
+stateDiagram-v2
+    [*] --> planning
+    planning --> acting: 계획 수립
+    acting --> reflecting: 툴 실행 완료
+    reflecting --> planning: 자기평가 미달 & 반복 < 6
+    reflecting --> done: 자기평가 통과
+    acting --> halted: 예산 초과 / 가드레일 차단
+    reflecting --> halted: 최대 반복 도달
+    done --> [*]
+    halted --> [*]

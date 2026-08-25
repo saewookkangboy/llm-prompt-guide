@@ -1,0 +1,19 @@
+version: 1
+
+detect:
+  - id: kr_rrn
+    label: 주민등록번호
+    action: block          # 마스킹이 아니라 차단. 애초에 넣지 못하게 한다
+  - id: phone
+    label: 연락처
+    action: redact
+  - id: email
+    label: 이메일
+    action: redact
+  - id: card_number
+    label: 카드번호
+    action: block
+
+logging:
+  store_original: false    # 원문은 저장하지 않는다. 탐지 유형만 트레이스에 남긴다
+  retain_days: 30

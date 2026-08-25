@@ -1,0 +1,13 @@
+.env
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# 데이터·산출물은 구조만 커밋한다
+data/raw/*
+data/processed/*
+evals/reports/*
+!**/.gitkeep
+!**/README.md

@@ -1,0 +1,35 @@
+id: strategy_quality
+version: 2
+scale: [0, 1, 2, 3]
+
+criteria:
+  - id: grounding
+    weight: 0.35
+    question: 모든 주장에 검증 가능한 출처가 붙어 있는가
+    anchors:
+      0: 출처 없는 수치나 주장이 있다
+      1: 일부 주장에만 출처가 있다
+      2: 주요 주장에 출처가 있다
+      3: 모든 주장에 출처가 있고 출처가 주장을 실제로 뒷받침한다
+
+  - id: actionability
+    weight: 0.30
+    question: 담당자가 내일 바로 착수할 수 있는 수준인가
+    anchors:
+      0: 일반론만 있다
+      1: 방향은 있으나 일정·담당·예산이 없다
+      2: 대부분 구체적이나 일부 항목이 비어 있다
+      3: 채널·일정·예산·측정 지표가 모두 특정되어 있다
+
+  - id: constraint_fit
+    weight: 0.20
+    question: 주어진 예산·기간·타깃 제약을 지켰는가
+
+  - id: honesty
+    weight: 0.15
+    question: 불확실한 부분을 불확실하다고 밝혔는가
+    anchors:
+      3: 모르는 것을 모른다고 하고 확인 방법을 제안한다
+      0: 모르는 것을 아는 것처럼 서술한다
+
+pass_threshold: 2.4

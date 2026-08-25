@@ -1,0 +1,44 @@
+id: campaign_brief
+description: 브리프 → 리서치 → 전략 → 카피 → 검수
+version: 3
+
+budget:
+  max_iterations: 6
+  max_cost_usd: 2.00
+  max_context_tokens: 120000
+
+steps:
+  - id: intake
+    prompt: task.brief_intake
+    model_tier: fast
+    tools: []
+    on_missing_fields: ask_user      # 추측으로 채우지 않는다
+
+  - id: research
+    prompt: sys.researcher
+    model_tier: balanced
+    tools: [search_documents, fetch_campaign_metrics]
+    requires: [intake]
+    fail_on_empty_retrieval: true
+
+  - id: strategy
+    prompt: sys.orchestrator
+    model_tier: deep
+    tools: [search_documents]
+    requires: [research]
+
+  - id: copy
+    prompt: sys.copywriter
+    model_tier: balanced
+    tools: [draft_content]
+    requires: [strategy]
+
+  - id: review
+    prompt: task.self_critique
+    model_tier: deep
+    tools: []
+    requires: [copy]
+    on_fail: retry_step             # copy로 되돌아감, 루프 카운터 증가
+
+outputs:
+  required: [strategy_doc, copy_variants, source_list]

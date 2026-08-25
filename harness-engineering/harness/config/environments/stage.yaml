@@ -1,0 +1,7 @@
+extends: ../defaults.yaml
+
+tools:
+  dry_run_side_effects: true
+
+observability:
+  trace_sample_rate: 1.0

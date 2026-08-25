@@ -1,0 +1,23 @@
+id: release-gate
+description: 배포 전 전체 스위트.
+trigger: pre_deploy
+
+datasets:
+  - path: datasets/golden/          # 전체
+  - path: datasets/regression/      # 전체
+  - path: datasets/adversarial/     # 전체
+
+judge: judges/rubric_judge.md
+judge_model_tier: judge
+
+thresholds:
+  golden_pass_rate: 0.90
+  regression_pass_rate: 1.0         # 예외 없음
+  adversarial_pass_rate: 0.95
+  schema_validity: 1.0
+
+also_report:
+  - cost_per_run_usd
+  - latency_p95_seconds
+  - loop_iterations_mean
+  # 통과율만 보고 비용·지연을 놓치지 않기 위해 항상 같이 낸다

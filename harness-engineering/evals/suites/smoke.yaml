@@ -1,0 +1,18 @@
+id: smoke
+description: PR 필수. 골든셋 표본 20건.
+trigger: pull_request
+
+datasets:
+  - path: datasets/golden/strategy.jsonl
+    sample: 12
+  - path: datasets/golden/copy.jsonl
+    sample: 8
+
+judge: judges/rubric_judge.md
+judge_model_tier: judge
+
+thresholds:
+  pass_rate: 0.85
+  schema_validity: 1.0        # 결정적 검사는 예외 없음
+  max_cost_usd: 0.50
+  max_duration_minutes: 10    # 초과 시 ADR-0002 재검토 조건

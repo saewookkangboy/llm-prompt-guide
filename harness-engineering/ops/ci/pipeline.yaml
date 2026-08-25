@@ -1,0 +1,33 @@
+# CI 파이프라인 (플랫폼 중립 정의). 실제 실행기 문법으로 옮겨 쓴다.
+name: atlas-harness
+
+stages:
+  - name: lint
+    run: make lint
+    on: [pull_request, push]
+
+  - name: unit
+    run: make test
+    on: [pull_request, push]
+
+  - name: contract
+    run: pytest tests/contract -q
+    on: [pull_request]
+    note: 툴 스키마와 어댑터 시그니처, policy.yaml 등록 여부를 검증
+
+  - name: eval-smoke
+    run: make eval-smoke
+    on: [pull_request]
+    when_paths: ["harness/**", "evals/**"]
+    required: true            # ADR-0002
+    secrets: [ANTHROPIC_API_KEY]
+
+  - name: eval-full
+    run: make eval-full
+    on: [pre_deploy]
+    required: true
+
+policies:
+  - 프롬프트 변경 PR은 eval-smoke 없이 머지할 수 없다
+  - 평가 리포트는 아티팩트로 첨부한다 (저장소에 커밋하지 않는다)
+  - 시크릿은 fork PR에 노출하지 않는다 — 외부 기여는 평가를 메인테이너가 대신 실행

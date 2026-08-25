@@ -1,0 +1,44 @@
+# 프롬프트 버전 레지스트리 — 단일 출처.
+# 직접 편집하지 말고 scripts/promote_prompt.py를 쓴다.
+
+version: 1
+
+prompts:
+  - id: sys.orchestrator
+    path: system/orchestrator.v3.md
+    stage: active
+    promoted_at: 2026-08-19
+    eval_suite: evals/suites/release-gate.yaml
+    baseline_score: 0.91
+    notes: 루프 종료 조건을 명시해 평균 반복 4.2 → 2.8로 감소
+
+  - id: sys.researcher
+    path: system/researcher.v2.md
+    stage: active
+    promoted_at: 2026-08-11
+    baseline_score: 0.88
+
+  - id: sys.copywriter
+    path: system/copywriter.v2.md
+    stage: candidate
+    promoted_at: 2026-08-23
+    baseline_score: 0.86
+    notes: 브랜드 톤 루브릭 점수는 올랐으나 길이 초과 3건 — 스모크 재실행 대기
+
+  - id: task.self_critique
+    path: task/self_critique.md
+    stage: active
+    promoted_at: 2026-08-05
+    baseline_score: 0.93
+    notes: 반드시 별도 호출로 실행. 본 프롬프트에 합치면 통과율이 비정상적으로 높아짐
+
+  - id: task.brief_intake
+    path: task/brief_intake.md
+    stage: active
+    promoted_at: 2026-07-28
+
+deprecated:
+  - id: sys.orchestrator
+    path: system/orchestrator.v2.md
+    replaced_by: system/orchestrator.v3.md
+    reason: 예산 초과 시 조용히 중단되어 실패가 관측되지 않음

@@ -1,0 +1,32 @@
+# 툴 권한 — 기본 거부. 여기 없는 툴은 호출되지 않는다.
+
+version: 1
+default: deny
+
+environments:
+  dev:
+    allow: [search_documents, fetch_campaign_metrics, draft_content]
+    dry_run: [publish_post, send_email]     # 호출은 되지만 실제 전송 없음
+    deny: [charge_payment]
+
+  stage:
+    allow: [search_documents, fetch_campaign_metrics, draft_content]
+    dry_run: [publish_post, send_email]
+    deny: [charge_payment]
+
+  prod:
+    allow: [search_documents, fetch_campaign_metrics, draft_content]
+    require_human_approval: [publish_post, send_email]
+    deny: [charge_payment]
+
+limits:
+  max_calls_per_run: 25
+  max_calls_per_tool: 8
+  timeout_seconds: 30
+
+# 파라미터 범위 검사 — 스키마를 통과해도 여기서 다시 막는다
+constraints:
+  fetch_campaign_metrics:
+    date_range_max_days: 180
+  draft_content:
+    max_output_chars: 4000
